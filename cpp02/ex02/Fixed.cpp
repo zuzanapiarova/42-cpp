@@ -84,27 +84,80 @@ std::ostream& operator <<(std::ostream& os, const Fixed& fixed)
 
 // -------------------------------------------- Comparison Operators ---------------------------------------------
 
-Fixed& Fixed::operator < (const Fixed& other) {};
+// in C++, when overloading operators as member functions, object left of operator is always the one the function is called on (== this)
+// object right of operator is used as parameter
+// eg. when doing a < b, it's internally treated like a.operator<(b);
 
-Fixed& Fixed::operator <= (const Fixed& other) {};
+bool Fixed::operator < (const Fixed& other) const
+{
+    return this->value < other.value;
+};
 
-Fixed& Fixed::operator > (const Fixed& other) {};
+bool Fixed::operator <= (const Fixed& other) const
+{
+    return this->value <= other.value;
+};
 
-Fixed& Fixed::operator >= (const Fixed& other) {};
+bool Fixed::operator > (const Fixed& other) const
+{
+    return this->value > other.value;
+};
 
-Fixed& Fixed::operator == (const Fixed& other) {};
+bool Fixed::operator >= (const Fixed& other) const
+{
+    return this->value >= other.value;
+};
 
-Fixed& Fixed::operator != (const Fixed& other) {};
+bool Fixed::operator == (const Fixed& other) const
+{
+    return this->value == other.value;
+};
+
+bool Fixed::operator != (const Fixed& other) const
+{
+    return this->value != other.value;
+};
 
 // -------------------------------------------- Arithmetic Operators ---------------------------------------------
 
-Fixed& Fixed::operator + (const Fixed& other) {};
+Fixed Fixed::operator + (const Fixed& other) const
+{
+    Fixed result;
+    
+    result.value = this->value + other.value;
+    return result;
+};
 
-Fixed& Fixed::operator - (const Fixed& other) {};
+Fixed Fixed::operator - (const Fixed& other) const
+{
+    Fixed result;
+    
+    result.value = this->value - other.value;
+    return result;
+};
 
-Fixed& Fixed::operator * (const Fixed& other) {};
+// when multiplying two fixed-point numbers, which is multiplying two scaled values, it results in an extra scaling
+// (a << 8) * (b << 8) = ( a * b ) << 16
+// the result must be shifted right by fractional_bits to correct it
+Fixed Fixed::operator * (const Fixed& other) const
+{
+    Fixed result;
+    
+    result.value = (this->value * other.value) >> fractional_bits;
+    return result;
+};
 
-Fixed& Fixed::operator / (const Fixed& other) {};
+// to maintain fixed-point precision, this->value must be shifted left before dividing to avoid losing the fractional part
+Fixed Fixed::operator / (const Fixed& other) const
+{
+    Fixed result;
+
+    if (other.value != 0)
+        result.value = (this->value << fractional_bits)/ other.value;
+    else
+        result.value = 0;
+    return result;
+};
 
 // --------------------------------------- Increment / Decrement Operators ---------------------------------------------
 
@@ -112,29 +165,63 @@ Fixed& Fixed::operator / (const Fixed& other) {};
 // it returns a reference to the current object (*this) so you can chain operations or observe the updated value immediately
 
 // Pre-increment
-Fixed& Fixed::operator ++ ( void ) {};
+Fixed& Fixed::operator ++ ( void )
+{
+    value += (1 << fractional_bits);
+    return *this;
+};
 
 // Pre-decrement
-Fixed& Fixed::operator -- ( void ) {};
+Fixed& Fixed::operator -- ( void )
+{
+    value -= (1 << fractional_bits);
+    return *this;
+};
 
 // post-increment (a++) - this operator must return the original value before the increment, so it makes a copy of the current object, then increments the current one
 // you cannot return a reference here because the result is a temporary copy — returning a reference to that would be unsafe and incorrect
 // the int is just a dummy to differentiate it from pre-increment
 
 // Post-increment
-Fixed Fixed::operator ++ ( int ) {};
+Fixed Fixed::operator ++ ( int )
+{
+    Fixed copy(*this);
+    value += (1 << fractional_bits);
+    return copy;
+};
 
 // Post-decrement
-Fixed Fixed::operator -- ( int ) {}; 
+Fixed Fixed::operator -- ( int )
+{
+    Fixed copy(*this);
+    value -= (1 << fractional_bits);
+    return copy;
+};
 
 // -------------------------------------------- Min / Max Functions ---------------------------------------------
 
 // If min and max don't depend on any internal state of a specific Fixed object (which they shouldn't), then they should be declared static.
 
-Fixed& Fixed::min(Fixed& first, Fixed& second) {};
+Fixed& Fixed::min(Fixed& first, Fixed& second)
+{
+    return (first <= second) ? first : second;
+};
 
-Fixed& Fixed::max(Fixed& first, Fixed& second) {};
+Fixed& Fixed::max(Fixed& first, Fixed& second)
+{
+    return (first >= second) ? first : second;
+};
 
-Fixed& Fixed::min(const Fixed& first, const Fixed& second) {};
+const Fixed& Fixed::min(const Fixed& first, const Fixed& second)
+{
+    if (first < second)
+        return first;
+    return second;
+};
 
-Fixed& Fixed::max(const Fixed& first, const Fixed& second) {};
+const Fixed& Fixed::max(const Fixed& first, const Fixed& second)
+{
+    if (first > second)
+        return first;
+    return second;
+};
