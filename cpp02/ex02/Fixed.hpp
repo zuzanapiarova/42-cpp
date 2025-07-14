@@ -1,0 +1,56 @@
+#ifndef FIXED_H
+# define FIXED_H
+
+#include <iostream>
+#include <string>
+#include <cmath>
+
+class Fixed
+{
+    private:
+        int value;
+        static const int fractional_bits; // bits for storing numbers after the fixed point
+
+    public:
+        Fixed(); // default constructor
+        Fixed(const int new_value); // overload constructor for int fixed value
+        Fixed(const float new_value); // overload constructor for float fixed value
+        Fixed(const Fixed& origin); // copy constructor
+        Fixed& operator = (const Fixed& origin); // copy assignment operator
+
+        ~Fixed(); // destructor
+
+        int     getRawBits( void ) const;
+        void    setRawBits( int const raw );
+        float   toFloat( void ) const;
+        int     toInt( void ) const;
+
+
+        Fixed& operator < (const Fixed& other);
+        Fixed& operator <= (const Fixed& other);
+        Fixed& operator > (const Fixed& other);
+        Fixed& operator >= (const Fixed& other);
+        Fixed& operator == (const Fixed& other);
+        Fixed& operator != (const Fixed& other);
+
+        Fixed& operator + (const Fixed& other);
+        Fixed& operator - (const Fixed& other);
+        Fixed& operator * (const Fixed& other);
+        Fixed& operator / (const Fixed& other);
+
+        Fixed& operator ++ ( void ); // pre-increment
+        Fixed& operator -- ( void ); // pre-dscrement
+        Fixed operator ++ ( int );   // post-increment
+        Fixed operator -- ( int );   // post-decrement
+
+        static Fixed& min(Fixed& first, Fixed& second);
+        static Fixed& max(Fixed& first, Fixed& second);
+
+        static Fixed& min(const Fixed& first, const Fixed& second);
+        static Fixed& max(const Fixed& first, const Fixed& second);
+
+};
+
+std::ostream& operator << (std::ostream& os, const Fixed& value);
+
+#endif
