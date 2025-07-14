@@ -1,5 +1,7 @@
 #include "Fixed.hpp"
 
+// ! PROTECT AGAINS INT_MAX/INT_MIN
+
 int main(void)
 {
     Fixed a;
