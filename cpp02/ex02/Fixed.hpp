@@ -1,6 +1,9 @@
 #ifndef FIXED_H
 # define FIXED_H
 
+# define EXIT_FAILURE 1
+# define EXIT_SUCCESS 0
+
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -12,6 +15,12 @@ class Fixed
         static const int fractional_bits; // bits for storing numbers after the fixed point
 
     public:
+        static const int max_raw_input;
+        static const int min_raw_input;
+
+        static const float max_input;
+        static const float min_input;
+
         Fixed(); // default constructor
         Fixed(const int new_value); // overload constructor for int fixed value
         Fixed(const float new_value); // overload constructor for float fixed value

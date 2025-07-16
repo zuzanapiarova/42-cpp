@@ -3,6 +3,12 @@
 // static members must be declared outside a class
 const int Fixed::fractional_bits = 8;
 
+const int Fixed::max_raw_input = std::numeric_limits<int>::max() >> fractional_bits;
+const int Fixed::min_raw_input = std::numeric_limits<int>::min() >> fractional_bits;
+
+const float Fixed::min_input = static_cast<float>(std::numeric_limits<int>::min()) / (1 << fractional_bits);
+const float Fixed::max_input = static_cast<float>(std::numeric_limits<int>::max()) / (1 << fractional_bits);
+
 // -------------------------------------------- Orthodox Canonical Form ---------------------------------------------
 
 // Default Constructor
@@ -15,6 +21,11 @@ Fixed::Fixed() : value(0)
 Fixed::Fixed(const int new_value)
 {
     std::cout << "Int constructor called" << std::endl;
+    if (new_value > max_raw_input || new_value < min_raw_input)
+    {
+        std::cerr << "Error: Input int is too large for fixed-point representation." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
     value = new_value << fractional_bits;
 };
 
@@ -22,6 +33,11 @@ Fixed::Fixed(const int new_value)
 Fixed::Fixed(const float new_value)
 {
     std::cout << "Float constructor called" << std::endl;
+    if (new_value > max_raw_input || new_value < min_raw_input)
+    {
+        std::cerr << "Error: Input float is too large for fixed-point representation." << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
     value = static_cast<int>(roundf(new_value * (1 << fractional_bits)));
 };
 
@@ -61,7 +77,6 @@ void Fixed::setRawBits( int const raw )
     value = raw;
 };
 
-// ! maybe add .0 if the number is a full int? so it is 10.0, not 10
 float Fixed::toFloat( void ) const
 {
     return static_cast<float>(value) / (1 << fractional_bits);
