@@ -3,11 +3,11 @@
 // static members must be declared outside a class
 const int Fixed::fractional_bits = 8;
 
-const int Fixed::max_raw_input = std::numeric_limits<int>::max() >> fractional_bits;
-const int Fixed::min_raw_input = std::numeric_limits<int>::min() >> fractional_bits;
+const int Fixed::max_input = std::numeric_limits<int>::max() >> Fixed::fractional_bits; // 8388607
+const int Fixed::min_input = std::numeric_limits<int>::min() >> Fixed::fractional_bits; // -8388608
 
-const float Fixed::min_input = static_cast<float>(std::numeric_limits<int>::min()) / (1 << fractional_bits);
-const float Fixed::max_input = static_cast<float>(std::numeric_limits<int>::max()) / (1 << fractional_bits);
+const int Fixed::max_raw_value = Fixed::max_input << Fixed::fractional_bits; // 2,147,483,392
+const int Fixed::min_raw_value = Fixed::min_input << Fixed::fractional_bits; // -2,147,483,648
 
 // Default Constructor
 Fixed::Fixed() : value(0)
@@ -19,24 +19,36 @@ Fixed::Fixed() : value(0)
 Fixed::Fixed(const int new_value)
 {
     std::cout << "Int constructor called" << std::endl;
-    if (new_value > max_raw_input || new_value < min_raw_input)
+    if (new_value > max_input)
     {
-        std::cerr << "Error: Input int is too large for fixed-point representation." << std::endl;
-        std::exit(EXIT_FAILURE);
+        std::cerr << "Error: Input int is too large for fixed-point representation. Using maximum allowed value instead." << std::endl;
+        value = max_raw_value;
     }
-    value = new_value << fractional_bits;
+    else if (new_value < min_input)
+    {
+        std::cerr << "Error: Input int is too small for fixed-point representation. Using minimum allowed value instead." << std::endl;
+        value = min_raw_value;
+    }
+    else
+        value = new_value << fractional_bits;
 };
 
 // Overload Constructor for Float fixed value
 Fixed::Fixed(const float new_value)
 {
     std::cout << "Float constructor called" << std::endl;
-    if (new_value > max_raw_input || new_value < min_raw_input)
+    if (new_value > max_input)
     {
-        std::cerr << "Error: Input float is too large for fixed-point representation." << std::endl;
-        std::exit(EXIT_FAILURE);
+        std::cerr << "Error: Input float is too large for fixed-point representation. Using maximum allowed value instead." << std::endl;
+        value = max_raw_value;
     }
-    value = static_cast<int>(roundf(new_value * (1 << fractional_bits)));
+    else if (new_value < min_input)
+    {
+        std::cerr << "Error: Input float is too small for fixed-point representation. Using minimum allowed value instead." << std::endl;
+        value = min_raw_value;
+    }
+    else
+        value = static_cast<int>(roundf(new_value * (1 << fractional_bits)));
 };
 
 // Copy Constructor

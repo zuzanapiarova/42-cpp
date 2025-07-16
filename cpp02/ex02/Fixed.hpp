@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <cmath>
+#include <limits>
 
 class Fixed
 {
@@ -15,11 +16,11 @@ class Fixed
         static const int fractional_bits; // bits for storing numbers after the fixed point
 
     public:
-        static const int max_raw_input;
-        static const int min_raw_input;
+        static const int max_input;
+        static const int min_input;
 
-        static const float max_input;
-        static const float min_input;
+        static const int max_raw_value;
+        static const int min_raw_value;
 
         Fixed(); // default constructor
         Fixed(const int new_value); // overload constructor for int fixed value
