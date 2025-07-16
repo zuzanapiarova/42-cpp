@@ -23,6 +23,5 @@ int main(void)
     std::cout << "This point is inside very close to corner: " << bsp(a, b, c, p4) << std::endl;
     std::cout << "This point is outside very close to corner: " << bsp(a, b, c, p5) << std::endl;
 
-
     return 0;
 }
