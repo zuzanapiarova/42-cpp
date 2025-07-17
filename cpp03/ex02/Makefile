@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = zombie
+NAME = fragtrap
 
-SRCS = Zombie.cpp ZombieHorde.cpp main.cpp
+SRCS = ClapTrap.cpp ScavTrap.cpp FragTrap.cpp main.cpp
 
 all: $(NAME)
 

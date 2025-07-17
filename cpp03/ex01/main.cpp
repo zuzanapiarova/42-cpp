@@ -3,14 +3,15 @@
 
 int main(void)
 {
-    ClapTrap arthur("Arthur");
-    ScavTrap bob("Bob");
+    ClapTrap clara("Clara");
+    ScavTrap sara("Sara");
 
-    bob.attack("Arthur");
-    bob.takeDamage(5);
-    bob.takeDamage(4);
+    sara.attack("Clara");
+    clara.attack("Sara");
+    sara.takeDamage(5);
+    sara.takeDamage(4);
 
-    bob.beRepaired(1);
-    bob.takeDamage(1);
+    sara.guardGate();
+    // clara.guardGate();
     return 0;
 }

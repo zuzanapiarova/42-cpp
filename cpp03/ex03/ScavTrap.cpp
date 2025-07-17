@@ -14,7 +14,7 @@ ScavTrap::ScavTrap() : ClapTrap()
 
 ScavTrap::ScavTrap(const std::string& name) : ClapTrap(name)
 {
-    std::cout << "ScavTrap " << name << " overload constructor called." << std::endl;
+    std::cout << "ScavTrap " << this->name << " overload constructor called." << std::endl;
     hitPoints = 100;
     energy = 50;
     damage = 20;
