@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = claptrap
+NAME = scavtrap
 
-SRCS = ClapTrap.cpp main.cpp
+SRCS = ClapTrap.cpp ScavTrap.cpp main.cpp
 
 all: $(NAME)
 
