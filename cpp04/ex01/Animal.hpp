@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 
+#include "Brain.hpp"
+
 class Animal
 {
     protected:
@@ -16,7 +18,8 @@ class Animal
         Animal& operator = (const Animal& origin);
         virtual ~Animal();
 
-        virtual void makeSound( void ) const;    
+        virtual void makeSound( void ) const;
+        virtual Brain* getBrain() const; // will be implemented as safe default
 };
 
 #endif

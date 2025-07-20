@@ -23,6 +23,24 @@ DiamondTrap::DiamondTrap(const std::string& name) : ClapTrap(name + "_clap_name"
     damage = FragTrap::damage;
 }
 
+DiamondTrap::DiamondTrap(const DiamondTrap& origin) : ScavTrap(origin), FragTrap(origin) // do not have to call ClapTrap(origin) because we use virtual inheritance
+{
+    std::cout << "DiamondTrap " << name << " copy constructor called." << std::endl;
+    this->name = origin.name;
+}
+
+DiamondTrap& DiamondTrap::operator = (const DiamondTrap& origin)
+{
+    std::cout << "Diamond " << name << " copy assignment constructor called." << std::endl;
+    if (this != &origin)
+    {   
+        // do not have to call ClapTrap::operator(origin) because we use virtual inheritance
+        ScavTrap::operator=(origin);
+        FragTrap::operator=(origin);
+    }
+    return *this;
+}
+
 DiamondTrap::~DiamondTrap()
 {
     std::cout << "DiamondTrap " << name << " destructor called." << std::endl;

@@ -20,6 +20,19 @@ ScavTrap::ScavTrap(const std::string& name) : ClapTrap(name)
     damage = 20;
 }
 
+ScavTrap::ScavTrap(const ScavTrap& origin) : ClapTrap(origin)
+{
+    std::cout << "ScavTrap " << name << " copy constructor called." << std::endl;
+}
+
+ScavTrap& ScavTrap::operator = (const ScavTrap& origin)
+{
+    std::cout << "ScavTrap " << name << " copy assignment constructor called." << std::endl;
+    if (this != &origin)
+        ClapTrap::operator=(origin); // delegate to base class
+    return *this;
+}
+
 ScavTrap::~ScavTrap()
 {
     std::cout << "ScavTrap " << name << " destructor called." << std::endl;

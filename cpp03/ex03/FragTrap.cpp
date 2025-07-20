@@ -21,6 +21,19 @@ FragTrap::FragTrap(const std::string& name) : ClapTrap(name)
     damage = 30;
 }
 
+FragTrap::FragTrap(const FragTrap& origin) : ClapTrap(origin)
+{
+    std::cout << "FragTrap " << name << " copy constructor called." << std::endl;
+}
+
+FragTrap& FragTrap::operator = (const FragTrap& origin)
+{
+    std::cout << "FragTrap " << name << " copy assignment constructor called." << std::endl;
+    if (this != &origin)
+        ClapTrap::operator=(origin); // delegate to base class
+    return *this;
+}
+
 FragTrap::~FragTrap()
 {
     std::cout << "FragTrap " << name << " destructor called." << std::endl;

@@ -5,9 +5,13 @@
 #include <iostream>
 
 #include "Animal.hpp"
+#include "Brain.hpp"
 
 class Dog : public Animal
 {
+    private:
+        Brain *brain;
+
     public:
         Dog();
         Dog(const Dog& origin);
@@ -15,6 +19,8 @@ class Dog : public Animal
         virtual ~Dog();
         
         void makeSound( void ) const;
+        Brain* getBrain() const;
+
 };
 
 #endif

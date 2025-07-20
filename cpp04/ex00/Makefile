@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 NAME = animals
 
-SRCS = Animal.cpp Dog.cpp Cat.cpp main.cpp
+SRCS = Animal.cpp Dog.cpp Cat.cpp WrongAnimal.cpp WrongCat.cpp main.cpp
 
 all: $(NAME)
 

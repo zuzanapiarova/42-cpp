@@ -9,12 +9,12 @@ ClapTrap::ClapTrap() : name("Anonym"), hitPoints(10), energy(10), damage(0)
     std::cout << "Claptrap " << name << " default constructor called." << std::endl;
 };    
 
-ClapTrap::ClapTrap(std::string new_name)  : name(new_name), hitPoints(10), energy(10), damage(0)
+ClapTrap::ClapTrap(const std::string& new_name)  : name(new_name), hitPoints(10), energy(10), damage(0)
 {
     std::cout << "Claptrap " << name << " overload constructor called." << std::endl;
 };
 
-ClapTrap::ClapTrap(ClapTrap& origin)
+ClapTrap::ClapTrap(const ClapTrap& origin)
 {
     std::cout << "Claptrap " << name << " copy constructor called." << std::endl;
     this->name = origin.name;

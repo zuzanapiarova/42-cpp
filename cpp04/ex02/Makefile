@@ -1,8 +1,8 @@
 CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = phonebook
+NAME = abstract_animals
 
-SRCS = Account.cpp tests.cpp
+SRCS = Animal.cpp Dog.cpp Cat.cpp Brain.cpp main.cpp
 
 all: $(NAME)
 

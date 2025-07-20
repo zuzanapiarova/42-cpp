@@ -21,6 +21,7 @@ Animal& Animal::operator = (const Animal& origin)
     std::cout << "Animal copy assignment operator called." << std::endl;
     if (this != &origin)
         this->type = origin.type;
+    return *this;
 };
 
 Animal::~Animal()
@@ -28,7 +29,8 @@ Animal::~Animal()
     std::cout << "Animal destructor called." << std::endl;
 };
 
-void Animal::makeSound( void ) const
+Brain* Animal::getBrain() const
 {
-    std::cout << " ... Silence... " << std::endl;
+    std::cout << "Animal " << type << " has no brain." << std::endl;
+    return nullptr; 
 }
