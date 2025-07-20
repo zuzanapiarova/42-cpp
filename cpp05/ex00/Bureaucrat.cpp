@@ -1,5 +1,7 @@
 #include "Bureaucrat.hpp"
 
+// ------------------------------------------ Orthodox Canonical Form -----------------------------------------------------
+
 Bureaucrat::Bureaucrat(const std::string& new_name, const int new_grade) : name(new_name)
 {
     std::cout << "Bureaucrat default constructor called." << std::endl;
@@ -45,6 +47,8 @@ Bureaucrat::~Bureaucrat()
     std::cout << "Bureaucrat destructor called." << std::endl;
 };
 
+// ------------------------------------------ Member Functions -----------------------------------------------------
+
 std::string Bureaucrat::getName() const
 {
     return name;
@@ -73,4 +77,4 @@ void        Bureaucrat::decrementGrade()
         throw GradeTooLowException();
     else
         grade++;
-};   
+};

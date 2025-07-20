@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 
+#include "Form.hpp"
+
 class Bureaucrat
 {
     private:
@@ -22,7 +24,8 @@ class Bureaucrat
         std::string getName() const;
         int         getGrade() const;
         void        incrementGrade();
-        void        decrementGrade();         
+        void        decrementGrade();    
+        void        signForm(Form& form) const;      
 
 };
 
@@ -34,7 +37,7 @@ class Bureaucrat::GradeTooHighException : public std::exception
     public:
         const char* what() const throw()
         {   
-            return "Grade too high!";
+            return "Grade too high for Bureaucrat!";
         }
 };
 
@@ -43,7 +46,7 @@ class Bureaucrat::GradeTooLowException : public std::exception
     public:
         const char* what() const throw()
         {
-            return "Grade too low!";
+            return "Grade too low for Bureaucrat!";
         }
 };
 

@@ -1,34 +1,28 @@
 #include "Bureaucrat.hpp"
+#include "Form.hpp"
 
 int main(void)
 {
     try
     {
         Bureaucrat a("Anna", 120);
-        Bureaucrat b("Bob", 1);
-        Bureaucrat c("Clara", 149);
+        Bureaucrat b("Bob", 20);
+        Form c("Contract", 20, 10);
+        Form d("Contract", 20, 10);
 
-        std::cout << a << std::endl;
-        std::cout << b << std::endl;
-        std::cout << c << std::endl;
+        b.signForm(c); // works - Bob has access
+        std::cout << c.getIsSigned() << std::endl;
 
-        a.incrementGrade();
-        b.incrementGrade();
-        c.decrementGrade();
-        //c.decrementGrade();
-
-        std::cout << a << std::endl;
-        std::cout << b << std::endl;
-        std::cout << c << std::endl;        
+        b.decrementGrade();
+        
+        b.signForm(d); // does not work - Bob has not access anymore
+        std::cout << d.getIsSigned() << std::endl;
     }
-    catch (const Bureaucrat::GradeTooHighException& e)
+    catch(std::exception& e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cout << "Found exception " << e.what() << std::endl;
     }
-    catch (const Bureaucrat::GradeTooLowException& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
+        
 
     return 0;
 }

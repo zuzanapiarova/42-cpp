@@ -22,7 +22,7 @@ class Bureaucrat
         std::string getName() const;
         int         getGrade() const;
         void        incrementGrade();
-        void        decrementGrade();         
+        void        decrementGrade();
 
 };
 
