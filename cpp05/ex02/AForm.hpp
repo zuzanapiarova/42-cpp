@@ -22,11 +22,13 @@ class AForm
         AForm& operator =(const AForm& origin);
         ~AForm();
 
-        std::string getName() const;
-        bool        getIsSigned() const;
-        int         getMinimumSignGrade() const;
-        int         getMinimumExecutionGrade() const;
+        const std::string getName() const;
+        const bool        getIsSigned() const;
+        const int         getMinimumSignGrade() const;
+        const int         getMinimumExecutionGrade() const;
         void        beSigned(const Bureaucrat& bureaucrat);
+        void execute(const Bureaucrat& executor) const ; // !!!!!!!!!!
+
 
         class       GradeTooHighException;
         class       GradeTooLowException;   

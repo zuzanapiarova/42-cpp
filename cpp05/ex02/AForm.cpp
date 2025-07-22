@@ -52,22 +52,22 @@ int AForm::checkGrade(int grade, int highestGrade, int lowestGrade)
     return grade;
 }
 
-std::string AForm::getName() const
+const std::string AForm::getName() const
 {
     return name;
 };
 
-bool        AForm::getIsSigned() const
+const bool        AForm::getIsSigned() const
 {
     return isSigned;
 };
 
-int         AForm::getMinimumSignGrade() const
+const int         AForm::getMinimumSignGrade() const
 {
     return minimumSignGrade;
 };
 
-int         AForm::getMinimumExecutionGrade() const
+const int         AForm::getMinimumExecutionGrade() const
 {
     return minimumExecutionGrade;
 };

@@ -18,8 +18,9 @@ class PhoneBook
         ~PhoneBook();
 
         bool addContact();
-        bool getContact(int index) const;
+        void printContact( int index ) const;
         void displayContacts() const;
+        void menu();
 };
 
 #endif
