@@ -1,12 +1,12 @@
 #include "Contact.hpp"
 #include "PhoneBook.hpp"
-#include <limits>
 
 /* tests */
 
 // 1. empty ADD/SEARCH/EXIT commands - only enter/whitespaces
 // 2. ctrl+D during ADD/SEARCH/EXIT commands 
 // 3. command other than ADD/SEARCH/EXIT
+// 4. SEARCH with empty phone book
 
 // 4. ADD with empty fields
 // 5. ctrl+D during waiting for user inputs for ADD fields
@@ -19,6 +19,7 @@
 // 9. SEARCH with index being negative number
 // 10. SEARCH with index being 0
 
+// 11. SEARCH has proper formatting of fields
 // 11. overwriting the oldest contact when adding more than 8 contacts
 // 11. overwriting the oldest contact when adding more than 8 contacts again - should overwrite the next one - oldest one
 

@@ -4,6 +4,8 @@
 # include <iostream>
 # include <string>
 # include <iomanip> // formatting
+# include <cstdlib> // atoi
+# include <limits> // intmax
 
 # include "Contact.hpp"
 
@@ -12,6 +14,7 @@ class PhoneBook
     private:
         Contact contacts[8];
         int count;
+        int oldestIndex;
 
     public:
         PhoneBook();

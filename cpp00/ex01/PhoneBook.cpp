@@ -1,5 +1,4 @@
 #include "PhoneBook.hpp"
-#include <limits>
 
 //------------------------------------------------------------ Helper Functions -------------------------------------------------------------------------
 
@@ -10,6 +9,7 @@ bool isOnlyDigits(const std::string &input)
     {
         if (!isdigit(input[i]))
             return false;
+        i++;
     }
     return true;
 }
@@ -17,7 +17,7 @@ bool isOnlyDigits(const std::string &input)
 // -------------------------------------------------------- Orthodox Cannical Form -----------------------------------------------------------------------
 
 // Default constructor
-PhoneBook::PhoneBook() : count(0) {}
+PhoneBook::PhoneBook() : count(0), oldestIndex(0) {}
 
 // Destructor
 PhoneBook::~PhoneBook() {}
@@ -38,14 +38,15 @@ void PhoneBook::menu( void )
         {
             displayContacts();
             std::cout << "Enter index of contact you wish to see: ";
-            int index;
-            if (!(std::cin >> index))
+            std::string indexStr;
+            if (!std::getline(std::cin, indexStr))
+                continue ;
+            if  (indexStr.empty() || !isOnlyDigits(indexStr))
             {
-                std::cin.clear(); // clear error flags
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // discard invalid leftover input form previous cin calls
-                std::cout << "Invalid input. Please enter a number." << std::endl;
+                std::cout << "Invalid input. Please enter a valid number." << std::endl;
                 continue ;
             }
+            int index = std::atoi(indexStr.c_str());
             printContact(index);
         }
         else if (std::string(command) == "EXIT")
@@ -59,8 +60,7 @@ bool PhoneBook::addContact()
     std::string input;
 
     std::cout << "Enter first name: ";
-    // std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // clear leftover input form previous cin calls (cin, shen called without readline, can leave characters after the first whitespace in the buffer)
-    if (!std::getline(std::cin, input)) 
+    if (!std::getline(std::cin, input) || input.empty()) 
     {
         std::cout << "First name cannot be empty. Aborting." << std::endl;
         return false;
@@ -104,18 +104,18 @@ bool PhoneBook::addContact()
     }
     contact.setSecret(input);
 
-    // check if any is empty
-    // change to always overwrite the oldest contact, not the last one 
-    if (count == 8)
-    {
-        contacts[0] = contact;
-        std::cout << "Phone book full. Overwriting the last contact." << std::endl;
-    }
-    else
+    // always overwrite the oldest contact in a circular manner
+    if (count < 8)
     {
         contacts[count] = contact;
         ++count;
         std::cout << "Contact added successfully!" << std::endl;
+    }
+    else
+    {
+        contacts[oldestIndex] = contact;
+        std::cout << "Phone book full. Overwriting the oldest contact." << std::endl;
+        oldestIndex = (oldestIndex + 1) % 8;
     }
     return true;
 }

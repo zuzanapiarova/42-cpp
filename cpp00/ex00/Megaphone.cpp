@@ -11,7 +11,7 @@ int main(int argc, char **argv)
         {
             int j = -1;
             while (argv[i][++j])
-                std::cout <<  static_cast<char>(toupper(static_cast<unsigned char>(argv[i][j]))); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+                std::cout <<  static_cast<char>(toupper((argv[i][j])));
         }
         std::cout << std::endl;   
     }
