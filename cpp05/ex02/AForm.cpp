@@ -1,9 +1,9 @@
-#include "Form.hpp"
+#include "AForm.hpp"
 #include "Bureaucrat.hpp" // include for circular dependencies - including header here and forward declaration in the Form.hpp
 
 // ----------------------------------------- Orthodox Canonical Form ------------------------------------
 
-Form::Form(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade)
+AForm::AForm(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade)
            : name(newName),
              minimumSignGrade(checkGrade(newMinimumSignGrade, 1, 150)),
              minimumExecutionGrade(checkGrade(newMinimumExecutionGrade, 1, 150))
@@ -12,7 +12,7 @@ Form::Form(const std::string& newName, const int newMinimumSignGrade, const int 
     isSigned = false;
 };
 
-Form::Form(const Form& origin)
+AForm::AForm(const AForm& origin)
          : name(origin.name),
            minimumSignGrade(checkGrade(origin.minimumSignGrade, 1, 150)),
            minimumExecutionGrade(checkGrade(origin.minimumExecutionGrade, 1, 150))
@@ -21,7 +21,7 @@ Form::Form(const Form& origin)
     this->isSigned = origin.isSigned;
 };
 
-Form& Form::operator =(const Form& origin)
+AForm& AForm::operator =(const AForm& origin)
 {
     std::cout << "Form copy assignment operator called." << std::endl;
     if (this != &origin)
@@ -29,13 +29,13 @@ Form& Form::operator =(const Form& origin)
     return *this;
 };
 
-std::ostream& operator <<(std::ostream& os, const Form& form)
+std::ostream& operator <<(std::ostream& os, const AForm& form)
 {
     os << form.getName() << ", " << (form.getIsSigned() ? "signed" : "unsigned") << " form with minimum " << form.getMinimumSignGrade() << " signing Grade.";
     return os;
 }
 
-Form::~Form()
+AForm::~AForm()
 {
     std::cout << "Form destructor called." << std::endl;
 };
@@ -43,7 +43,7 @@ Form::~Form()
 // -------------------------------------------- Member Functions -----------------------------------------
 
 // throws grade too low/high exceptions - used as checks everywhere where I accept a grade
-int Form::checkGrade(int grade, int highestGrade, int lowestGrade)
+int AForm::checkGrade(int grade, int highestGrade, int lowestGrade)
 {
     if (grade < highestGrade)
         throw GradeTooHighException();
@@ -52,27 +52,27 @@ int Form::checkGrade(int grade, int highestGrade, int lowestGrade)
     return grade;
 }
 
-std::string Form::getName() const
+std::string AForm::getName() const
 {
     return name;
 };
 
-bool        Form::getIsSigned() const
+bool        AForm::getIsSigned() const
 {
     return isSigned;
 };
 
-int         Form::getMinimumSignGrade() const
+int         AForm::getMinimumSignGrade() const
 {
     return minimumSignGrade;
 };
 
-int         Form::getMinimumExecutionGrade() const
+int         AForm::getMinimumExecutionGrade() const
 {
     return minimumExecutionGrade;
 };
 
-void        Form::beSigned(const Bureaucrat& bureaucrat)
+void        AForm::beSigned(const Bureaucrat& bureaucrat)
 {
     if (bureaucrat.getGrade() > minimumSignGrade)
         throw GradeTooLowException();

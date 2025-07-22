@@ -1,5 +1,5 @@
-#ifndef FORM_H
-# define FORM_H
+#ifndef AFORM_H
+# define AFORM_H
 
 #include <string>
 #include <iostream>
@@ -7,7 +7,7 @@
 // preventing circular dependencies - forweard declaration of just the class here, the header is included where it is implemented
 class Bureaucrat;
 
-class Form
+class AForm
 {
     private:
         const std::string&  name;
@@ -17,10 +17,10 @@ class Form
         int                 checkGrade(int grade, int minGrade, int maxGrade);
     
     public:
-        Form(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade);
-        Form(const Form& origin);
-        Form& operator =(const Form& origin);
-        ~Form();
+        AForm(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade);
+        AForm(const AForm& origin);
+        AForm& operator =(const AForm& origin);
+        ~AForm();
 
         std::string getName() const;
         bool        getIsSigned() const;
@@ -33,9 +33,9 @@ class Form
 
 };
 
-std::ostream& operator << (std::ostream& os, const Form& form);
+std::ostream& operator << (std::ostream& os, const AForm& form);
 
-class Form::GradeTooHighException : public std::exception
+class AForm::GradeTooHighException : public std::exception
 {
     public:
         const char* what() const throw()
@@ -44,7 +44,7 @@ class Form::GradeTooHighException : public std::exception
         }
 };
 
-class Form::GradeTooLowException : public std::exception
+class AForm::GradeTooLowException : public std::exception
 {
     public:
         const char* what() const throw()

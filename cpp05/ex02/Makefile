@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 NAME = bureaucrats
 
-SRCS = Bureaucrat.cpp Form.cpp main.cpp
+SRCS = Bureaucrat.cpp AForm.cpp main.cpp
 
 all: $(NAME)
 
