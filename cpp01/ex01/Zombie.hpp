@@ -10,12 +10,12 @@ class Zombie
         std::string name;
 
     public:
-        Zombie(); // default constructor
-        Zombie(std::string name); // overload constructor with name
+        Zombie(); // default constructor is needed because we cannot do single-line array of objects initialization with the overload constructor - have to use default + setter
+        Zombie(std::string& newName); // overload constructor with name
         ~Zombie(); // destructor
 
-        void    announce(void);
-        void    setName(std::string newName);
+        void    announce(void) const ;
+        void    setName(std::string& newName);
 
 };
 

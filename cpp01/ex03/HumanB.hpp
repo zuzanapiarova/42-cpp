@@ -14,9 +14,10 @@ class HumanB {
         Weapon* weapon; 
     
     public:
-        HumanB(std::string new_name); // constructor without weapon
+        HumanB(const std::string& new_name); // constructor without weapon
+        ~HumanB();
     
-        void attack();
+        void attack() const;
         void setWeapon(Weapon& new_weapon);
 };
 

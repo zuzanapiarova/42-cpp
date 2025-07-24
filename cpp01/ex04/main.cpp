@@ -37,19 +37,20 @@ int main(int argc, char **argv)
     const std::string s1 = argv[2];
     const std::string s2 = argv[3];
 
-    std::ifstream inputFile(filename);
+    std::ifstream inputFile(filename.c_str());
     if (!inputFile)
     {
-        std::cerr << filename << ": file does not exist or other error." << std::endl;
+        std::cerr << filename << ": input file does not exist or other error." << std::endl;
         inputFile.close();
         return 1;
     }
 
     std::string output_filename = filename + ".replace";
-    std::ofstream outputFile(output_filename);
+    std::ofstream outputFile(output_filename.c_str());
     if (!outputFile)
     {
-        std::cerr << output_filename << ": file cannot be opened or created or other error." << std::endl;
+        std::cerr << output_filename << ": output file cannot be opened or created or other error." << std::endl;
+        inputFile.close();
         outputFile.close();
         return 1;
     }

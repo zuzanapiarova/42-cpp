@@ -10,7 +10,6 @@ class Zombie
         std::string name;
 
     public:
-        Zombie(); // default constructor
         Zombie(std::string name); // overload constructor with name
         ~Zombie(); // destructor
 

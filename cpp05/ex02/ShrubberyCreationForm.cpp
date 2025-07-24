@@ -6,7 +6,7 @@
 ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
     : AForm("Shrubbery Creation Form", 145, 137), targetFileName(target)
 {
-    std::cout << "ShrubberyCreationForm constructor called for target: " << targetFileName << std::endl;
+    std::cout << "ShrubberyCreationForm constructor called for target " << targetFileName << std::endl;
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& origin)
@@ -29,7 +29,7 @@ ShrubberyCreationForm& ShrubberyCreationForm::operator =(const ShrubberyCreation
 
 ShrubberyCreationForm::~ShrubberyCreationForm()
 {
-    std::cout << "ShrubberyCreationForm destructor called for target: " << targetFileName << std::endl;
+    std::cout << "ShrubberyCreationForm destructor called for target " << targetFileName << std::endl;
 }
 
 // -------------------------------------------- Member Functions -----------------------------------------
@@ -49,25 +49,23 @@ bool    ShrubberyCreationForm::execute(const Bureaucrat& executor ) const
     {
         throw AForm::GradeTooLowException();
     }
-    std::ofstream outputFile(targetFileName);
+    std::ofstream outputFile(targetFileName.c_str());
     if (!outputFile)
     {
         std::cerr << targetFileName << ": file cannot be opened or created or other error." << std::endl;
         return false;
     }
-    outputFile << "ASCII Art Tree" << std::endl;
-    outputFile << "        *" << std::endl;
-    outputFile << "       ***" << std::endl;
-    outputFile << "      *****" << std::endl;
-    outputFile << "     *******" << std::endl;
-    outputFile << "    *********" << std::endl;
-    outputFile << "   ***********" << std::endl;
-    outputFile << "  *************" << std::endl;
-    outputFile << " ***************" << std::endl;
-    outputFile << "        |||" << std::endl;
-    outputFile << "        |||" << std::endl;
-    outputFile << "        |||" << std::endl;
+    outputFile << "        *                ********" << std::endl;
+    outputFile << "       ***            **************" << std::endl;
+    outputFile << "      *****        ********************" << std::endl;
+    outputFile << "     *******      **********************" << std::endl;
+    outputFile << "    *********      ********************" << std::endl;
+    outputFile << "   ***********        **************" << std::endl;
+    outputFile << "  *************             |||" << std::endl;
+    outputFile << " ***************            |||" << std::endl;
+    outputFile << "        |||                 |||" << std::endl;
+    outputFile << "        |||                 |||" << std::endl;
     outputFile.close();
 
-    return true;
-};
+    return 0;
+}

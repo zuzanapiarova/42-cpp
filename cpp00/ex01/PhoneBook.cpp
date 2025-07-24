@@ -17,37 +17,41 @@ bool isOnlyDigits(const std::string &input)
 // -------------------------------------------------------- Orthodox Cannical Form -----------------------------------------------------------------------
 
 // Default constructor
-PhoneBook::PhoneBook() : count(0), oldestIndex(0) {}
+PhoneBook::PhoneBook() : count(0), oldestIndex(0)
+{
+    std::cout << "PhoneBook default constructor called." << std::endl;
+};
 
 // Destructor
-PhoneBook::~PhoneBook() {}
+PhoneBook::~PhoneBook()
+{
+    std::cout << "PhoneBook destructor called." << std::endl;
+};
 
 // ---------------------------------------------------------- Member Functions -----------------------------------------------------------------------
 
 void PhoneBook::menu( void )
 {
-    while (std::cin)
+    std::string command;
+
+    while (std::cout << "Enter a command (ADD, SEARCH, EXIT): " && std::getline(std::cin, command))
     {
-        std::cout << "Enter a command (ADD, SEARCH, EXIT): ";
-        std::string command;
-        if (!std::getline(std::cin, command))
-            break ;
-        else if (std::string(command) == "ADD")
-            addContact();
+        if (std::string(command) == "ADD")
+        {
+            if  (addContact() == false)
+                break ;
+        }
         else if (std::string(command) == "SEARCH")
         {
             displayContacts();
             std::cout << "Enter index of contact you wish to see: ";
             std::string indexStr;
-            if (!std::getline(std::cin, indexStr))
-                continue ;
-            if  (indexStr.empty() || !isOnlyDigits(indexStr))
+            if  (!std::getline(std::cin, indexStr) || indexStr.empty() || !isOnlyDigits(indexStr))
             {
                 std::cout << "Invalid input. Please enter a valid number." << std::endl;
-                continue ;
+                break ;
             }
-            int index = std::atoi(indexStr.c_str());
-            printContact(index);
+            printContact(std::atoi(indexStr.c_str()));
         }
         else if (std::string(command) == "EXIT")
             break ;

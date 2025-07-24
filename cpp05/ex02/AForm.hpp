@@ -10,7 +10,7 @@ class Bureaucrat;
 class AForm
 {
     protected:
-        const std::string&  name;
+        const std::string   name;
         const int           minimumSignGrade;
         const int           minimumExecutionGrade;
         bool                isSigned;
@@ -22,7 +22,7 @@ class AForm
         AForm& operator =(const AForm& origin);
         virtual ~AForm();
 
-        virtual std::string   getName() const;
+        virtual const std::string&  getName() const;
         virtual bool          getIsSigned() const;
         virtual int           getMinimumSignGrade() const;
         virtual int           getMinimumExecutionGrade() const;

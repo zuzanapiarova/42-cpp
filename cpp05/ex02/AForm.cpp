@@ -52,7 +52,7 @@ int AForm::checkGrade(int grade, int highestGrade, int lowestGrade)
     return grade;
 }
 
-std::string AForm::getName() const
+const std::string& AForm::getName() const
 {
     return name;
 };

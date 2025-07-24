@@ -6,7 +6,7 @@
 PresidentialPardonForm::PresidentialPardonForm(const std::string& target)
     : AForm("Presidential Pardon Form", 25, 5), target(target)
 {
-    std::cout << "PresidentialPardonForm constructor called for target: " << target << std::endl;
+    std::cout << "PresidentialPardonForm constructor called for target " << target << std::endl;
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const PresidentialPardonForm& origin)
@@ -29,7 +29,7 @@ PresidentialPardonForm& PresidentialPardonForm::operator =(const PresidentialPar
 
 PresidentialPardonForm::~PresidentialPardonForm()
 {
-    std::cout << "PresidentialPardonForm destructor called for target: " << target << std::endl;
+    std::cout << "PresidentialPardonForm destructor called for target " << target << std::endl;
 }
 
 // ------------------------------------------- Member Functions -----------------------------------------
