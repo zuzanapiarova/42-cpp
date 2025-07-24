@@ -1,7 +1,10 @@
 #ifndef SHRUBBERY_CREATION_FORM_HPP
-#define SHRUBBERY_CREATION_FORM_HPP   
+# define SHRUBBERY_CREATION_FORM_HPP   
+
+#include <fstream>
 
 #include "AForm.hpp"
+// #include "Bureaucrat.hpp"
 
 class ShrubberyCreationForm : public AForm
 {
@@ -14,7 +17,8 @@ class ShrubberyCreationForm : public AForm
         ShrubberyCreationForm& operator =(const ShrubberyCreationForm& origin);
         ~ShrubberyCreationForm();
 
-        const std::string& getTarget() const ;
+        const std::string& getTargetFileName() const ;
+        bool         execute(const Bureaucrat& executor) const;
 
 };
 

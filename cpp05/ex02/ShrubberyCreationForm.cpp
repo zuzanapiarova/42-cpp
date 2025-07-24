@@ -1,4 +1,5 @@
 #include "ShrubberyCreationForm.hpp"
+#include "Bureaucrat.hpp"
 
 // ----------------------------------------- Orthodox Canonical Form ------------------------------------
 
@@ -6,10 +7,6 @@ ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
     : AForm("Shrubbery Creation Form", 145, 137), targetFileName(target)
 {
     std::cout << "ShrubberyCreationForm constructor called for target: " << targetFileName << std::endl;
-    if (targetFileName.empty())
-    {
-        throw std::invalid_argument("Target file name cannot be empty.");
-    }
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& origin)
@@ -37,7 +34,40 @@ ShrubberyCreationForm::~ShrubberyCreationForm()
 
 // -------------------------------------------- Member Functions -----------------------------------------
 
-const std::string& ShrubberyCreationForm::getTarget() const
+const std::string& ShrubberyCreationForm::getTargetFileName() const
 {
     return targetFileName;
-}
+};
+
+bool    ShrubberyCreationForm::execute(const Bureaucrat& executor ) const 
+{
+    if (!getIsSigned())
+    {
+        throw AForm::FormNotSignedException();
+    }
+    if (executor.getGrade() > getMinimumExecutionGrade())
+    {
+        throw AForm::GradeTooLowException();
+    }
+    std::ofstream outputFile(targetFileName);
+    if (!outputFile)
+    {
+        std::cerr << targetFileName << ": file cannot be opened or created or other error." << std::endl;
+        return false;
+    }
+    outputFile << "ASCII Art Tree" << std::endl;
+    outputFile << "        *" << std::endl;
+    outputFile << "       ***" << std::endl;
+    outputFile << "      *****" << std::endl;
+    outputFile << "     *******" << std::endl;
+    outputFile << "    *********" << std::endl;
+    outputFile << "   ***********" << std::endl;
+    outputFile << "  *************" << std::endl;
+    outputFile << " ***************" << std::endl;
+    outputFile << "        |||" << std::endl;
+    outputFile << "        |||" << std::endl;
+    outputFile << "        |||" << std::endl;
+    outputFile.close();
+
+    return true;
+};

@@ -6,19 +6,19 @@
 AForm::AForm(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade)
            : name(newName),
              minimumSignGrade(checkGrade(newMinimumSignGrade, 1, 150)),
-             minimumExecutionGrade(checkGrade(newMinimumExecutionGrade, 1, 150))
+             minimumExecutionGrade(checkGrade(newMinimumExecutionGrade, 1, 150)), 
+             isSigned(false)
 {
     std::cout << "Form overload constructor called." << std::endl;
-    isSigned = false;
 };
 
 AForm::AForm(const AForm& origin)
          : name(origin.name),
            minimumSignGrade(checkGrade(origin.minimumSignGrade, 1, 150)),
-           minimumExecutionGrade(checkGrade(origin.minimumExecutionGrade, 1, 150))
+           minimumExecutionGrade(checkGrade(origin.minimumExecutionGrade, 1, 150)),
+           isSigned(origin.isSigned)
 {
     std::cout << "Form copy constructor called." << std::endl;
-    this->isSigned = origin.isSigned;
 };
 
 AForm& AForm::operator =(const AForm& origin)
@@ -52,22 +52,22 @@ int AForm::checkGrade(int grade, int highestGrade, int lowestGrade)
     return grade;
 }
 
-const std::string AForm::getName() const
+std::string AForm::getName() const
 {
     return name;
 };
 
-const bool        AForm::getIsSigned() const
+bool        AForm::getIsSigned() const
 {
     return isSigned;
 };
 
-const int         AForm::getMinimumSignGrade() const
+int         AForm::getMinimumSignGrade() const
 {
     return minimumSignGrade;
 };
 
-const int         AForm::getMinimumExecutionGrade() const
+int         AForm::getMinimumExecutionGrade() const
 {
     return minimumExecutionGrade;
 };
