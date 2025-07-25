@@ -211,6 +211,39 @@ Tests:
 6. String to replace is ""
 7. Normal input to be replaced, upper and lowercase versions of the string
 
+#### Excercise 5 - Harl - pointers to member functions
+
+This excercise showed us how to create and work with function pointers. With member function pointers, we can pass a function of a specific class as an argument to another function. Member functions differ from regular functions because they are associated with an instance of a class, which means they have an implicit this pointer that points to the object, invoking the object, and they cannot be called without an object. They are used to dynamically call different member functions of a class based on runtime decisions, and avoid lots of if/else statements.
+
+Tests:
+```
+int main(void)
+{
+    Harl harl;
+
+    std::string levels[] = {"DEBUG", "INFO", "WARNING", "ERROR"};
+
+    // 1. testing correct input
+    for (int i = 0; i < 10; i++)
+        harl.complain(levels[i%4]);
+    
+    // 2. testing wrong input
+    harl.complain("SOME");
+    harl.complain("WRONG");
+    harl.complain("LEVELS");
+    
+    return 0;
+}
+```
+
+#### Excercise 5 - Harl - switch
+
+Learned to use seitch case statements.
+
+Tests:
+1. Print ll messages after the one we specify, else nothing. 
+2. Wrong argument. 
+
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
 #### Excercise 0 - 
