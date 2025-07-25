@@ -204,18 +204,24 @@ In this excercise we practiced using streams for file manipulation, as C file ma
 
 Tests:
 1. Number of program arguments different than 4
-2. input file does not exist
+2. Input file does not exist
 3. Input files des not have read permissions
 4. Output file exists but does not have write permissions
 5. String to be replaced is ""
 6. String to replace is ""
 7. Normal input to be replaced, upper and lowercase versions of the string
 
-#### Excercise 5 - Harl - pointers to member functions
+#### Excercise 5 - Harl - Pointers to member functions
 
 This excercise showed us how to create and work with function pointers. With member function pointers, we can pass a function of a specific class as an argument to another function. Member functions differ from regular functions because they are associated with an instance of a class, which means they have an implicit this pointer that points to the object, invoking the object, and they cannot be called without an object. They are used to dynamically call different member functions of a class based on runtime decisions, and avoid lots of if/else statements.
 
+Pointers to functions are declared as:
+` <void> Classname::*functionPointer() = &ClassName::memberFunction `
+And they are called like:
+`(this->*function)() `
+
 Tests:
+1. The complain() public function should do somehing like above - declare and call appropriate member function, in a loop, without using a lot of if statements
 ```
 int main(void)
 {
@@ -236,13 +242,17 @@ int main(void)
 }
 ```
 
-#### Excercise 5 - Harl - switch
+#### Excercise 6 - Harl - switch
 
-Learned to use seitch case statements.
+Learned to use seitch case statements. Use switch with fallthrough - no break for lower levels, only the last one, because the upper levels should still be printed anyways.
 
 Tests:
-1. Print ll messages after the one we specify, else nothing. 
-2. Wrong argument. 
+1. Check program with no arguments
+2. Check program with more than 1 argument
+3. Check with empty quotes
+4. Check with wrong argument - other than DEBUG/INFO/WARNING/ERROR
+5. Check it correctly prints all messages after the one we specify, else nothing. 
+6. The complain fuction must be using switch-case syntax with fallthrough
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
@@ -258,6 +268,7 @@ Possible exceptions:
 1. Creating Bureaucrat object with too low/high grade (other than range 1-150)
 2. Bureaucrat trying to sign/execute form with not enough high grade
 3. Trying to execute unsigned form
+4. Check that AForm attributes are private, not protected
 
 Tests:
 0. Create a bureaucrat 
@@ -290,4 +301,40 @@ Tests:
     a.incrementGrade(); // increment Anna's grade so she has access to execute
     a.executeForm(p); // now it works, Anna has execute access
     std::cout << p << std::endl << std::endl;
+```
+
+#### Excercise 3 - Function pointers again
+
+This excercise is about creating a small but more extensive program where multiple classes interact. 
+
+Tests:
+1. Check how the makeForm is creating different forms - cannot have many if statements
+2. If created with new, check with valgrind.
+3. Test creation of all 3 forms by the intern.
+4. Test all 3 forms being usable by bureaucrats - try to sign and execute. 
+
+```
+int main(void)
+{
+    Intern i;
+    
+    AForm* first = i.makeForm("shrubbery creation", "Garden");
+    AForm* second = i.makeForm("robotomy request", "Smart Robot");
+    AForm* third = i.makeForm("presidential pardon", "Pardoned person");
+
+    Bureaucrat a("Anna", 1);
+    a.signForm(*first);
+    a.signForm(*second);
+    a.signForm(*third);
+
+    a.executeForm(*first);
+    a.executeForm(*second);
+    a.executeForm(*third);
+
+    delete first;
+    delete second;
+    delete third;
+
+    return 0;
+}
 ```

@@ -2,7 +2,7 @@
 
 int main(void)
 {
-    Harl harl;
+    Harl    harl;
 
     std::string levels[] = {"DEBUG", "INFO", "WARNING", "ERROR"};
 
