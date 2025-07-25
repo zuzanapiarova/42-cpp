@@ -338,3 +338,7 @@ int main(void)
     return 0;
 }
 ```
+
+## CPP05 - Casting
+
+#### Excercise 0 - Function pointers again
