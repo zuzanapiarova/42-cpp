@@ -3,11 +3,18 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 NAME = bsp
 
 SRCS = Fixed.cpp Point.cpp bsp.cpp main.cpp
+OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
-$(NAME): $(SRCS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRCS)
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(OBJS)
 
 fclean:
 	@rm -f $(NAME)

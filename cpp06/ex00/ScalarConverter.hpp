@@ -3,6 +3,10 @@
 
 #include <iostream>
 #include <string>
+#include <limits>
+#include <cmath> 
+#include <iomanip> //setprecision
+#include <sstream> // string streams
 
 class ScalarConverter
 {
@@ -10,7 +14,7 @@ class ScalarConverter
         ScalarConverter();
 
     public:
-        static void convert( std::string s);
+        static void convert( const std::string& s);
 
 };
 

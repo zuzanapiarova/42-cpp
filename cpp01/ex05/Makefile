@@ -4,13 +4,23 @@ NAME = harl
 SRCS = Harl.cpp main.cpp
 
 all: $(NAME)
+OBJS = $(SRCS:.cpp=.o)
 
-$(NAME): $(SRCS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRCS)
+all: $(NAME)
+
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(OBJS)
 
 fclean:
 	@rm -f $(NAME)
 
 re: fclean all
 
+.PHONY: all clean fclean re
 .PHONY: all clean fclean re

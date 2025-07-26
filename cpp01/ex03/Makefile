@@ -3,11 +3,18 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 NAME = violence
 
 SRCS = Weapon.cpp HumanA.cpp HumanB.cpp main.cpp
+OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
-$(NAME): $(SRCS)
-	$(CXX) $(CXXFLAGS) -o $(NAME) $(SRCS)
+$(NAME): $(OBJS)
+	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+clean:
+	@rm -f $(OBJS)
 
 fclean:
 	@rm -f $(NAME)
