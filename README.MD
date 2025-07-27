@@ -342,3 +342,157 @@ int main(void)
 ## CPP05 - Casting
 
 #### Excercise 0 - Function pointers again
+
+This excercise taught us to safely cast among the primitive data types and between string and primitive data types. We had to think of many possible error situations.
+
+Tests:
+
+A. wrong input - does not match any types string literal
+1. af
+2. 0.4ff
+3. --0.222
+4. 1.f - float ending with .
+5. 1. - double ending with .
+6. '' - empty string
+7. .f 
+8. 1f - not valid string literal in cpp but can possibly handle it
+
+B. should print
+11. '\''
+12. - 
+
+-  prints but char is non-displayable:
+13. '1'
+14. -1
+15. '\n'
+16. 0
+17. -0
+18. +0
+19. 298 - checks if wrapping is handled - if not, prints *
+
+- pseudo-literals: char and int are impossible - when testing this, check that they print it as a converted type, not printing the string !
+21. nan
+22. +inf
+23. -inf
+24. nanf
+25. +inff
+26. -inff
+
+- out of range during static_cast
+30. 2147483649.0f - float cannot cast to int - impossible (overflow)
+31. 2140000000000000000000000000000000000000000000000.0 - double cannot cast to float/int - impossible (overflow)
+
+C. should trigger error/exception
+35. '\j' - invalid escape sequence
+36. 2147483649 - < max int
+37. 100000000000000000000000000000000000000000000000.0f - < max float
+38. max double can hardly be tested since it is ~1.8 × 10^308
+
+#### Excercise 1 - casting pointers - reinterpret cast
+
+This excercise taught us how to work with reinterpret casting. 
+- reinterpret_cast = used for low-level casting between unrelated types like pointers and integers
+- uintptr_t = unsigned integer type that can safely hold a pointer
+
+Tests:
+1. Create pointers
+2. Populated and valid Data pointers
+3. Compare the variables storing initial and serialized+deserialized pointer - must be the same
+4. NULL pointer passed to serialize
+5. 0 passed to deserialize
+6. valgrind !
+
+```
+int main()
+{
+    int size = 10;
+    Data* a[size];
+    
+    int i = 0;
+    while (i < size)
+    {
+        a[i] = new Data();
+        a[i]->value = i;
+        i++;
+    }
+    a[size] = NULL;
+
+    i = 0;
+    while (i < 11)
+    {
+        try
+        {
+            uintptr_t b = Serializer::serialize(a[i]);
+            std::cout << "Serialized: " << b << std::endl;
+    
+            Data* c = Serializer::deserialize(b);
+            std::cout << "Deserialized: " << c->value << std::endl;
+    
+            // the deserialized pointer must equal the pointer from which it was serialized
+            std::cout << static_cast<void*>(c) << " ?= " << static_cast<void*>(a[i]) << std::endl; // static cast to void pointer to ensure it is printed sa pointer
+            if (c == a[i])
+                std::cout << "The pointer is the same after serialization and deserialization." << std::endl;
+            else
+                std::cout << "The pointer is differenet after serialization and deserialization." << std::endl;
+        }
+        catch (std::runtime_error e)
+        {
+            std::cout << "Error: " << e.what() << std::endl;
+        }
+        catch (std::invalid_argument e)
+        {
+            std::cout << "Error: " << e.what() << std::endl;
+        }
+        i++;
+    }
+    // testing deserialize
+    try
+    {
+        Data* c = Serializer::deserialize(0);
+        std::cout << "Deserialized: " << c->value << std::endl;
+    }
+    catch (std::runtime_error e)
+    {
+        std::cout << "Error: " << e.what() << std::endl;
+    }
+
+    delete a[size];
+    return 0;
+}
+```
+
+#### Excercise 02 - dynamic casts
+
+Dynamic cast only works with polymorphic types (that at least one virtual function) and only on pointers/references. 
+
+This excercise shows us difference between dynamic casts to pointers and to references. 
+
+- dynamic cast to pointer = it’s non-throwing, so no try-catch is needed, if fails, returns nullptr - you can check each cast afterwards with if (ptr) safely, works even if the pointer is nullptr
+- dynamic cast to reference = if cast fails, throws std::bad_cast exception, so must wrap it in a try-catch block and if checking for multiple types, check the rest in this block, reference must be non-null, so we do not have to check for nullptr because it will never happed
+
+Tests:
+1. try to cast other class into identify
+2. test idenfity with pointer with nullptr
+```
+int main()
+{
+    int count = 3;
+    int     i = 0;
+
+    while (++i <= count)
+    {
+        Base *b;
+        if (i < count)
+            b = generate();
+        else
+            b = nullptr;
+        std::cout << "Identifying via pointer: ";
+        identify(b);
+        std::cout << "Identifying via reference: ";
+        identify(&(*b));
+
+        delete b;
+    }
+    return 0;
+}
+```

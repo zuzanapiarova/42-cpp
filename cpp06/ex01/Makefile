@@ -1,8 +1,8 @@
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = cast
+NAME = serialize
 
-SRCS = main.cpp
+SRCS = Serializer.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
@@ -16,7 +16,7 @@ $(NAME): $(OBJS)
 clean:
 	@rm -f $(OBJS)
 
-fclean:
+fclean: clean
 	@rm -f $(NAME)
 
 re: fclean all

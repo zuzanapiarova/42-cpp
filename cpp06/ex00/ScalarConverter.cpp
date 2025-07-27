@@ -1,52 +1,5 @@
 #include "ScalarConverter.hpp"
 
-// Tests:
-
-// A. wrong input - does not match any types string literal
-// a.af
-// 0.4ff
-// --0.222
-// 1.f - float ending with .
-// 1. - double ending with .
-// '' - empty string
-// .f 
-// 1f - not valid string literal in cpp but can possibly handle it
-
-// B. should print
-// '\''
-// - 
-
-// prints but char is non-displayable:
-// '1'
-// -1
-// '\n'
-// 0
-// -0
-// +0
-// 298 - checks if wrapping is handled - if not, prints *
-
-// pseudo-literals: char and int are impossible
-// when testing this, check that they print it as a converted type, not printing the string !
-// nan
-// +inf
-// -inf
-// nanf
-// +inff
-// -inff
-
-// out of range during static_cast
-// 2147483649.0f - float cannot cast to int - impossible (overflow)
-// 2140000000000000000000000000000000000000000000000.0 - double cannot cast to float/int - impossible (overflow)
-
-// C. should trigger error/exception
-// '\j' - invalid escape sequence
-// 2147483649 - < max int
-// 100000000000000000000000000000000000000000000000.0f - < max float
-// max double can hardly be tested since it is ~1.8 × 10^308
-
-// ! static cast from larger type to smaller - double/float to int/char 
-// ? what does setprecision do in terms of bits? why sometimes the rounding errors are there ? 
-
 bool isPseudoLiteral(const std::string& s)
 {
     return s == "nan" || s == "+inf" || s == "-inf" ||
