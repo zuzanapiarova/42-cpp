@@ -339,7 +339,7 @@ int main(void)
 }
 ```
 
-## CPP05 - Casting
+## CPP06 - Casting
 
 #### Excercise 0 - Function pointers again
 
@@ -493,6 +493,225 @@ int main()
 
         delete b;
     }
+    return 0;
+}
+```
+
+## CPP07 - Casting
+
+#### Excercise 0 - Function templates
+
+This excercise introduces function templates. What is important to know is to always define (declare+implement) it in header file, because compiler must see the definition then it instantiates the funciton with the type it received. 
+
+Pass in references or pointers where possible to avoid copying large objects. 
+
+```
+template <typename T, U>
+T functionName(T& x, U& y) {}
+```
+
+Test (from subject):
+```
+int
+main( void )
+{
+    int a = 2;
+    int b = 3;
+    ::swap( a, b );
+    std::cout << "a = " << a << ", b = " << b << std::endl;
+    std::cout << "min( a, b ) = " << ::min( a, b ) << std::endl;
+    std::cout << "max( a, b ) = " << ::max( a, b ) << std::endl;
+    std::string c = "chaine1";
+    std::string d = "chaine2";
+    ::swap(c, d);
+    std::cout << "c = " << c << ", d = " << d << std::endl;
+    std::cout << "min( c, d ) = " << ::min( c, d ) << std::endl;
+    std::cout << "max( c, d ) = " << ::max( c, d ) << std::endl;
+    return 0;
+}
+```
+
+#### Excercise 01 - Function pointer as parameter to function template
+
+This excercise teaches about passing function pointers and even function templates as a function template parameteres. 
+
+You can pass a function pointer that takes in only one specific data type, however you can then only pass in arguments of that data type, else it gives an error. But if i input a function taking just one data type to a function template, it will only take argument of that type. 
+
+Also explored passing in const variables. To support both const and non-const arguments in function templates, function template must be overloaded to accept const data type.
+
+My test cases and simple test functions test for non-cons and const functions and function templates passed as third argument, check edge cases, and the commented calls should result in runtime/compilation errors. 
+
+Test main:
+```
+// some functions
+// a. non-const
+void add_one(int& x)
+{
+    x += 1;
+}
+
+// b. const
+void print_int_arr(const int& x)
+{
+    std::cout << x << ", ";
+}
+
+// some template functions for testing
+// a. non-const
+template <typename T>
+void add(T& el1)
+{
+    T temp = el1 + el1;
+    el1 = temp;
+}
+
+// b. const 
+template <typename I>
+void print_arr_el(const I& el)
+{
+    std::cout << el << ", ";
+}
+
+int main( void )
+{
+    int size = 5;
+
+    // some arrays of different types 
+    char char_arr[] = { '!', '"', '#', '$', '%' };
+    const char c_char_arr[] = { '^', '&', '*', '(', ')' };
+    int int_arr[] = { 1, 2, 3, 4, 5 };
+    const int c_int_arr[] = { 100, 200, 300, 400, 500 };
+    std::string str_arr[] = { "Dog", "Cat", "Cow", "Mouse", "Tiger" };
+    const std::string c_str_arr[] = { "Giraffe", "Monkey", "Bug", "Elephant", "Wolf" };
+
+    // passing in functions
+    ::iter(int_arr, size, add_one); // --> works - int arr, int function
+    ::iter(int_arr, size, print_int_arr); // --> works - int arr, int template function
+    //::iter(char_arr, size, add_one); // --> does not work - char arr, int function
+    std::cout << std::endl << std::endl;
+    
+    // passing in template functions:
+    ::iter(char_arr, size, add); // --> works - char arr, template function
+    ::iter(char_arr, size, print_arr_el); // --> works - char arr, const template function
+    std::cout << std::endl;
+    //::iter(c_char_arr, size, add); // --> does not work -  const char arr, non-const template function that tries to modify the array
+    ::iter(c_char_arr, size, print_arr_el); // --> works - const char arr, const template function
+    std::cout << std::endl << std::endl;
+
+    ::iter(int_arr, size, add); // --> works - int arr, non-const template function
+    ::iter(int_arr, size, print_arr_el); // --> works - int arr, const template function
+    std::cout << std::endl;
+    //::iter(c_int_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
+    ::iter(c_int_arr, size, print_arr_el); // --> works - const array, const template function
+    std::cout << std::endl << std::endl;
+
+    ::iter(str_arr, size, add); // --> works - int arr, template function
+    ::iter(str_arr, size, print_arr_el); // --> works  - string arr, template function
+    std::cout << std::endl;
+    //::iter(c_str_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
+    ::iter(c_str_arr, size, print_arr_el); // --> works - const string array, const template function
+    std::cout << std::endl <<std::endl;
+
+    // edge cases tests
+    ::iter<int>(NULL, size, print_int_arr); // should safely do nothing
+    ::iter(int_arr, 0, print_int_arr); // empty array, prints nothing
+    ::iter(int_arr, 1, print_int_arr); // small array, runs once
+
+    return 0;
+}
+```
+
+#### Excercise 02 - Class templates
+
+This excercise aims to teach us about class templates. They are a way to avoid duplicit code, for example so the code for class for int arrays and class for string array and class for char arrays to be grouped together. 
+
+Templates definitions are stored in the .hpp files, and templates implementations are stored in .tpp files. TPP files are included at the END of hpp file, and implementation of any function in tpp must have the template <typename T> in front of itself.  
+
+Can template function of one type be used with copy constructor/copy assignment operator with object if that template with another type ?
+
+Create object of class template as Array<int> IntArray; Array<std::string> StringArray; ...
+
+Tests:
+1. check with valgrind when there is destructor AND copy assignment operator - they must delete the created array, else there WILL be leaks 
+2. check that the array cretaed with default constructor exists but its empty and that the size is initialized
+3. check that the array created with overload constructor is value-initialized with default values for their data type - there is () after new T[n]() in overload constructor!
+4. do assignment from array that has size 0, check valgrind and print the [0] value
+5. copy the same element with copy assignment operator - should not do anything - check the values 
+6. test the size() function on empty and non-empty array
+7. test out of bounds access - should throw exception
+```
+int main( void )
+{
+    int size = 5;
+
+    try
+    {
+        // empty array with default constructor - should have size 0 and _array initialized to NULL
+        Array<int> emptyArr;
+        std::cout << "Empty array size: " << emptyArr.size() << std::endl << std::endl;
+        //std::cout << "Empty array[0]: " << emptyArr[0]; // throws out of bounds exception
+
+        // int array created with overload constructor - should have size n and values are initialized to default value of provided data type
+        Array<int>intArr(size);
+        std::cout << "Int array size: " << intArr.size() << std::endl;
+        for (unsigned int i = 0; i < intArr.size(); ++i)
+            std::cout << intArr[i] << ", ";
+        std::cout << std::endl << std::endl;
+
+        // string array created with overload constructor - must be value-initialized
+        Array<std::string>strArr(size);
+        std::cout << "String array size: " << strArr.size() << std::endl;
+        for (unsigned int i = 0; i < strArr.size(); ++i)
+            std::cout << strArr[i] << ", ";
+        std::cout << std::endl;
+        // testing changing element values with []
+        strArr[0] = "Dog";
+        strArr[1] = "Cat";
+        for (unsigned int i = 0; i < strArr.size(); ++i)
+            std::cout << strArr[i] << ", ";
+        std::cout << std::endl << std::endl;
+
+        // test copy constructor
+        //Array<char> charArr(strArr); // does not work - not allowed - trying to construct from different type
+        const Array<std::string> otherStrArr(strArr);
+        std::cout << "Other string array size: " << otherStrArr.size() << std::endl;
+        for (unsigned int i = 0; i < otherStrArr.size(); ++i)
+            std::cout << otherStrArr[i] << ", ";
+        std::cout << std::endl << std::endl;
+
+        // const string array - works as others, but does not allow a[10] = ...
+        const Array<std::string>constStrArr(size);
+        //constStrArr[0] = "Cow"; // does not work - not allowed - trying to reassign const element
+
+        // testing copy assignment operator for size 0 - Empty Array
+        Array<int> newIntArr(5);
+        newIntArr = emptyArr;
+        std::cout << "New Int array size: " << newIntArr.size() << std::endl << std::endl;
+
+        // testing copy assignment operator for size 
+        intArr[0] = 42;
+        newIntArr = intArr;
+        std::cout << "New Int array size: " << newIntArr.size() << std::endl << std::endl;
+        for (unsigned int i = 0; i < newIntArr.size(); ++i)
+            std::cout << newIntArr[i] << ", ";
+        std::cout << std::endl << std::endl;
+
+        // testint copying the same element with copy assignment operator --> should do nothing
+        // intArr = intArr;
+        // std::cout << "Int array size: " << intArr.size() << std::endl << std::endl;
+        // for (unsigned int i = 0; i < intArr.size(); ++i)
+        //     std::cout << intArr[i] << ", ";
+        // std::cout << std::endl << std::endl;
+
+        // accessing invalid element - should raise exception
+        std::cout << "Trying to access invalid element of Int array: " << intArr[6] << "." << std::endl << std::endl;
+    }
+    catch (std::exception& e)
+    {
+        std::cout << "Error: " << e.what() << std::endl;
+        return 1;
+    }
+
     return 0;
 }
 ```

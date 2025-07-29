@@ -1,5 +1,5 @@
-#ifndef SCALAR_CONVERTER_H
-# define SCALAR_CONVERTER_H
+#ifndef SCALAR_CONVERTER_HPP
+# define SCALAR_CONVERTER_HPP
 
 #include <iostream>
 #include <string>

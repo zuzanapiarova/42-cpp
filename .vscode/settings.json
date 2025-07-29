@@ -73,7 +73,8 @@
         "iomanip": "cpp",
         "numbers": "cpp",
         "ranges": "cpp",
-        "span": "cpp"
+        "span": "cpp",
+        "*.tpp": "cpp"
     },
     "C_Cpp.autocomplete": "disabled",
     "C_Cpp.autocompleteAddParentheses": true
