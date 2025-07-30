@@ -1,7 +1,8 @@
 #include "Fixed.hpp"
 #include "Point.hpp"
 
-bool bsp( Point const a, Point const b, Point const c, Point const p )
+// !! fix this - it creates unneccesary points always
+bool bsp(const Point& a, const Point& b, const Point& c, const Point& p)
 {
     float w1;
     float w2;

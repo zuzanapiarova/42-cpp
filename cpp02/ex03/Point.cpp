@@ -1,28 +1,33 @@
 #include "Point.hpp"
 
-Point::Point() : x(0), y(0)
+Point::Point() : x(), y()
 {
-    // std::cout << "Default constructor called" << std::endl;
+    std::cout << "Point default constructor called" << std::endl;
 };
 
 Point::Point(const float new_x, const float new_y) : x(new_x), y(new_y)
 {
-    // std::cout << "Overload constructor called" << std::endl;
+    std::cout << "Point overload constructor called" << std::endl;
 };
 
 Point::Point(const Point& origin) : x(origin.x), y(origin.y)
 {
-    // std::cout << "Copy constructor called" << std::endl;
+    std::cout << "Point copy constructor called" << std::endl;
 };
 
+// cannot be allowed - class Point has const members
 Point& Point::operator = (const Point& origin)
 {
+    std::cout << "Point copy assignment operator called" << std::endl;
     (void) origin;
     std::cerr << "Assignment not allowed: Point has const members." << std::endl;
     return *this;
 }
 
-Point::~Point() {};
+Point::~Point()
+{
+    std::cout << "Point destructor called" << std::endl;
+};
 
 const Fixed& Point::getX( void ) const
 {

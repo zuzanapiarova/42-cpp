@@ -254,6 +254,162 @@ Tests:
 5. Check it correctly prints all messages after the one we specify, else nothing. 
 6. The complain fuction must be using switch-case syntax with fallthrough
 
+## CPP02 - Classes, objects, orthdox cannonical form
+
+#### Excercise 0 - Orthodocx cannonical form, static variable members. 
+
+This excercise should make us used to using the orthodox cannonical form. Namely, for 42 cursus we must always implement a default constructor, overload constructor (when needed), copy constructor, copy assignment operator, and destructor, all with appropriate messages. 
+
+Some best practices:
+0. Always use namespace of the class when implementing its functions, constructors, destructors, or defining static members. 
+1. Default constructor: declare variables with () afterwards, even if empty, so they are value-initialized for default values for that type: Fixed::Fixed() : value(). Called automatically, even if not defined.
+2. Copy constructor = do NOT assign with = as *this = origin, because the object is not yet fully constructed. Rather directly initialize members using the copy constructor's member initializer list as this->value = origin.value.
+3. Copy assignment operator - always check if it is not the same object with (this != origin), and only then perform the assignment of members to origin members - because if we were using new/delete, we would delete the existing objects member. Also, always return *this. 
+4. Default constructor = called automatically, even if not defined, when the scope of the object finishes (end of function/end of program).
+
+Static variables are tied to the class, not the object, so all instances of a class share the same memory for that variable, and change in one is reflected in others. Static members must be defined outside the class, in namespace of that class, without the static keyword.
+
+Tests:
+1. Default constructor 
+2. Copy constructor
+3. Copy assignment operator
+4. Check all 3 object's value with getRawBits - should be 0
+5. Set all 3 object's value with setRawBits and print afterwards
+```
+int main(void)
+{
+    Fixed a;        // default constructor
+    Fixed b( a );   // copy constructor
+
+    Fixed c;
+    c = b;          // copy assignment operator
+
+    std::cout << a.getRawBits() << std::endl;
+    std::cout << b.getRawBits() << std::endl;
+    std::cout << c.getRawBits() << std::endl;
+
+    a.setRawBits(42);
+    b.setRawBits(15);
+    c.setRawBits(-50);
+
+    std::cout << a.getRawBits() << std::endl;
+    std::cout << b.getRawBits() << std::endl;
+    std::cout << c.getRawBits() << std::endl;
+
+    return 0;
+}
+```
+
+#### Excercise 01 - Overload constructors, bits mapping
+
+This excercise introduces overlaod constructors to construct the object from differnet data types by calling the same function, so the functionality depends just on the type of arguments. 
+
+We also work with bits and how they store numbers in memory. 
+ 0 0000000 00000000 00000000.00000000
+ -|      integer part       | fractional part|
+
+- integer part: is 2^23 --> 32 bits integer, -8 for fractional part, -1 for the sign bit
+- fractional part (after the dot) : those are also multiples of 2 - just negative: they go 2^-1 for the first fractional bit, to 2^-8 for the last fractional bit. 
+
+Storing floats is more tricky:
+The value, when storing floats, is not exact. Because in fixed-point with 8 fractional bits, the smallest fractional step is 2^-8 = 1 / 2^8 = 1 / 256 = 0.00390625. So numbers which are not 2^-1 - 2^-8 or their multiplies will always have some rounding error.
+1. float input is 1234.4321f
+2. it is first shifted by 8 to left (multiplied by 256) to store it as 32bit integer = 316020.6336
+3. it has to be rounded to be stored as integer = roundf(316020.6336) = 316021
+4. when converting back to float for display: 316021 >> 256 = 1234.43359375 - because it was rounded to be stored as integer, the value will not be the same, unless it 
+
+Tests:
+0. Test default constructor, overload constructor for float, overload constructor for int, copy constructor, copy assignment operator. 
+1. Handle the max raw value received - even if the maxint fits in the value, the last 8 bits are reserved for the fractional part, so the maximum value we can receive into the rawValue is between <-8388608, 8388607>, else it would wrap and not properly represent the fixed point. 
+! when clamping to int_max value, and then doing << fractional_bits, is is rounded and float then rounds it to higher when printing, but internally it is still represented as max int
+
+#### Excercise 02 - Overloading operators and basic functions
+
+In this excerciwe we have to implement how the class Fixed behaves with operators (arithmetic, comparison, pre/post increment/decrement, max & min function) by overloading. 
+
+When multiplying two fixed-point numbers, which is multiplying two scaled values, it results in an extra scaling and the result must be shifted right by fractional_bits to correct it.
+(a << 8) * (b << 8) = ( a * b ) << 16
+
+Same for division, but the opposite direction: to maintain fixed-point precision, value must be shifted left before dividing to avoid losing the fractional part. 
+
+Pre-increment (++a) operator modifies the object (*this) in-place and returns a reference to the current object (*this), so you can chain operations or observe the updated value immediately. 
+Post-increment (a++) operator, on the other hand, must return the original value before the increment, so it makes a copy of the current object, then increments the current one. You cannot return a reference here because the result is a temporary copy — returning a reference to that would be unsafe and incorrect. Also, the int in signature is just a dummy to differentiate it from pre-increment.
+
+Min/max functions don't depend on any internal state of a specific Fixed object (which they shouldn't), so they should be declared static. Compiler can optimize static functions better since there’s no this pointer involved.
+
+Test:
+0. Test all basic functions AND also check with const members
+- edge cases test: these cannot wrap !
+1. Add 2 numbers that result in value smaller/larger than int
+2. Extract 2 numbers that result in value smaller/larger than int
+3. Multiply 2 numbers that result in value smaller/larger than int
+4. Multiply 2 numbers that result in value smaller/larger than 1^-31 (0.00390625)
+5. Divide by 0 - not mandatory by the subject
+6. Divide 2 numbers such that result is smaller/larger than int
+```
+int main(void)
+{
+    std::cout << std::fixed << std::setprecision(8); // disables scientific notation
+    std::cout << "Max value: " << Fixed::max_raw_value << std::endl;
+    std::cout << "Max input: " << Fixed::max_input << std::endl;
+
+    // A. basic tests + tests const
+    Fixed a(10);
+    Fixed const b( 5.05f );
+    Fixed const c( 3 );
+    Fixed const d( Fixed( 5.05f ) * Fixed( 2 ) );
+    
+    std::cout << "Smaller: " << (a < b) << std::endl;
+    std::cout << "Greater: " << (a > b) << std::endl;
+    std::cout << "< or eq: " << (a <= b) << std::endl;
+    std::cout << "> or eq: " << (a >= b) << std::endl;
+    std::cout << "Equals : " << (a == b) << std::endl;
+    std::cout << "Not eq : " << (a != b) << std::endl;
+    
+    std::cout << "Plus  : " << (a + b) << std::endl;
+    std::cout << "Minus : " << (a - b) << std::endl;
+    std::cout << "Multi : " << (a * b) << std::endl;
+    std::cout << "Divide: " << (a / b) << std::endl;
+
+    std::cout << "Increment: " << ++a << std::endl;
+    std::cout << "Decrement: " << a++ << std::endl;
+
+    std::cout << "Min : " << Fixed::min( a, b ) << std::endl;
+    std::cout << "Max : " << Fixed::max( a, b ) << std::endl;
+
+    std::cout << "Min const: " << Fixed::min( c, d ) << std::endl;
+    std::cout << "Max const: " << Fixed::max( c, d ) << std::endl;
+
+    // B. edge-case tests - error/clamping
+    Fixed e(8388607);
+    Fixed f(-8388608);
+    Fixed g(0.00390625f);
+
+    std::cout << "Plus > int : " << (e + e) << std::endl;
+    std::cout << "Plus < int : " << (f + f) << std::endl;
+    std::cout << "Minus > int : " << (e - f) << std::endl;
+    std::cout << "Minus < int : " << (f - e) << std::endl;
+    std::cout << "Multi > int : " << (e * e) << std::endl;
+    std::cout << "Multi < int : " << (e * f) << std::endl;
+    std::cout << "Multi near 0: " << (g * g) << std::endl; 
+    std::cout << "Divide > int: " << (e / g) << std::endl;
+    std::cout << "Divide < int: " << (f / g) << std::endl;
+    std::cout << "Divide by 0 : " << (e / 0) << std::endl;
+
+    return 0;
+}
+```
+
+#### Excercise 03 - Overload operators and basic functions
+
+In this excercise, we must use our created Fixed class and use it for BSP - binary space partitioning to find if a point is inside a triangle defined by 3 points. 
+
+Tests:
+1. Create Point by default constructor, overload constructor, copy constructor
+2. Check copy assignment operator - since x,y members are const, you cannot assign to them after the object is created - it should not be possible, should not produce compiler errors. 
+3. Const points
+4. 
+
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
 #### Excercise 0 - 

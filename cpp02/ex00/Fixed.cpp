@@ -1,12 +1,11 @@
 #include "Fixed.hpp"
 
-// static members must be declared outside a class, in namespace of that class of course, without static keyword
-const int Fixed::fractional_bits = 8;
+const int Fixed::s_fractional_bits = 8;
 
 // Default Constructor
-Fixed::Fixed() : value(0)
+Fixed::Fixed() : value()
 {
-    std::cout<< "Default constructor called" << std::endl;
+    std::cout << "Default constructor called" << std::endl;
 };
 
 // Copy Constructor

@@ -1,5 +1,5 @@
-#ifndef POINT_H
-# define POINT_H
+#ifndef POINT_HPP
+# define POINT_HPP
 
 #include "Fixed.hpp"
 
@@ -17,7 +17,7 @@ class Point
         Point();
         Point(const float new_x, const float new_y);
         Point(const Point& origin);
-        Point& operator = (const Point& origin); // copy assignment operator
+        Point& operator = (const Point& origin);
         ~Point();
 
         const Fixed& getX( void ) const ;
