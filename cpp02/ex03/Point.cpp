@@ -2,7 +2,7 @@
 
 Point::Point() : x(), y()
 {
-    std::cout << "Point default constructor called" << std::endl;
+    // std::cout << "Point default constructor called" << std::endl;
 };
 
 Point::Point(const float new_x, const float new_y) : x(new_x), y(new_y)

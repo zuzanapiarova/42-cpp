@@ -14,7 +14,7 @@ const int Fixed::min_raw_value = std::numeric_limits<int>::min(); // -2,147,483,
 // Default Constructor
 Fixed::Fixed() : value()
 {
-    std::cout<< "Fixed default constructor called" << std::endl;
+    // std::cout<< "Fixed default constructor called" << std::endl;
 };
 
 // Overload Constructor from Int
@@ -72,7 +72,7 @@ Fixed& Fixed::operator = (const Fixed& origin)
 // Destructor
 Fixed::~Fixed()
 {
-    std::cout << "Destructor called" << std::endl;
+    // std::cout << "Fixed destructor called" << std::endl;
 }
 
 // -------------------------------------------- Member Functions ---------------------------------------------

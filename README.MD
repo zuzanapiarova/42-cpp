@@ -254,9 +254,9 @@ Tests:
 5. Check it correctly prints all messages after the one we specify, else nothing. 
 6. The complain fuction must be using switch-case syntax with fallthrough
 
-## CPP02 - Classes, objects, orthdox cannonical form
+## CPP02 - Classes, objects, orthdox cannonical form, overloading (polymorphism)
 
-#### Excercise 0 - Orthodocx cannonical form, static variable members. 
+#### Excercise 0 - Orthodocx cannonical form, static variable members
 
 This excercise should make us used to using the orthodox cannonical form. Namely, for 42 cursus we must always implement a default constructor, overload constructor (when needed), copy constructor, copy assignment operator, and destructor, all with appropriate messages. 
 
@@ -300,7 +300,7 @@ int main(void)
 }
 ```
 
-#### Excercise 01 - Overload constructors, bits mapping
+#### Excercise 01 - Overload constructors, data types, bits mapping
 
 This excercise introduces overlaod constructors to construct the object from differnet data types by calling the same function, so the functionality depends just on the type of arguments. 
 
@@ -400,15 +400,40 @@ int main(void)
 }
 ```
 
-#### Excercise 03 - Overload operators and basic functions
+#### Excercise 03 - BSP - Overload operators and basic functions
 
 In this excercise, we must use our created Fixed class and use it for BSP - binary space partitioning to find if a point is inside a triangle defined by 3 points. 
+
+The med-results when calculating qith Fixed values will always create some defult objects, as we overloaded the operators for this data type(class) do to it. They re created and destructed automatically ans store medium results during calculations. 
 
 Tests:
 1. Create Point by default constructor, overload constructor, copy constructor
 2. Check copy assignment operator - since x,y members are const, you cannot assign to them after the object is created - it should not be possible, should not produce compiler errors. 
-3. Const points
-4. 
+3. Check the algorithm - point outside, points inside, points on corner(should be outside), points on border(should be outside), points very close to borders from inside/outside
+```
+int main(void)
+{
+    Point a(1,1);
+    Point b(5,1);
+    Point c(3, 3);
+    Point p0(3,2);
+    Point p1(0,0);
+    Point p2(2,1);
+    Point p3(1,1);
+    Point p4(1.04, 1.003);
+    Point p5(0.006,1.006);
+    std::cout << std::endl;
+
+    std::cout << "This point is inside: " << bsp(a, b, c, p0) << std::endl;
+    std::cout << "This point is outside: " << bsp(a, b, c, p1) << std::endl;
+    std::cout << "This point is on border: " << bsp(a, b, c, p2) << std::endl;
+    std::cout << "This point is right in corner: " << bsp(a, b, c, p3) << std::endl;
+    std::cout << "This point is inside very close to corner: " << bsp(a, b, c, p4) << std::endl;
+    std::cout << "This point is outside very close to corner: " << bsp(a, b, c, p5) << std::endl << std::endl;
+
+    return 0;
+}
+```
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
