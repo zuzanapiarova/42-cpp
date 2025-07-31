@@ -963,13 +963,12 @@ int main()
 #### Excercise 01 - Iterators 
 
 Tests:
-1. minSpan / maxSpan if number of elementes is < 2
-2. minSpan / maxSpan if maxEl and minEl is the same 
-3. adding numbers to full array
-4. default constructor - initializes empty array
-5. overload constructor - print the max size
-6. copy constructor - works
-7. copy assignment operator - does not work if there is a const member, which size should be
-8. if size is not const, try to change it to something smaller than current container size - logical error
-9. adding multiple numbers in one function - be close to max int and add as many numbers to exceed it
-10. adding multiple numbers in one function - add more numbers so size would be exceeded
+1. default constructor - initializes empty array
+2. overload constructor and copy constructor work properly
+4. copy assignment operator - does not work if there is a const member, which size should be !! - if size is not const, can be changed to something smaller than current container size --> logical error
+5. adding numbers to full array
+6. minSpan / maxSpan if number of elementes is < 2
+7. minSpan / maxSpan if maxEl and minEl are the same 
+8. adding a range(iterators from other containers) - add more numbers so size would be exceeded
+10. adding a range(iterators from other containers) - add from container of different type
+11. adding a range(iterators from other containers) - add from a const container - the iterator will be different - so the functointo add multiple numbres must be a template
