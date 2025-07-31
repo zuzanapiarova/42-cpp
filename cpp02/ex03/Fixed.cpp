@@ -38,7 +38,7 @@ Fixed::Fixed(const int new_value)
 // Overload Constructor from Float
 Fixed::Fixed(const float new_value)
 {
-    std::cout << "Fixed Float constructor called" << std::endl;
+    // std::cout << "Fixed Float constructor called" << std::endl;
     if (new_value > max_input)
     {
         std::cerr << "Error: Input float is too large for fixed-point representation. Using maximum allowed value instead." << std::endl;
@@ -56,7 +56,7 @@ Fixed::Fixed(const float new_value)
 // Copy Constructor
 Fixed::Fixed(const Fixed& origin)
 {
-    std::cout << "Fixed copy constructor called" << std::endl;
+    // std::cout << "Fixed copy constructor called" << std::endl;
     this->value = origin.value;
 };
 

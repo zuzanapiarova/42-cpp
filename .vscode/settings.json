@@ -74,7 +74,8 @@
         "numbers": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "*.tpp": "cpp"
+        "*.tpp": "cpp",
+        "list": "cpp"
     },
     "C_Cpp.autocomplete": "disabled",
     "C_Cpp.autocompleteAddParentheses": true

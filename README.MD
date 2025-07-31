@@ -407,9 +407,10 @@ In this excercise, we must use our created Fixed class and use it for BSP - bina
 The med-results when calculating qith Fixed values will always create some defult objects, as we overloaded the operators for this data type(class) do to it. They re created and destructed automatically ans store medium results during calculations. 
 
 Tests:
-1. Create Point by default constructor, overload constructor, copy constructor
-2. Check copy assignment operator - since x,y members are const, you cannot assign to them after the object is created - it should not be possible, should not produce compiler errors. 
-3. Check the algorithm - point outside, points inside, points on corner(should be outside), points on border(should be outside), points very close to borders from inside/outside
+1. Create Point by default constructor - should be (0,0)
+2. Create point by overload constructor or copy constructor - should work
+3. Check copy assignment operator - since x,y members are const, you cannot assign to them after the object is created - it should not be possible, should not produce compiler errors. 
+4. Check the algorithm - point outside, points inside, points on corner(should be outside), points on border(should be outside), points very close to borders from inside/outside
 ```
 int main(void)
 {
@@ -891,6 +892,51 @@ int main( void )
     {
         std::cout << "Error: " << e.what() << std::endl;
         return 1;
+    }
+
+    return 0;
+}
+```
+
+## CPP08
+
+#### Excercise 00 - Containers and iterators
+
+This excercise teached usabout basic containers and iterators. 
+
+Tests:
+0. Check if it works with const containers (the function easyfind is overloaded with const_iterator), and also a const_iterator must be returned
+1. Check what it returns - if it returns iterator or value, and ask what si the difference
+2. Check various containers - vector, list, deque (not associative)
+3. Check values in container and not in container
+```
+int main()
+{
+    // vector
+    int arr1[] = {1, 2, 3, 4, 5};
+    std::vector<int> vec(arr1, arr1 + 5);
+
+    // list
+    int arr2[] = { 100, 200, 300 };
+    const std::list<int> lst(arr2, arr2 + 3);
+
+    // deque
+    int arr3[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    std::deque<int> deque(arr3, arr3 + 10);
+
+    try {
+        std::vector<int>::iterator it1 = easyfind(vec, 1); // element exists
+        std::cout << "Found in vector: " << *it1 << std::endl;
+
+        std::list<int>::const_iterator it2 = easyfind(lst, 300);  // element exists - const container
+        std::cout << "Found in list: " << *it2 << std::endl;
+
+        std::deque<int>::iterator it3 = easyfind(deque, 0); // outside of container
+        std::cout << "Found in deque: " << *it3 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
     }
 
     return 0;

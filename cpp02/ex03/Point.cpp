@@ -7,12 +7,12 @@ Point::Point() : x(), y()
 
 Point::Point(const float new_x, const float new_y) : x(new_x), y(new_y)
 {
-    std::cout << "Point overload constructor called" << std::endl;
+    // std::cout << "Point overload constructor called" << std::endl;
 };
 
 Point::Point(const Point& origin) : x(origin.x), y(origin.y)
 {
-    std::cout << "Point copy constructor called" << std::endl;
+    // std::cout << "Point copy constructor called" << std::endl;
 };
 
 // cannot be allowed - class Point has const members
@@ -26,7 +26,7 @@ Point& Point::operator = (const Point& origin)
 
 Point::~Point()
 {
-    std::cout << "Point destructor called" << std::endl;
+    // std::cout << "Point destructor called" << std::endl;
 };
 
 const Fixed& Point::getX( void ) const

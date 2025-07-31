@@ -3,8 +3,6 @@
 int main(void)
 {
     std::cout << std::fixed << std::setprecision(8); // disables scientific notation
-    std::cout << "Max value: " << Fixed::max_raw_value << std::endl;
-    std::cout << "Max input: " << Fixed::max_input << std::endl;
 
     // A. basic tests
     Fixed a(10);
