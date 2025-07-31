@@ -905,10 +905,12 @@ int main( void )
 This excercise teached usabout basic containers and iterators. 
 
 Tests:
-0. Check if it works with const containers (the function easyfind is overloaded with const_iterator), and also a const_iterator must be returned
-1. Check what it returns - if it returns iterator or value, and ask what si the difference
-2. Check various containers - vector, list, deque (not associative)
-3. Check values in container and not in container
+0. Check STL is used - algorithm functoins, iterators, not C syntax 
+1. Check if it works with const containers (the function easyfind is overloaded with const_iterator), and also a const_iterator must be returned
+2. Check what it returns - if it returns iterator or value, and ask what si the difference
+3. Check various containers - vector, list, deque (not associative)
+4. Check values in container and not in container
+5. Check duplicate values
 ```
 int main()
 {
@@ -920,19 +922,34 @@ int main()
     int arr2[] = { 100, 200, 300 };
     const std::list<int> lst(arr2, arr2 + 3);
 
+    // vector
+    int arr3[] = { 1, 2, 2, 2, 2};
+    std::vector<int> duplicates(arr3, arr3 + 5);
+
+    // empty
+    int arr4[] = {};
+    std::deque<int> empty(arr4, arr4);
+
     // deque
-    int arr3[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-    std::deque<int> deque(arr3, arr3 + 10);
+    int arr5[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    std::deque<int> deque(arr5, arr5 + 9);
 
     try {
+
         std::vector<int>::iterator it1 = easyfind(vec, 1); // element exists
         std::cout << "Found in vector: " << *it1 << std::endl;
 
         std::list<int>::const_iterator it2 = easyfind(lst, 300);  // element exists - const container
         std::cout << "Found in list: " << *it2 << std::endl;
 
-        std::deque<int>::iterator it3 = easyfind(deque, 0); // outside of container
-        std::cout << "Found in deque: " << *it3 << std::endl;
+        std::vector<int>::const_iterator it3 = easyfind(duplicates, 2);  // duplicate elements - gets the first occurence
+        std::cout << "Found in list: " << *it3 << " on index: " << it3 - duplicates.begin() << std::endl;
+
+        std::deque<int>::const_iterator it4 = easyfind(empty, 1);  // empty container - element is not found
+        std::cout << "Found in list: " << *it4 << std::endl;
+
+        std::deque<int>::iterator it5 = easyfind(deque, 0); // outside of container
+        std::cout << "Found in deque: " << *it5 << std::endl;
     }
     catch (const std::out_of_range& e)
     {
@@ -942,3 +959,17 @@ int main()
     return 0;
 }
 ```
+
+#### Excercise 01 - Iterators 
+
+Tests:
+1. minSpan / maxSpan if number of elementes is < 2
+2. minSpan / maxSpan if maxEl and minEl is the same 
+3. adding numbers to full array
+4. default constructor - initializes empty array
+5. overload constructor - print the max size
+6. copy constructor - works
+7. copy assignment operator - does not work if there is a const member, which size should be
+8. if size is not const, try to change it to something smaller than current container size - logical error
+9. adding multiple numbers in one function - be close to max int and add as many numbers to exceed it
+10. adding multiple numbers in one function - add more numbers so size would be exceeded

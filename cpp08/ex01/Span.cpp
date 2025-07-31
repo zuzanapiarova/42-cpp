@@ -1,1 +1,78 @@
 #include "Span.hpp"
+
+Span::Span() : _size(), _v()
+{
+    std::cout << "Span default constructor called." << std::endl;
+};
+
+Span::Span(unsigned int N) : _size(N), _v()
+{
+    std::cout << "Span overload constructor called." << std::endl;
+}
+
+Span::Span(const Span& origin) : _size(origin._size), _v(origin._v)
+{
+    std::cout << "Span copy constructor called." << std::endl;
+};
+
+Span& Span::operator=(const Span& origin)
+{
+    std::cout << "Span copy assignment operator called." << std::endl;
+    (void)origin;
+    std::cerr << "Cannot call copy assignment operator because of const members." << std::endl;
+    return *this;
+};
+
+Span::~Span()
+{
+    std::cout << "Span destructor called." << std::endl;
+};
+
+unsigned int Span::getMaxSize()
+{
+    return _size;
+}
+
+unsigned int Span::getRealSize()
+{
+    return _v.size();
+}
+
+// finds smallest value distance between 2 elements in the container
+unsigned int Span::shortestSpan()
+{
+    if (_v.size() < 2)
+        throw std::logic_error("Container needs at least 2 elements to calculate span.");
+    std::vector<int> temp = _v;
+    std::sort(temp.begin(), temp.end());
+    unsigned int minSpan = *(temp.begin() + 1) - *temp.begin();
+    for (unsigned int i = 0; i < temp.size() - 1; ++i)
+    {
+        unsigned int diff = temp[i + 1] - temp[i];
+        if (diff < minSpan)
+            minSpan = diff;
+    }
+    return minSpan;
+};
+
+// finds largest value distance between 2 elements in the container
+unsigned int Span::longestSpan()
+{
+    if (_v.size() < 2)
+        throw std::logic_error("Container needs at least 2 elements to calculate span.");
+    int min = *std::min_element(_v.begin(), _v.end());
+    int max = *std::max_element(_v.begin(), _v.end());
+
+    return max - min;
+};
+
+void Span::addNumber(int number)
+{
+    if (_v.size() >= _size)
+    {
+        throw std::length_error("Error: Container full.");
+        return ;
+    }
+    _v.push_back(number);
+};
+
