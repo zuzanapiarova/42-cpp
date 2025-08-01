@@ -15,8 +15,8 @@ int main(void)
     fred.takeDamage(4);
 
     fred.highFiveGuys();
-    // fred.guardGate();
-    // sara.highFiveGuys();
-    // clara.guardGate();
+    // fred.guardGate(); // cannot access functon of other child class
+    // sara.highFiveGuys(); // cannot access function of other child class
+    // clara.guardGate(); // base class cannot access function of child class
     return 0;
 }

@@ -7,18 +7,14 @@ ClapTrap::ClapTrap() : name("Anonym"), hitPoints(10), energy(10), damage(0)
     std::cout << "Claptrap " << name << " default constructor called." << std::endl;
 };    
 
-ClapTrap::ClapTrap(const std::string& new_name)  : name(new_name), hitPoints(10), energy(10), damage(0)
+ClapTrap::ClapTrap(const std::string& new_name) : name(new_name), hitPoints(10), energy(10), damage(0)
 {
     std::cout << "Claptrap " << name << " overload constructor called." << std::endl;
 };
 
-ClapTrap::ClapTrap(const ClapTrap& origin)
+ClapTrap::ClapTrap(const ClapTrap& origin) : name(origin.name), hitPoints(origin.hitPoints), energy(origin.energy), damage(origin.damage)
 {
     std::cout << "Claptrap " << name << " copy constructor called." << std::endl;
-    this->name = origin.name;
-    this->hitPoints = origin.hitPoints;
-    this->energy = origin.energy;
-    this->damage = origin.damage;
 }
 
 ClapTrap& ClapTrap::operator = (const ClapTrap& origin)
@@ -43,13 +39,13 @@ ClapTrap::~ClapTrap()
 
 void ClapTrap::attack(const std::string& target)
 {
-    if (energy >= 1 && hitPoints > 0)
+    if (energy > 0 && hitPoints > 0)
     {
         std::cout << "ClapTrap " << name << " attacks " << target << ", causing " << damage << " points of damage!" << std::endl;
         energy -= 1;
     }
     else
-        std::cout << "ClapTrap " << name << " cannot attack " << target << " because of death or low energy." << std::endl;
+        std::cout << "ClapTrap " << name << " cannot attack " << target << " because of low health or energy." << std::endl;
 }
 
 void ClapTrap::takeDamage(unsigned int amount)
@@ -60,12 +56,12 @@ void ClapTrap::takeDamage(unsigned int amount)
 
 void ClapTrap::beRepaired(unsigned int amount)
 {
-    if (energy >= 1 && hitPoints > 0)
+    if (energy > 0 && hitPoints > 0)
     {
         std::cout << "ClapTrap " << name << " received " << amount << " hit points." << std::endl;
         hitPoints += amount;
         energy -= 1;
     }
     else
-        std::cout << "ClapTrap " << name << " cannot be repaired because of death or low energy." << std::endl;
+        std::cout << "ClapTrap " << name << " cannot be repaired because of low health or energy." << std::endl;
 }

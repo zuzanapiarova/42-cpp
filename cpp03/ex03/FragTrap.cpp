@@ -3,8 +3,6 @@
 
 // -------------------------------------------- Orthodox Canonical Form ---------------------------------------------
 
-// !!! I am adding default constructors to see, that if the colon syntax was not done/forgotten when implementing 
-// !!! constructors of the children, it will not be silent and it will announce that the default constructor was called !!!
 FragTrap::FragTrap() : ClapTrap()
 {
     std::cout << "FragTrap " << name << " default constructor called." << std::endl;
@@ -49,7 +47,7 @@ void FragTrap::attack(const std::string& target)
         energy -= 1;
     }
     else
-        std::cout << "FragTrap " << name << " cannot attack " << target << " because of death or low energy." << std::endl;
+        std::cout << "FragTrap " << name << " cannot attack " << target << " because of low health or energy." << std::endl;
 }
 
 void FragTrap::takeDamage(unsigned int amount)
@@ -67,7 +65,7 @@ void FragTrap::beRepaired(unsigned int amount)
         energy -= 1;
     }
     else
-        std::cout << "FragTrap " << name << " cannot be repaired because of death or low energy." << std::endl;
+        std::cout << "FragTrap " << name << " cannot be repaired because of low health or energy." << std::endl;
 }
 
 void FragTrap::highFiveGuys()

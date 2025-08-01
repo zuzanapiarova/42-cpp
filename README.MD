@@ -436,6 +436,143 @@ int main(void)
 }
 ```
 
+## CPP03 - Inheritance
+
+#### Excercise 00 - Class implementation, member functions
+
+In this excercise we just create a simple class with some member functions. It will be used for demonstratioon and learning in further excercises. 
+
+Tests:
+1. Check default constructors - is it there? it is needed to check constructor chaining in future excercises !
+2. Check overload constructors
+3. Check copy constructor
+4. Check copy assignment operator
+5. Check that member functions work as they should
+```
+int main(void)
+{
+    // check default constructor
+    ClapTrap anonym;
+    anonym.beRepaired(1);
+
+    // check overload constructors
+    ClapTrap arthur("Arthur");
+    ClapTrap bob("Bob");
+
+    // check member functions
+    bob.attack("Arthur");
+    bob.takeDamage(9);
+    bob.takeDamage(1);
+    bob.beRepaired(1); // should not work - low health
+    bob.attack("Arthur"); // should not work - low health
+
+    // check copy constuctor and copy assignmnent operator - name is the same - copied from Bob
+    ClapTrap bob2(bob);
+    anonym = bob;
+    bob2.beRepaired(1); // should not work - copied zero health from Bob
+    anonym.beRepaired(1); // should not work - copied zero health from Bob
+
+    return 0;
+}
+```
+
+#### Excercise 01 - Inheritance
+
+Child is created using the fdefault constructor of the Base - they will not have their own name, their name is always inherited from the parent. 
+
+Test:
+1. Check default constructors - is it there? it is needed to check constructor chaining !
+2. Check overload constructors
+3. Check copy constructor - can you create child from base? can you create base from child? Why? (object sicing)
+4. Check copy assignment operator - same as above
+5. Check that child can use parent functions, and parent cannot use child-only functions
+6. Check that destructor is virtual for parent - and ask why? 
+```
+int main(void)
+{
+    // check overload constructors
+    ClapTrap clara("Clara");
+    ScavTrap sara("Sara");
+
+    // check basic functions
+    sara.attack("Clara");
+    clara.attack("Sara");
+    sara.takeDamage(5);
+    sara.takeDamage(4);
+    sara.guardGate();
+    // clara.guardGate(); // should not work, base ClapTrap does not have this function
+
+    // test copy constructors
+    ClapTrap Cat(sara);       // --> can make parent from child
+    //ScavTrap Sergio(clara); // --> cannot make child from parent becasue child has something extra and object slicing would happen
+
+    // tseting copy assignment
+    ClapTrap Corgi;
+    ScavTrap Sergi;
+    Corgi = sara;   // --> can make parent from child
+    // Sergi = clara;  // --> cannot make child from parent becasue child has something extra and object slicing would happen
+
+    return 0;
+}
+```
+
+#### Excercise 02 - Another child
+
+The principle and excercise is just like the one before, only this child has a different method. 
+
+Tests:
+1. Most files are copied, thus only do simple checks - check that children cannot access functions of other children and that base cannot access functonis of children.
+
+```
+int main(void)
+{
+    ClapTrap clara("Clara");
+    ScavTrap sara("Sara");
+    FragTrap fred("Fred");
+
+    fred.attack("Clara");
+    sara.attack("Fred");
+    clara.attack("Sara");
+    fred.takeDamage(5);
+    fred.takeDamage(4);
+
+    fred.highFiveGuys();
+    // fred.guardGate(); // cannot access functon of other child class
+    // sara.highFiveGuys(); // cannot access function of other child class
+    // clara.guardGate(); // base class cannot access function of child class
+    return 0;
+}
+```
+
+#### Excercise 03 - Diamond problem with inheritance
+
+This excercise demonstrates diamond problem - when one class inherits from two separate classes with the same variables/methods. 
+
+DiamondClap attributes and member functions will be inherited from its parent classes:
+- Name, which is passed as a parameter to a constructor
+- ClapTrap::name (parameter of the constructor + "_clap_name" suffix)
+- Hit points (FragTrap)
+- Energy points (ScavTrap)
+- Attack damage (FragTrap)
+- attack() (ScavTrap)
+
+       ClapTrap
+       |      |
+      |        |
+     |          |
+    |            |
+ ScavTrap     FragTrap
+    |            |
+     |          |
+      |        |
+       |      |
+      DiamondTrap
+
+Tests:
+0. FragTrap and ScavTrap inherit virtually: class FragTrap : virtual public ClapTrap - What does virtual do ?  (ensures only one object exists)
+1. ClapTrap sub-object has name "name"_clap_name, and the child object has name "name" - scav and frag inherit name from base, and diamond overwrites it
+
+
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
 #### Excercise 0 - 
