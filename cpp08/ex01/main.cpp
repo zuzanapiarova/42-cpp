@@ -11,7 +11,7 @@ int main( void )
         std::cout << "Limit: " << emptySpan.getMaxSize() << " - current: " << emptySpan.getRealSize() << std::endl;
 
         // overload and copy constructor
-        Span span(100);
+        Span span(20000);
         Span copiedSpan(span);
 
         // copy assignment operator - size should be const, and it should not work - cause if size is not const, it can be set to smaller number than current number of elements
@@ -19,7 +19,7 @@ int main( void )
         // newSpan = span;
         
         // populating the container - loop fills it fully, next one raises exception
-        for (unsigned int i = 1; i <= 100; i++)
+        for (unsigned int i = 1; i <= copiedSpan.getMaxSize(); i++)
             copiedSpan.addNumber(i);
         // copiedSpan.addNumber(10);
         std::cout << "Limit: " << copiedSpan.getMaxSize() << " - current: " << copiedSpan.getRealSize() << std::endl;

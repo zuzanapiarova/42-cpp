@@ -966,9 +966,139 @@ Tests:
 1. default constructor - initializes empty array
 2. overload constructor and copy constructor work properly
 4. copy assignment operator - does not work if there is a const member, which size should be !! - if size is not const, can be changed to something smaller than current container size --> logical error
-5. adding numbers to full array
-6. minSpan / maxSpan if number of elementes is < 2
-7. minSpan / maxSpan if maxEl and minEl are the same 
+5. adding numbers to full array --> exception
+6. minSpan / maxSpan if number of elementes is < 2 --> exception
+7. minSpan / maxSpan if maxEl and minEl are the same - works
 8. adding a range(iterators from other containers) - add more numbers so size would be exceeded
 10. adding a range(iterators from other containers) - add from container of different type
-11. adding a range(iterators from other containers) - add from a const container - the iterator will be different - so the functointo add multiple numbres must be a template
+11. adding a range(iterators from other containers) - add from a const container - the iterator will be different - so the function to add multiple numbres must be a template
+```
+int main( void )
+{
+    try
+    {
+        // default constructor - initialize empty span with size 0 and initialized container
+        Span emptySpan;
+        std::cout << "Limit: " << emptySpan.getMaxSize() << " - current: " << emptySpan.getRealSize() << std::endl;
+
+        // overload and copy constructor
+        Span span(20000);
+        Span copiedSpan(span);
+
+        // copy assignment operator - size should be const, and it should not work - cause if size is not const, it can be set to smaller number than current number of elements
+        // Span newSpan;
+        // newSpan = span;
+        
+        // populating the container - loop fills it fully, next one raises exception
+        for (unsigned int i = 1; i <= copiedSpan.getMaxSize(); i++)
+            copiedSpan.addNumber(i);
+        // copiedSpan.addNumber(10);
+        std::cout << "Limit: " << copiedSpan.getMaxSize() << " - current: " << copiedSpan.getRealSize() << std::endl;
+        
+        // adding range of numbers from a list
+        int arr2[] = { 100, 200, 300 };
+        const std::list<int> lst(arr2, arr2 + 3);
+        span.addNumbers(lst.begin(), lst.end());
+        std::cout << "Limit: " << span.getMaxSize() << " - current: " << span.getRealSize() << std::endl;
+
+        // adding range of numbers from a CONST vector
+        const std::vector<int> duplicates(10, 1);
+        span.addNumbers(duplicates.begin(), duplicates.end());
+        std::cout << "Limit: " << span.getMaxSize() << " - current: " << span.getRealSize() << std::endl;
+
+        // checking max and min spans
+        std::cout << "Max: " << span.longestSpan() << " , min: " << span.shortestSpan() << std::endl;
+
+        // checking max and min spans if the numbers are the same
+        Span s(10);
+        for (unsigned int i = 1; i <= 10; i++)
+            s.addNumber(10);
+        std::cout << "Max: " << s.longestSpan() << " , min: " << s.shortestSpan() << std::endl;
+
+        // checking max and min span if there are less than 2 elements - raises exception
+        Span s1(1);
+        s1.addNumber(10);
+        // std::cout << "Max: " << s1.longestSpan() << std::endl;
+        // std::cout << "Min: " << s1.shortestSpan() << std::endl;
+
+        // adding range so that size is exceeded
+        Span s2(10);
+        for (unsigned int i = 1; i <= 10; i++)
+            s2.addNumber(10);
+        s2.addNumbers(duplicates.begin(), duplicates.end());
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
+}
+```
+
+#### Excercise 02 - Container adapters - stack
+
+In this excercises, we explore the Stack container type, which is not iterable, LIFO structure, and implement out own Stack class, which is based on the stack and offers the stack functions, but also allows iteration. 
+
+Reference: https://cplusplus.com/reference/stack/stack/
+
+So this is the template: it receives one member T, which is type of the elements, and optional second element Container type, which is the type of container used, default is deque.
+The class then inherits from stack, passing the same template parameters to stack when it is created
+```
+template <class T, class Container = std::deque<T> >
+class MutantStack : public std::stack<T, Container>
+```
+
+Tests:
+0. Test default construction with only int type, no container type - it should be deque: `MutantStack<int> stack1;`
+1. Test construction with different container types: `MutantStack<int, std::vector<int> > vectorStack;`
+2. Create const container - ask how they would create it (cannot push/pop, only from copy/assignment)
+3. Test basic stack operations (push, pop, empty, size, ...)
+4. Test copy constructor and copy assignment operator and check they have the same elements as what they were created from
+5. Test iterator, reverse iterator - ask how they would print the element on which the iterator is
+6. Test const iterator, reverse const iterator
+```
+int main(void)
+{
+    // testing construction with default container type - should be deque
+    MutantStack<int> stack1;   
+    MutantStack<int> stack2; 
+
+    // testing basic stack operations
+    for (int i = 1; i <= 10; i++)
+        stack1.push(i);
+    stack1.pop();
+    std::cout << "Stack1: " << stack1.size() << ", empty: " << stack1.empty() << std::endl;
+
+    // testing construction with other container type - vector, list, ...
+    MutantStack<int, std::vector<int> > vectorStack;  
+    std::cout << "VectorStack: " << vectorStack.size() << ", empty: " << vectorStack.empty() << std::endl;
+
+    // testing copy constructor
+    MutantStack<int> copyStack(stack1);
+    std::cout << "CopyStack: " << copyStack.size() << ", empty: " << copyStack.empty() << std::endl;
+
+    // testing copy assignment operator
+    stack2 = stack1;
+    // vectorStack = stack1; // should not work - different types - vector vs deque
+
+    // testing const stack and basic operations
+    const MutantStack<int> constStack(stack1);
+    std::cout << "ConstStack: " << constStack.size() << ", empty: " << constStack.empty() << std::endl << std::endl;
+
+    // testing the basic iterator
+    std::cout << "Begin: " << *(stack1.begin()) << ", end: " << *(--stack1.end()) << std::endl;
+
+    // testing the reverse iterator
+    std::cout << "Reverse begin: " << *(stack1.rbegin()) << ", reverse end: " << *(--stack1.rend()) << std::endl;
+
+    // testing the const iterator
+    std::cout << "Const Begin: " << *(constStack.begin()) << ", const end: " << *(--constStack.end()) << std::endl;
+
+    // testing the const reverse iterator
+    std::cout << "Const reverse begin: " << *(constStack.rbegin()) << ", const reverse end: " << *(--constStack.rend()) << std::endl;
+
+    return 0;
+}
+```
