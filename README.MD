@@ -210,6 +210,7 @@ Tests:
 5. String to be replaced is ""
 6. String to replace is ""
 7. Normal input to be replaced, upper and lowercase versions of the string
+8. File is empty
 
 #### Excercise 5 - Harl - Pointers to member functions
 
@@ -571,6 +572,7 @@ DiamondClap attributes and member functions will be inherited from its parent cl
 Tests:
 0. FragTrap and ScavTrap inherit virtually: class FragTrap : virtual public ClapTrap - What does virtual do ?  (ensures only one object exists)
 1. ClapTrap sub-object has name "name"_clap_name, and the child object has name "name" - scav and frag inherit name from base, and diamond overwrites it
+2. How does virtual inheritance help here? what if i remove the virtual keyword from the ClapTrap declaration ?
 
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
