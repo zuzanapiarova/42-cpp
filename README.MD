@@ -574,6 +574,83 @@ Tests:
 1. ClapTrap sub-object has name "name"_clap_name, and the child object has name "name" - scav and frag inherit name from base, and diamond overwrites it
 2. How does virtual inheritance help here? what if i remove the virtual keyword from the ClapTrap declaration ?
 
+## CPP04 - Inheritance,, Polymorphism
+
+#### Excercise 00 - Class Animal with 2 derived classes
+
+Here we learn about concepts as:
+- polymorphism - is is possible to access objects of different types through the same interface (eg. class, operator, function name), and each type can provide its own independent implementation of this interface
+- runtime polymorphism - it is possible to assign pointers of objects of derived classes to base class 
+- object slicing - when copying Cat to Animal - object slicing happens - Child functions will be sliced 
+- copying Animal to Cat is not be possible (unless constructor that takes in Animal is implemented)
+- virtual -
+- BUT virtual doesn't prevent slicing — it enables polymorphism, but only when you're working with pointers or references, not by value
+
+Class WrongAnimal should show 
+
+Tests:
+1. Test/Check Animal, Dog, Cat, WrongAnimal, WrongCat default constructor, overload constructor, copy constructor, copy assignment operator
+2. Check that Animal has virtual methods and constructor - why should destructor be virtual ? 
+3. !!! CHeck that in tests, the object type to which we store is of typ Animal, not of type of 
+3. Test differences in Animal and WrongAnimal and ask them to compare what is the difference and why
+
+int main(void)
+{
+    // 0. test/check constructors and copying
+
+    // 1. this works because it is not using polymorphism, functions are called directly on objects of known types
+    const Animal a1;
+    const Dog d1;
+    std::cout << a1.getType() << " " << std::endl;
+    std::cout << d1.getType() << " " << std::endl;
+    a1.makeSound();
+    d1.makeSound();
+    std::cout << std::endl;
+
+    // 2. Object slicing - this does not work because runtime polymorphism needs the pointer/reference, not a copy - the copy copies Dog into Animal, but slices Dog-specific part 
+    const Animal a2 = Animal();
+    const Animal d2 = Dog();
+    std::cout << a2.getType() << " " << std::endl;
+    std::cout << d2.getType() << " " << std::endl;
+    a2.makeSound();
+    d2.makeSound(); // dog does not bark, but uses the animal sound
+    std::cout << std::endl;
+
+    // 3. this works because it uses true polymorphism by using pointers AND the makeSound is virtual in parent
+    const Animal* a3 = new Animal();
+    const Animal* d3 = new Dog(); // slicing removes derived part
+    std::cout << a3->getType() << " " << std::endl;
+    std::cout << d3->getType() << " " << std::endl;
+    a3->makeSound();
+    d3->makeSound();
+    std::cout << std::endl;
+
+    // 4. same here = true polymorphism, now using references
+    const Animal& a4 = *a3;
+    const Animal& d4 = *d3;
+    // const Dog& h = *e; // --> does not work because you can’t safely downcast a base class pointer to a derived class reference
+    std::cout << a4.getType() << " " << std::endl;
+    std::cout << d4.getType() << " " << std::endl;
+    a4.makeSound();
+    d4.makeSound();
+    std::cout << std::endl;
+
+    // 5. this is wrong - true polymorphism with pointers just like test 3., but wrongcat does not use virtual for makeSound function
+    const WrongAnimal *wa = new WrongAnimal();
+    const WrongAnimal *wc = new WrongCat();
+    std::cout << wa->getType() << " " << std::endl;
+    std::cout << wc->getType() << " " << std::endl;
+    wa->makeSound();
+    wc->makeSound();
+    std::cout << std::endl;
+
+    delete a3;
+    delete d3;
+    delete wa;
+    delete wc;
+
+    return 0;
+}
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 

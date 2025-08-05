@@ -1,19 +1,14 @@
 #include "WrongAnimal.hpp"
 
-WrongAnimal::WrongAnimal() : type("Unclassified")
+WrongAnimal::WrongAnimal() : type("Animal")
 {
     std::cout << "Wrong Animal default constructor called." << std::endl;
 };
 
-WrongAnimal::WrongAnimal(const std::string& type) : type(type)
-{
-    std::cout << "Wrong Animal overload constructor called." << std::endl;
-};
 
-WrongAnimal::WrongAnimal(const WrongAnimal& origin)
+WrongAnimal::WrongAnimal(const WrongAnimal& origin) : type(origin.type)
 {
     std::cout << "WrongAnimal copy constructor called." << std::endl;
-    this->type = origin.type;
 };
 
 WrongAnimal& WrongAnimal::operator = (const WrongAnimal& origin)
@@ -21,12 +16,18 @@ WrongAnimal& WrongAnimal::operator = (const WrongAnimal& origin)
     std::cout << "WrongAnimal copy assignment operator called." << std::endl;
     if (this != &origin)
         this->type = origin.type;
+    return *this;
 };
 
 WrongAnimal::~WrongAnimal()
 {
     std::cout << "Wrong Animal destructor called." << std::endl;
 };
+
+std::string WrongAnimal::getType() const 
+{
+    return type;
+}
 
 void WrongAnimal::makeSound( void ) const
 {
