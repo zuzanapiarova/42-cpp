@@ -590,7 +590,7 @@ Tests:
 1. Test/Check Animal, Dog, Cat, WrongAnimal, WrongCat default constructor, overload constructor, copy constructor, copy assignment operator
 2. Check that Animal has virtual methods and constructor - why should destructor be virtual ? 
 3. !!! CHeck that in tests, the object type to which we store is of typ Animal, not of type Dog/Cat - this will definitelly work but it is not polymorphism
-4. Test differences in Animal and WrongAnimal and ask them to compare what is the difference and why - WrongCat created from WrongAnimal should call the WrongAnimal sound
+4. Test differences in Animal and WrongAnimal - what is the difference and why ? (WrongCat created from WrongAnimal should call the WrongAnimal sound)
 ```
 int main(void)
 {
@@ -651,12 +651,22 @@ int main(void)
 }
 ```
 
-#### Excercise 01 - Allocating on heap with classes
+#### Excercise 01 - Deep/shallow copies AND virtual destructors
 
-1. Check assignment implementation
-2. Check they do not share brain
-3. Check leaks
+This excercise demonstrated the difference between deep copy and shallow copy.
 
+We can't assign one array to another as whole directly in C++ - it would create shallow copy
+Must copy the contents element by element using a loop - it creates a deep copy
+
+Tests:
+1. Check constructors and assignment - they must allocate new brain (in  assignment, it must be deleted)
+2. Destructor must delete the brain, else there will be leaks
+3. Also, destructor in Animal must be virtual - what will happen if it is not? (leaks from brain - brain is allocated and freed in child constructor/destructor, but if base destructor is not virtual, it will be called, not the destructor of the derived function) 
+4. Check they do not share brain - chek we create a deep copy, not a shallow copy
+5. Check that the brain copy constructor and assignment copy in a loop all elements one by one
+6. Check leaks
+Edge cases:
+5. Put empty index into getIdea
 ```
 int main(void)
 {
@@ -706,10 +716,80 @@ int main(void)
     return 0;
 }
 ```
+#### Excercise 02 - Abstract classes
+
+This excercise introduced abstract classes - classes that act as an interface, just group functionality for their derived classes but are non-instantiable. We cannot make instances of abstract classes. 
+
+The = 0 behind a function means that this function must be re-implemented by the children, they will not be able to use the parents one. 
+
+Tests:
+1. The name of the Animal can but des not have to be AAnimal - check folder names fit class names (but no big problem)
+2. Just check that the makeSound functions is =0. What does it mean?
+`Animal animal;` or `AAnimal animal;` -- this should not be possible and give error 
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
-#### Excercise 0 - 
+#### Excercise 0 - Exception classes
+
+Here we create our first exception class that extends std::exception. 
+
+Tests:
+1. Test that bureaucrat throws exceptions when constructing (default, copy, copy assignment) him with bigger/smaller grade than acccepted - in copy constructors may be redundant 
+2. Test that bureaucrat throws appropriate exception (same as above) when calling gradeIncrease/gradeDecrease adn it would result in grade bigger/smaller than accepted
+3. Check grade increment/decrement logic -grade 1 is the highest and 150 the lowest, so incrementing a grade 3 should result in a grade 2
+4. Check constructors that the grade is not assigned in the initializer list, but in the constructor body, since we first must check the logic (too high/low)
+5. The main provided should include try-catch block with the exceptions 
+6. Check that bureaucrat name member is const, and check how copy assignment operator handles it - test copy assignment 
+```
+
+int main(void)
+{
+    try
+    {
+        Bureaucrat a("Anna", 2);
+        Bureaucrat b("Bob", 1);
+        Bureaucrat c("Clara", 149);
+        // Bureaucrat d("Daria", 160); // throws exception
+        std::cout << std::endl;
+
+        std::cout << a << std::endl;
+        std::cout << b << std::endl;
+        std::cout << c << std::endl;
+
+        // testing member function logic 
+        a.incrementGrade();
+        // b.incrementGrade(); // throws exception
+        c.decrementGrade();
+        //c.decrementGrade(); // throws exception
+        std::cout << std::endl;
+
+        std::cout << a << std::endl;
+        std::cout << b << std::endl;
+        std::cout << c << std::endl;
+        std::cout << std::endl;    
+
+        // testing copy constructor
+        Bureaucrat e(b); // was initialized to 1 by copying
+        std::cout << e << std::endl << std::endl;
+
+        // testing copy assignment operator
+        Bureaucrat f("Frank", 10);
+        std::cout << f << std::endl;
+        f = e; // error - cannot assign object that has const members 
+        std::cout << f << std::endl << std::endl;
+    }
+    catch (const Bureaucrat::GradeTooHighException& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+    catch (const Bureaucrat::GradeTooLowException& e)
+    {
+        std::cerr << e.what() << std::endl;
+    }
+
+    return 0;
+}
+```
 
 #### Excercise 1 - 
 

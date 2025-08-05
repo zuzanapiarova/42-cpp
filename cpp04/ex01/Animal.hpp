@@ -19,7 +19,6 @@ class Animal
 
         virtual std::string getType() const ;
         virtual void makeSound( void ) const;
-        virtual Brain* getBrain() const; // is implemented - not used by Animal, but acts as a safe default
 };
 
 #endif

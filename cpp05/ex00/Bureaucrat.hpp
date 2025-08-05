@@ -28,7 +28,6 @@ class Bureaucrat
 
 std::ostream& operator << (std::ostream& os, const Bureaucrat& bureaucrat);
 
-
 class Bureaucrat::GradeTooHighException : public std::exception
 {
     public:

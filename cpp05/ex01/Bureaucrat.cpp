@@ -27,11 +27,7 @@ Bureaucrat& Bureaucrat::operator = (const Bureaucrat& origin)
     std::cout << "Bureaucrat copy assignment operator called." << std::endl;
     if (this != &origin)
     {
-        if (origin.grade < 1)
-            throw GradeTooHighException();
-        else if (origin.grade > 150)
-            throw GradeTooLowException();
-        this->grade = origin.grade;
+        std::cerr << "Cannot call copy assignmet operator on object with const members. Returning without change." << std::endl;
     }
     return *this;
 };

@@ -1,6 +1,6 @@
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
-NAME = abstract_animals
+NAME = brains
 
 SRCS = Animal.cpp Dog.cpp Cat.cpp Brain.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)

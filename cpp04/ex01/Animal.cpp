@@ -34,9 +34,3 @@ void Animal::makeSound( void ) const
 {
     std::cout << " ... Unidentifiable sound ... " << std::endl;
 };
-
-Brain* Animal::getBrain() const
-{
-    std::cout << "Animal " << type << " has no brain." << std::endl;
-    return nullptr; 
-};
