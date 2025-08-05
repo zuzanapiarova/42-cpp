@@ -1,9 +1,10 @@
 #include "Cat.hpp"
 
-Cat::Cat() : Animal::Animal("Cat")
+Cat::Cat() : Animal::Animal()
 {
-    brain = new Brain();
     std::cout << "Cat default constructor called." << std::endl;
+    type = "Cat";
+    brain = new Brain();
 };
 
 Cat::Cat(const Cat& origin) : Animal(origin)
@@ -19,6 +20,7 @@ Cat& Cat::operator = (const Cat& origin)
     {
         delete brain; // delete brain from default constructor
         brain = new Brain(*origin.brain); // create deep copy of brain
+        type = origin.type;
     }
     return *this;
 };

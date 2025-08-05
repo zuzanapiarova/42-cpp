@@ -30,7 +30,6 @@ std::string Animal::getType() const
     return type;
 };
 
-
 void Animal::makeSound( void ) const
 {
     std::cout << " ... Unidentifiable sound ... " << std::endl;

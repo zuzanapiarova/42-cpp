@@ -580,20 +580,18 @@ Tests:
 
 Here we learn about concepts as:
 - polymorphism - is is possible to access objects of different types through the same interface (eg. class, operator, function name), and each type can provide its own independent implementation of this interface
-- runtime polymorphism - it is possible to assign pointers of objects of derived classes to base class 
-- object slicing - when copying Cat to Animal - object slicing happens - Child functions will be sliced 
+- runtime polymorphism - it is possible to assign pointers of objects of derived classes to base class
 - copying Animal to Cat is not be possible (unless constructor that takes in Animal is implemented)
-- virtual -
+- virtual - when using virtual and pointers/referenes to objects, it allows runtime polymorphism, and the method implementation used will be the most derived one, not the base one
 - BUT virtual doesn't prevent slicing — it enables polymorphism, but only when you're working with pointers or references, not by value
-
-Class WrongAnimal should show 
+- object slicing - when copying Cat to Animal by value, not uing references/pointers - object slicing happens - Child functions will be sliced 
 
 Tests:
 1. Test/Check Animal, Dog, Cat, WrongAnimal, WrongCat default constructor, overload constructor, copy constructor, copy assignment operator
 2. Check that Animal has virtual methods and constructor - why should destructor be virtual ? 
-3. !!! CHeck that in tests, the object type to which we store is of typ Animal, not of type of 
-3. Test differences in Animal and WrongAnimal and ask them to compare what is the difference and why
-
+3. !!! CHeck that in tests, the object type to which we store is of typ Animal, not of type Dog/Cat - this will definitelly work but it is not polymorphism
+4. Test differences in Animal and WrongAnimal and ask them to compare what is the difference and why - WrongCat created from WrongAnimal should call the WrongAnimal sound
+```
 int main(void)
 {
     // 0. test/check constructors and copying
@@ -651,6 +649,63 @@ int main(void)
 
     return 0;
 }
+```
+
+#### Excercise 01 - Allocating on heap with classes
+
+1. Check assignment implementation
+2. Check they do not share brain
+3. Check leaks
+
+```
+int main(void)
+{
+    int size = 10;
+
+    // creatin animal objects, cats and dogs
+    Animal* animals[size];
+    for (int i = 0; i < size; i++)
+    {
+        if (i % 2 == 0)
+            animals[i] = new Cat();
+        else
+            animals[i] = new Dog();
+
+    }
+    // making sounds
+    for (int i = 0; i < size; i++)
+    {
+        animals[i]->makeSound();
+    }
+    // checking for deep copies - they cannot share a brain
+    Dog *dogPtr = dynamic_cast<Dog*>(animals[1]);
+    if (dogPtr)
+    {
+        Dog* newDog = new Dog(*dogPtr);  // deep copy
+        
+        dogPtr->getBrain()->setIdea(0, "I am dog 1.");
+        
+        std::cout << "dog1 brain pointer: " << dogPtr->getBrain() << std::endl;
+        std::cout << "dog2 brain pointer: " << newDog->getBrain() << std::endl;
+
+        std::cout << dogPtr->getBrain()->getIdea(0) << std::endl;
+        std::cout << newDog->getBrain()->getIdea(0) << std::endl;
+
+        delete newDog;
+    }
+    else
+    {
+        std::cout << "animals[1] is not a Dog!" << std::endl;
+    }
+    // deleting the animals
+    for (int i = 0; i < size; i++)
+    {
+        delete animals[i];
+    }
+
+    return 0;
+}
+```
 
 ## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
 
