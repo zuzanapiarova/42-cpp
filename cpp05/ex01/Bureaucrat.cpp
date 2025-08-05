@@ -22,7 +22,7 @@ Bureaucrat::Bureaucrat(const Bureaucrat& origin) : name(origin.name)
     this->grade = origin.grade;
 };
 
-Bureaucrat& Bureaucrat::operator = (const Bureaucrat& origin)
+Bureaucrat& Bureaucrat::operator =(const Bureaucrat& origin)
 {
     std::cout << "Bureaucrat copy assignment operator called." << std::endl;
     if (this != &origin)

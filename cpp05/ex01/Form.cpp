@@ -25,7 +25,7 @@ Form& Form::operator =(const Form& origin)
 {
     std::cout << "Form copy assignment operator called." << std::endl;
     if (this != &origin)
-        this->isSigned = origin.isSigned;
+        std::cerr << "Cannot use copy assignment on object with const members. Aborting without change." << std::endl;
     return *this;
 };
 

@@ -43,6 +43,16 @@ Bureaucrat::~Bureaucrat()
     std::cout << "Bureaucrat destructor called." << std::endl;
 };
 
+const char* Bureaucrat::GradeTooHighException::what() const throw()
+{
+    return "Grade too high!";
+};
+
+const char* Bureaucrat::GradeTooLowException::what() const throw()
+{
+    return "Grade too low!";
+};
+
 // ---------------------------------------------- Member Functions -------------------------------------------------
 
 std::string Bureaucrat::getName() const

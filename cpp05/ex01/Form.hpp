@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 
+#include "GradeExceptions.hpp"
+
 // preventing circular dependencies - forweard declaration of just the class here, the header is included where it is implemented
 class Bureaucrat;
 
@@ -26,31 +28,10 @@ class Form
         bool        getIsSigned() const;
         int         getMinimumSignGrade() const;
         int         getMinimumExecutionGrade() const;
-        void        beSigned(const Bureaucrat& bureaucrat);
-
-        class       GradeTooHighException;
-        class       GradeTooLowException;   
+        void        beSigned(const Bureaucrat& bureaucrat); 
 
 };
 
 std::ostream& operator << (std::ostream& os, const Form& form);
-
-class Form::GradeTooHighException : public std::exception
-{
-    public:
-        const char* what() const throw()
-        {   
-            return "Grade too high for Form!";
-        }
-};
-
-class Form::GradeTooLowException : public std::exception
-{
-    public:
-        const char* what() const throw()
-        {
-            return "Grade too low for Form!";
-        }
-};
 
 #endif

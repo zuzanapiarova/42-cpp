@@ -734,6 +734,7 @@ Tests:
 Here we create our first exception class that extends std::exception. 
 
 Tests:
+0. Check that any function implementation is in cpp file, not in hedre - if so, rewrite
 1. Test that bureaucrat throws exceptions when constructing (default, copy, copy assignment) him with bigger/smaller grade than acccepted - in copy constructors may be redundant 
 2. Test that bureaucrat throws appropriate exception (same as above) when calling gradeIncrease/gradeDecrease adn it would result in grade bigger/smaller than accepted
 3. Check grade increment/decrement logic -grade 1 is the highest and 150 the lowest, so incrementing a grade 3 should result in a grade 2
@@ -741,7 +742,6 @@ Tests:
 5. The main provided should include try-catch block with the exceptions 
 6. Check that bureaucrat name member is const, and check how copy assignment operator handles it - test copy assignment 
 ```
-
 int main(void)
 {
     try
@@ -793,15 +793,59 @@ int main(void)
 
 #### Excercise 1 - 
 
+Tests:
+1. Check circular dependencies
+2. Check how grade is checked for too high/too low when constructing form
+3. Form attributes are private, not protected
+4. Check how signForm checks for too low grade for signing
+```
+
+int main(void)
+{
+    try
+    {
+        Bureaucrat a("Anna", 20);
+        Bureaucrat b("Bob", 20);
+        Form c("Work Contract", 20, 10);
+        Form d("Car Contract", 20, 10);
+        std::cout << std::endl;
+
+        std::cout << b << std::endl;
+        b.signForm(c); // works - Bob has access
+        std::cout << c << std::endl << std::endl;
+    
+        b.decrementGrade();
+        std::cout << b << std::endl;
+        b.signForm(d); // does not work - Bob has not access anymore
+        std::cout << d << std::endl << std::endl;
+    
+        std::cout << a << std::endl;
+        a.signForm(d); // works - Anna has enough access
+        std::cout << d << std::endl << std::endl;
+    }
+    catch(std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
+
+    return 0;
+}
+```
+
 #### Excercise 2 - Overriden Forms inheriting from abstract class AForm
 
 Making an abstract class and making 3 classes that inherit from it. Must raise appropriate exceptions.
 
-Possible exceptions:
+Tests:
 1. Creating Bureaucrat object with too low/high grade (other than range 1-150)
 2. Bureaucrat trying to sign/execute form with not enough high grade
 3. Trying to execute unsigned form
 4. Check that AForm attributes are private, not protected
+5. Check if execute is pure virtual function ( = 0 )
+6. Check all 3 form types and their functions
+7. ShrubberyForm - if file cannot be opened(chmod a-w...)
+8. Test executing form that is not signed
+9. Test signing form that bureaucrat does not have permission to sign
 
 Tests:
 0. Create a bureaucrat 

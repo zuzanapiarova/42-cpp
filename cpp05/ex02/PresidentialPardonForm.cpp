@@ -20,10 +20,7 @@ PresidentialPardonForm& PresidentialPardonForm::operator =(const PresidentialPar
 {
     std::cout << "PresidentialPardonForm copy assignment operator called." << std::endl;
     if (this != &origin)
-    {
-        AForm::operator=(origin);
-        this->target = origin.target;
-    }
+        std::cerr << "Cannot use copy assignment on object with const members. Aborting without change." << std::endl;
     return *this;
 }
 
@@ -42,13 +39,9 @@ const std::string& PresidentialPardonForm::getTarget() const
 bool PresidentialPardonForm::execute(const Bureaucrat& executor) const 
 {
     if (!getIsSigned())
-    {
-        throw AForm::FormNotSignedException();
-    }
+        throw FormNotSignedException();
     if (executor.getGrade() > getMinimumExecutionGrade())
-    {
-        throw AForm::GradeTooLowException();
-    }
+        throw GradeTooLowException();
     std::cout << target << " has been pardoned by Zaphod Beeblebrox." << std::endl;
     return true;
 }

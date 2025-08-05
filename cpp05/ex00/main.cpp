@@ -36,11 +36,7 @@ int main(void)
         f = e; // error - cannot assign object that has const members 
         std::cout << f << std::endl << std::endl;
     }
-    catch (const Bureaucrat::GradeTooHighException& e)
-    {
-        std::cerr << e.what() << std::endl;
-    }
-    catch (const Bureaucrat::GradeTooLowException& e)
+    catch (const std::exception& e)
     {
         std::cerr << e.what() << std::endl;
     }

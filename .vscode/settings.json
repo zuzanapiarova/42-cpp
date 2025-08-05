@@ -76,7 +76,8 @@
         "span": "cpp",
         "*.tpp": "cpp",
         "list": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "filesystem": "cpp"
     },
     "C_Cpp.autocomplete": "disabled",
     "C_Cpp.autocompleteAddParentheses": true

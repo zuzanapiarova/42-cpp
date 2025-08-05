@@ -32,23 +32,16 @@ class Bureaucrat
 
 std::ostream& operator << (std::ostream& os, const Bureaucrat& bureaucrat);
 
-
 class Bureaucrat::GradeTooHighException : public std::exception
 {
     public:
-        const char* what() const throw()
-        {   
-            return "Grade too high for Bureaucrat!";
-        }
+        const char* what() const throw() ;
 };
 
 class Bureaucrat::GradeTooLowException : public std::exception
 {
     public:
-        const char* what() const throw()
-        {
-            return "Grade too low for Bureaucrat!";
-        }
+        const char* what() const throw() ;
 };
 
 #endif

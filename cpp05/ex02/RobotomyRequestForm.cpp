@@ -20,10 +20,7 @@ RobotomyRequestForm& RobotomyRequestForm::operator =(const RobotomyRequestForm& 
 {
     std::cout << "RobotomyRequestForm copy assignment operator called." << std::endl;
     if (this != &origin)
-    {
-        AForm::operator=(origin);
-        target = origin.target;
-    }
+        std::cerr << "Cannot use copy assignment on object with const members. Aborting without change." << std::endl;
     return *this;
 };
 
@@ -42,13 +39,9 @@ const std::string& RobotomyRequestForm::getTarget() const
 bool    RobotomyRequestForm::execute(const Bureaucrat& executor ) const 
 {
     if (!getIsSigned())
-    {
-        throw AForm::FormNotSignedException();
-    }
+        throw FormNotSignedException();
     if (executor.getGrade() > getMinimumExecutionGrade())
-    {
-        throw AForm::GradeTooLowException();
-    }
+        throw GradeTooLowException();
     
     std::cout << "BZZRRZZZTTT... * and other drilling noises *" << std::endl;
 

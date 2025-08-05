@@ -20,10 +20,7 @@ ShrubberyCreationForm& ShrubberyCreationForm::operator =(const ShrubberyCreation
 {
     std::cout << "ShrubberyCreationForm copy assignment operator called." << std::endl;
     if (this != &origin)
-    {
-        AForm::operator=(origin);
-        targetFileName = origin.targetFileName;
-    }
+        std::cerr << "Cannot use copy assignment on object with const members. Aborting without change." << std::endl;
     return *this;
 }
 
@@ -42,13 +39,9 @@ const std::string& ShrubberyCreationForm::getTargetFileName() const
 bool    ShrubberyCreationForm::execute(const Bureaucrat& executor ) const 
 {
     if (!getIsSigned())
-    {
-        throw AForm::FormNotSignedException();
-    }
+        throw FormNotSignedException();
     if (executor.getGrade() > getMinimumExecutionGrade())
-    {
-        throw AForm::GradeTooLowException();
-    }
+        throw GradeTooLowException();
     std::ofstream outputFile(targetFileName.c_str());
     if (!outputFile)
     {
