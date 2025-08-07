@@ -37,8 +37,9 @@ int main(int argc, char **argv)
     }
     try
     {
-        BitcoinDatabase db("data.csv");
-        db.calculateValues(argv[1]);
+        BitcoinExchange db("data.csv");
+        db.printDB(); // printing testing 
+        db.getPricesForDates(argv[1]);
     }
     catch(std::exception& e)
     {

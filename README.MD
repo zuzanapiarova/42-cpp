@@ -1527,12 +1527,12 @@ I use the map container here to store Date objets as keys and doubles as values:
 
 Tests:
 0. Basic checks
+aa. All tests that end in error and end program execution should end with 1 error code (or other non-0)
 a. Provided database (data.csv or other, defined in program), does not exist or no read permission
 b. Database provided in argument does not exist or no read permission
 c. Provided file is empty
 d. Argument file is empty
 e. Wrong number of arguments
-h. Exit status of program is 1 when exiting with an exception - echo $?
 1. Check for valid date and how thoroughly invalid dates are checked
 aa. correct date 
 a. day < 0
@@ -1547,6 +1547,7 @@ g. february has only 28 days: 2025-02-28
 h. leap year is allowed: 2024-02-29
 h. any value is more than max int
 g. any value value less than min int 
+i. check if it works both if column names are on first line and when are not
 2. Change the provided input file with prices to have wrong fields
 a. value missing
 b. wrong date 

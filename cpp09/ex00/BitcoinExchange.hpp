@@ -10,43 +10,43 @@
 
 #include "Date.hpp"
 
-class BitcoinDatabase
+class BitcoinExchange
 {
     private:
         const std::string       _filename;
         std::map<Date, double>  _pricesMap;
         void                    _populateMap(std::ifstream& pricesDatabase);
+        double                  _getValue(const Date& key) const ;
 
     
     public:
-        BitcoinDatabase();
-        BitcoinDatabase(const std::string& filename);
-        BitcoinDatabase(const BitcoinDatabase& origin);
-        BitcoinDatabase& operator =(const BitcoinDatabase& origin);
-        ~BitcoinDatabase();
+        BitcoinExchange();
+        BitcoinExchange(const std::string& filename);
+        BitcoinExchange(const BitcoinExchange& origin);
+        BitcoinExchange& operator =(const BitcoinExchange& origin);
+        ~BitcoinExchange();
 
-        void     calculateValues( const std::string& inputFile) const ;
-        double getValue(const Date& key) const ;
-        void printDB() const;// temporary
+        void    getPricesForDates( const std::string& inputFile) const ;
+        void    printDB() const;// temporary
 
         class DuplicateDateException;
         class DateNotExistException;
         class InvalidFormatException;
 };
 
-class BitcoinDatabase::DuplicateDateException : public std::exception
+class BitcoinExchange::DuplicateDateException : public std::exception
 {
     public:
         const char* what() const throw() ;
 };
 
-class BitcoinDatabase::DateNotExistException : public std::exception
+class BitcoinExchange::DateNotExistException : public std::exception
 {
     public:
         const char* what() const throw() ;
 };
 
-class BitcoinDatabase::InvalidFormatException : public std::exception
+class BitcoinExchange::InvalidFormatException : public std::exception
 {
     public:
         const char* what() const throw() ;
