@@ -866,6 +866,7 @@ Tests:
 9. Test signing form that bureaucrat does not have permission to sign
 10. Test if we can create by copy constructor a form of one type from form of another type - try to copy a SIGNED form to see if the isSigned variable is going to be copied ! 
 11. Can test for empty input in target field when constructing form types but it is not what the excercise is about 
+12. Execute ShrubberyForm multiple times - is the Garden(or other name) file still correct ? 
 
 Tests:
 0. Create a bureaucrat 
@@ -910,6 +911,7 @@ Tests:
 3. Test creation of all 3 forms by the intern.
 4. Test all 3 forms being usable by bureaucrats - try to sign and execute.
 5. Check how intern implementes the makeForm function
+6. Test creating a form that does not exist AND then print it with << - segfault ? 
 
 ```
 int main(void)
@@ -1525,15 +1527,19 @@ int main(void)
 
 I use the map container here to store Date objets as keys and doubles as values: std::map map<Date, double>
 
+The files can have first line representing column names but do not have to, work also when starting with dates right away.
+
+
+
 Tests:
 0. Basic checks
 aa. All tests that end in error and end program execution should end with 1 error code (or other non-0)
-a. Provided database (data.csv or other, defined in program), does not exist or no read permission
+a. Provided database (data.csv or other, defined in program) does not exist or no read permission
 b. Database provided in argument does not exist or no read permission
 c. Provided file is empty
 d. Argument file is empty
 e. Wrong number of arguments
-1. Check for valid date and how thoroughly invalid dates are checked
+1. Check both files for valid date and how thoroughly invalid dates are checked
 aa. correct date 
 a. day < 0
 b. day = 0
@@ -1572,4 +1578,34 @@ h. input float as value
 h. duplicate dates - allowed 
 i. Date not container in the provided db - must use the lower one
 j. Date does not exist but there is no lower date
-k. value is > 1000
+k. Value is > 1000
+l. Date in future ? not error
+
+Tests for the date:
+2025-01-31 | 1.1
+2025-02-31 | 1.1
+2025-03-31 | 1.1
+2025-04-31 | 1.1
+2025-05-31 | 1.1
+2025-06-31 | 1.1
+2025-07-31 | 1.1
+2025-08-31 | 1.1
+2025-09-31 | 1.1
+2025-10-31 | 1.1
+2025-11-31 | 1.1
+2025-12-31 | 1.1
+2024-02-0 | 1.1
+2024-02--2 | 1.1
+2024-03-32 | 1.1
+2024-0-01 | 1.1
+2024--1-01 | 1.1
+2024-13-01 | 1.1
+-1-12-01 | 1.1
+2011-02-28 | 1.1
+2011-02-29 | 1.1
+2024-02-29 | 1.1
+2024-02-30 | 1.1
+2025-04-01 | -1
+2025-04-01 | 0
+2025-04-01 | 1000
+2025-04-01 | 1001

@@ -54,8 +54,6 @@ AForm*    Intern::makeForm(const std::string& formName, const std::string& formT
             return (this->*formCreationPointers[i])(formTarget);
         }
     }
-    std::cout << "The requested form does not exist!" << std::endl;
-
-    return NULL;
+    throw std::runtime_error("Form type does not exist.");
 };
 

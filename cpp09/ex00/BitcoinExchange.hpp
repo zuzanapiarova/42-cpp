@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <cstdio>
 #include <algorithm>
 #include <map>
 #include <exception>
@@ -27,7 +28,7 @@ class BitcoinExchange
         ~BitcoinExchange();
 
         void    getPricesForDates( const std::string& inputFile) const ;
-        void    printDB() const;// temporary
+        void    printDB() const ;
 
         class DuplicateDateException;
         class DateNotExistException;
@@ -51,7 +52,5 @@ class BitcoinExchange::InvalidFormatException : public std::exception
     public:
         const char* what() const throw() ;
 };
-
-
 
 #endif
