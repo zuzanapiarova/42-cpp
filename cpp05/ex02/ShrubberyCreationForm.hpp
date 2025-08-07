@@ -8,15 +8,16 @@
 class ShrubberyCreationForm : public AForm
 {
     private:
-        std::string targetFileName;
+        std::string target;
 
     public:
+        ShrubberyCreationForm();
         ShrubberyCreationForm(const std::string& target);
         ShrubberyCreationForm(const ShrubberyCreationForm& origin);
         ShrubberyCreationForm& operator =(const ShrubberyCreationForm& origin);
         ~ShrubberyCreationForm();
 
-        const std::string& getTargetFileName() const ;
+        const std::string& getTarget() const ;
         bool         execute(const Bureaucrat& executor) const;
 
 };

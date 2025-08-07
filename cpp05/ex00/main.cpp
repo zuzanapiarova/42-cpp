@@ -7,19 +7,21 @@ int main(void)
         Bureaucrat a("Anna", 2);
         Bureaucrat b("Bob", 1);
         Bureaucrat c("Clara", 149);
-        // Bureaucrat d("Daria", 160); // throws exception
+        Bureaucrat anonym;
+        // Bureaucrat d("Daria", 160); // throws GradeTooLowException
         std::cout << std::endl;
 
         std::cout << a << std::endl;
         std::cout << b << std::endl;
         std::cout << c << std::endl;
+        std::cout << anonym << std::endl;
+        std::cout << std::endl;
 
         // testing member function logic 
         a.incrementGrade();
-        // b.incrementGrade(); // throws exception
+        // b.incrementGrade(); // throws GradeTooHighException
         c.decrementGrade();
-        //c.decrementGrade(); // throws exception
-        std::cout << std::endl;
+        // c.decrementGrade(); // throws GradeTooLowException
 
         std::cout << a << std::endl;
         std::cout << b << std::endl;
@@ -33,7 +35,7 @@ int main(void)
         // testing copy assignment operator
         Bureaucrat f("Frank", 10);
         std::cout << f << std::endl;
-        f = e; // error - cannot assign object that has const members 
+        f = e; // error - cannot assign object that has const members OR some other way to handle this 
         std::cout << f << std::endl << std::endl;
     }
     catch (const std::exception& e)

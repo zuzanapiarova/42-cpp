@@ -3,6 +3,11 @@
 
 //------------------------------------------ Orthodox Canonical Form ------------------------------------
 
+RobotomyRequestForm::RobotomyRequestForm() : AForm("RobotomyRequestForm", 72, 45), target("Unassigned")
+{
+    std::cout << "PresidentialPardonForm defsult constructor called for target " << target << std::endl;
+}
+
 RobotomyRequestForm::RobotomyRequestForm(const std::string& newTarget)
     : AForm("RobotomyRequestForm", 72, 45), target(newTarget)
 {
@@ -10,10 +15,9 @@ RobotomyRequestForm::RobotomyRequestForm(const std::string& newTarget)
 };
 
 RobotomyRequestForm::RobotomyRequestForm(const RobotomyRequestForm& origin)
-    : AForm("RobotomyRequestForm", 72, 45), target(origin.target)
+    : AForm(origin), target(origin.target)
 {
     std::cout << "RobotomyRequestForm copy constructor called." << std::endl;
-    *this = origin;
 };
 
 RobotomyRequestForm& RobotomyRequestForm::operator =(const RobotomyRequestForm& origin)
@@ -39,9 +43,9 @@ const std::string& RobotomyRequestForm::getTarget() const
 bool    RobotomyRequestForm::execute(const Bureaucrat& executor ) const 
 {
     if (!getIsSigned())
-        throw FormNotSignedException();
+        throw AForm::FormNotSignedException();
     if (executor.getGrade() > getMinimumExecutionGrade())
-        throw GradeTooLowException();
+        throw AForm::GradeTooLowException();
     
     std::cout << "BZZRRZZZTTT... * and other drilling noises *" << std::endl;
 

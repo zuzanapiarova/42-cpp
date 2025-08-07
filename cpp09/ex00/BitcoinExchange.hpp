@@ -3,31 +3,55 @@
 
 #include <string>
 #include <iostream>
-#include <iomanip>
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <exception>
 
-class Date
+#include "Date.hpp"
+
+class BitcoinDatabase
 {
     private:
-        int _year;
-        int _month;
-        int _day;
+        const std::string       _filename;
+        std::map<Date, double>  _pricesMap;
+        void                    _populateMap(std::ifstream& pricesDatabase);
 
+    
     public:
-        Date();
-        Date(int year, int month, int day);
-        Date(const Date& origin);
-        Date& operator=(const Date& origin);
-        bool operator<(const Date& other) const;
-        ~Date();
+        BitcoinDatabase();
+        BitcoinDatabase(const std::string& filename);
+        BitcoinDatabase(const BitcoinDatabase& origin);
+        BitcoinDatabase& operator =(const BitcoinDatabase& origin);
+        ~BitcoinDatabase();
 
-        int getYear() const ;
-        int getMonth() const ;
-        int getDay() const ;
+        void     calculateValues( const std::string& inputFile) const ;
+        double getValue(const Date& key) const ;
+        void printDB() const;// temporary
+
+        class DuplicateDateException;
+        class DateNotExistException;
+        class InvalidFormatException;
 };
 
-std::ostream& operator<<(std::ostream& os, const Date& date);
+class BitcoinDatabase::DuplicateDateException : public std::exception
+{
+    public:
+        const char* what() const throw() ;
+};
+
+class BitcoinDatabase::DateNotExistException : public std::exception
+{
+    public:
+        const char* what() const throw() ;
+};
+
+class BitcoinDatabase::InvalidFormatException : public std::exception
+{
+    public:
+        const char* what() const throw() ;
+};
+
+
 
 #endif

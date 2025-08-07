@@ -579,10 +579,11 @@ Tests:
 #### Excercise 00 - Class Animal with 2 derived classes
 
 Here we learn about concepts as:
-- polymorphism - is is possible to access objects of different types through the same interface (eg. class, operator, function name), and each type can provide its own independent implementation of this interface
+- polymorphism - is is possible to treat/access/process objects of different types via the same interface (eg. assign to same class, override operators, override functions), and each type can provide its own independent implementation of this interface
 - runtime polymorphism - it is possible to assign pointers of objects of derived classes to base class
 - copying Animal to Cat is not be possible (unless constructor that takes in Animal is implemented)
 - virtual - when using virtual and pointers/referenes to objects, it allows runtime polymorphism, and the method implementation used will be the most derived one, not the base one
+- virtual functions = enable runtime polymorhism - they allow the most derived function to be used, not the one of the base object
 - BUT virtual doesn't prevent slicing — it enables polymorphism, but only when you're working with pointers or references, not by value
 - object slicing - when copying Cat to Animal by value, not uing references/pointers - object slicing happens - Child functions will be sliced 
 
@@ -655,8 +656,9 @@ int main(void)
 
 This excercise demonstrated the difference between deep copy and shallow copy.
 
-We can't assign one array to another as whole directly in C++ - it would create shallow copy
-Must copy the contents element by element using a loop - it creates a deep copy
+We can't assign one array to another as whole directly in C++ - it would create shallow copy.
+Must copy the contents element by element using a loop - it creates a deep copy.
+- virtual destructor in base = it must be virtual, since if it was not, the destructor of derived object that uses polymorphism would not be called, only the base destructor would be called,d and then memory leaks could occur(like Dog destructor deletes manually allocated memory on heap)
 
 Tests:
 1. Check constructors and assignment - they must allocate new brain (in  assignment, it must be deleted)
@@ -670,71 +672,81 @@ Edge cases:
 ```
 int main(void)
 {
-    int size = 10;
+    int size = 4;
 
-    // creatin animal objects, cats and dogs
+    // A. Checking proper destruction (virtual destructor in parent)
+    std::cout << " ------> Checking destructors - run with valgrind. <------" << std::endl;
+    // creating animal objects, cats and dogs
     Animal* animals[size];
     for (int i = 0; i < size; i++)
     {
         if (i % 2 == 0)
-            animals[i] = new Cat();
-        else
             animals[i] = new Dog();
-
+        else
+            animals[i] = new Cat();
     }
+    std::cout << std::endl;
+
     // making sounds
     for (int i = 0; i < size; i++)
-    {
         animals[i]->makeSound();
-    }
-    // checking for deep copies - they cannot share a brain
-    Dog *dogPtr = dynamic_cast<Dog*>(animals[1]);
-    if (dogPtr)
-    {
-        Dog* newDog = new Dog(*dogPtr);  // deep copy
-        
-        dogPtr->getBrain()->setIdea(0, "I am dog 1.");
-        
-        std::cout << "dog1 brain pointer: " << dogPtr->getBrain() << std::endl;
-        std::cout << "dog2 brain pointer: " << newDog->getBrain() << std::endl;
+    std::cout << std::endl;
 
-        std::cout << dogPtr->getBrain()->getIdea(0) << std::endl;
-        std::cout << newDog->getBrain()->getIdea(0) << std::endl;
-
-        delete newDog;
-    }
-    else
-    {
-        std::cout << "animals[1] is not a Dog!" << std::endl;
-    }
     // deleting the animals
     for (int i = 0; i < size; i++)
-    {
         delete animals[i];
-    }
+    std::cout << std::endl;
+
+    // B. checking they do not share brains
+    std::cout << " -----> Checking animals do not share the same brains. <------" << std::endl;
+    // checking for deep copies - they cannot share a brain
+    Dog Becky;
+    Becky.getBrain()->setIdea(0, "I love cats.");
+    Dog Lucky(Becky);
+    std::cout << std::endl;
+
+    std::cout << "Becky brain pointer: " << Becky.getBrain() << std::endl;
+    std::cout << "Lucky brain pointer: " << Lucky.getBrain() << std::endl;
+
+    std::cout << "Becky thinks: " << Becky.getBrain()->getIdea(0) << std::endl;
+    std::cout << "Lucky thinks: " << Lucky.getBrain()->getIdea(0) << std::endl;
+
+    Lucky.getBrain()->setIdea(0, "I hate cats.");
+
+    std::cout << "Becky now thinks: " << Becky.getBrain()->getIdea(0) << std::endl;
+    std::cout << "Lucky now thinks: " << Lucky.getBrain()->getIdea(0) << std::endl;
+
+    std::cout << std::endl;
 
     return 0;
 }
 ```
-#### Excercise 02 - Abstract classes
+#### Excercise 02 - Abstract classes  ---------------------------------------------------------------------------------------------------
 
 This excercise introduced abstract classes - classes that act as an interface, just group functionality for their derived classes but are non-instantiable. We cannot make instances of abstract classes. 
 
 The = 0 behind a function means that this function must be re-implemented by the children, they will not be able to use the parents one. 
+The ilementation can be kept though, and the class is still abstract, just provides default implementation/structure like Animal::makeSound() can be called, eg. from Dog class
 
 Tests:
 1. The name of the Animal can but des not have to be AAnimal - check folder names fit class names (but no big problem)
 2. Just check that the makeSound functions is =0. What does it mean?
 `Animal animal;` or `AAnimal animal;` -- this should not be possible and give error 
 
-## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods
+## CPP05 - Exceptions, Abstract classes, overriding of abstract class methods -------------------------------------------------------------------------------------------------------------------------------------------
 
-#### Excercise 0 - Exception classes
+#### Excercise 0 - Exception classes ----------------------------------------------------------------------------------------------------
 
-Here we create our first exception class that extends std::exception. 
+Here we create our first exception class that extends std::exception.
+
+When you create a custom exception, you usually override what() to provide a helpful error message.
+
+When we catch base exception, all derived exceptions are also caught and they display proper messages, so we do not need to catch each error exception type seaprately, unless we want to do different actions to handle each.
 
 Tests:
-0. Check that any function implementation is in cpp file, not in hedre - if so, rewrite
+0. How are default constructors handled for bureaucrat? Create bureaucrat without arguments with default constructor
+0. Check that any function implementation is in cpp file, not in header - if so, rewrite
+1. Check how exceptions are implemented - they should be in bureaucrat as its member class, not in a separate file. How does it overwrite what() to get us meaningful message?
 1. Test that bureaucrat throws exceptions when constructing (default, copy, copy assignment) him with bigger/smaller grade than acccepted - in copy constructors may be redundant 
 2. Test that bureaucrat throws appropriate exception (same as above) when calling gradeIncrease/gradeDecrease adn it would result in grade bigger/smaller than accepted
 3. Check grade increment/decrement logic -grade 1 is the highest and 150 the lowest, so incrementing a grade 3 should result in a grade 2
@@ -746,22 +758,24 @@ int main(void)
 {
     try
     {
-        Bureaucrat a("Anna", 2);
+      Bureaucrat a("Anna", 2);
         Bureaucrat b("Bob", 1);
         Bureaucrat c("Clara", 149);
-        // Bureaucrat d("Daria", 160); // throws exception
+        Bureaucrat anonym;
+        // Bureaucrat d("Daria", 160); // throws GradeTooLowException
         std::cout << std::endl;
 
         std::cout << a << std::endl;
         std::cout << b << std::endl;
         std::cout << c << std::endl;
+        std::cout << anonym << std::endl;
+        std::cout << std::endl;
 
         // testing member function logic 
         a.incrementGrade();
-        // b.incrementGrade(); // throws exception
+        // b.incrementGrade(); // throws GradeTooHighException
         c.decrementGrade();
-        //c.decrementGrade(); // throws exception
-        std::cout << std::endl;
+        //c.decrementGrade(); // throws GradeTooLowException
 
         std::cout << a << std::endl;
         std::cout << b << std::endl;
@@ -775,7 +789,7 @@ int main(void)
         // testing copy assignment operator
         Bureaucrat f("Frank", 10);
         std::cout << f << std::endl;
-        f = e; // error - cannot assign object that has const members 
+        f = e; // error - cannot assign object that has const members OR some other way to handle this 
         std::cout << f << std::endl << std::endl;
     }
     catch (const Bureaucrat::GradeTooHighException& e)
@@ -791,15 +805,19 @@ int main(void)
 }
 ```
 
-#### Excercise 1 - 
+#### Excercise 1 - Circular dependencies  -----------------------------------------------------------------------------------------------
 
 Tests:
-1. Check circular dependencies
+0. How are default constructors handled for forms? Which values are used for forms? Try to create Form without arguments with default constructor 
+1. Check circular dependencies and how they are handled  - between which object it exists (Form, Bureaucrat)
+2. Circular can afect also the GradeTooHighException/GradeTooLowException, since both classes Bureaucrat and Form implement them - same namespaces ! - make sure they print proper messages abou form/bureaucrat and when called, proper namespace is used - that is relevant !
+2. AND check that every class includes the <exception> header, since the class files must be usable on their own 
 2. Check how grade is checked for too high/too low when constructing form
 3. Form attributes are private, not protected
 4. Check how signForm checks for too low grade for signing
+5. Check how Form::beSined and Bureaucrat::signForm interact - first should check grade and throw exception, second should try-catch the first one and have proper messages in the block
+6. Try to sign a signed form
 ```
-
 int main(void)
 {
     try
@@ -831,8 +849,7 @@ int main(void)
     return 0;
 }
 ```
-
-#### Excercise 2 - Overriden Forms inheriting from abstract class AForm
+#### Excercise 2 - Overriden Forms inheriting from abstract class AForm -----------------------------------------------------------------
 
 Making an abstract class and making 3 classes that inherit from it. Must raise appropriate exceptions.
 
@@ -844,8 +861,11 @@ Tests:
 5. Check if execute is pure virtual function ( = 0 )
 6. Check all 3 form types and their functions
 7. ShrubberyForm - if file cannot be opened(chmod a-w...)
+7. RobotomyForm - check how form is signed 50% of the time - what is used ? 
 8. Test executing form that is not signed
 9. Test signing form that bureaucrat does not have permission to sign
+10. Test if we can create by copy constructor a form of one type from form of another type - try to copy a SIGNED form to see if the isSigned variable is going to be copied ! 
+11. Can test for empty input in target field when constructing form types but it is not what the excercise is about 
 
 Tests:
 0. Create a bureaucrat 
@@ -880,15 +900,16 @@ Tests:
     std::cout << p << std::endl << std::endl;
 ```
 
-#### Excercise 3 - Function pointers again
+#### Excercise 3 - Function pointers again  ---------------------------------------------------------------------------------------------
 
 This excercise is about creating a small but more extensive program where multiple classes interact. 
 
 Tests:
 1. Check how the makeForm is creating different forms - cannot have many if statements
-2. If created with new, check with valgrind.
+2. Forms are created with new, since they return teh pointer, check with valgrind.
 3. Test creation of all 3 forms by the intern.
-4. Test all 3 forms being usable by bureaucrats - try to sign and execute. 
+4. Test all 3 forms being usable by bureaucrats - try to sign and execute.
+5. Check how intern implementes the makeForm function
 
 ```
 int main(void)
@@ -1293,7 +1314,7 @@ int main( void )
 }
 ```
 
-## CPP08
+## CPP08 - STL, Containers, Algorithms
 
 #### Excercise 00 - Containers and iterators
 
@@ -1497,3 +1518,57 @@ int main(void)
     return 0;
 }
 ```
+
+## CPP09 - STL
+
+#### Excercise 00 - Bitcoin Exchange (maps)
+
+I use the map container here to store Date objets as keys and doubles as values: std::map map<Date, double>
+
+Tests:
+0. Basic checks
+a. Provided database (data.csv or other, defined in program), does not exist or no read permission
+b. Database provided in argument does not exist or no read permission
+c. Provided file is empty
+d. Argument file is empty
+e. Wrong number of arguments
+h. Exit status of program is 1 when exiting with an exception - echo $?
+1. Check for valid date and how thoroughly invalid dates are checked
+aa. correct date 
+a. day < 0
+b. day = 0
+c. month < 0
+d. month = 0
+c. year < 0
+d. day > 31
+e. month  > 12
+f. month that doesn't have 31 days: 2025-04-31
+g. february has only 28 days: 2025-02-28
+h. leap year is allowed: 2024-02-29
+h. any value is more than max int
+g. any value value less than min int 
+2. Change the provided input file with prices to have wrong fields
+a. value missing
+b. wrong date 
+c. wrong date format - eg. 202-12-12
+c. wrong format
+d. extra characters after the value
+e. negative value
+f. value more than max int
+g. value less than min int 
+h. ipnut float as value
+h. duplicate dates - check how duplicates are handled (override the old one/ignore the new one/ abort and quit program ?)
+3. Change the input file with the ammounts to have wrong fields
+aa. correct date
+a. value missing
+b. wrong date 
+c. wrong format
+d. extra characters after the value
+e. negative value
+f. value more than max int
+g. value less than min int 
+h. input float as value
+h. duplicate dates - allowed 
+i. Date not container in the provided db - must use the lower one
+j. Date does not exist but there is no lower date
+k. value is > 1000

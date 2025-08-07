@@ -3,6 +3,11 @@
 
 // ----------------------------------------- Orthodox Canonical Form ------------------------------------
 
+PresidentialPardonForm::PresidentialPardonForm() : AForm("Presidential Pardon Form", 25, 5), target("Unassigned")
+{
+    std::cout << "PresidentialPardonForm default constructor called for target " << target << std::endl;
+}
+
 PresidentialPardonForm::PresidentialPardonForm(const std::string& target)
     : AForm("Presidential Pardon Form", 25, 5), target(target)
 {
@@ -10,10 +15,9 @@ PresidentialPardonForm::PresidentialPardonForm(const std::string& target)
 }
 
 PresidentialPardonForm::PresidentialPardonForm(const PresidentialPardonForm& origin)
-    : AForm("Presidential Pardon Form", 25, 5), target(origin.target)
+    : AForm(origin), target(origin.target)
 {
     std::cout << "PresidentialPardonForm copy constructor called." << std::endl;
-    *this = origin;
 }
 
 PresidentialPardonForm& PresidentialPardonForm::operator =(const PresidentialPardonForm& origin)
@@ -40,11 +44,11 @@ bool PresidentialPardonForm::execute(const Bureaucrat& executor) const
 {
     if (!getIsSigned())
     {
-        throw FormNotSignedException();
+        throw AForm::FormNotSignedException();
     }
     if (executor.getGrade() > getMinimumExecutionGrade())
     {
-        throw GradeTooLowException();
+        throw AForm::GradeTooLowException();
     }
     std::cout << target << " has been pardoned by Zaphod Beeblebrox." << std::endl;
     return true;

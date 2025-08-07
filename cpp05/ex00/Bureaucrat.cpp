@@ -2,13 +2,19 @@
 
 // ------------------------------------------ Orthodox Canonical Form -----------------------------------------------------
 
+
+Bureaucrat::Bureaucrat () : name("Unclassified"), grade(150)
+{
+    std::cout << "Bureaucrat default constructor called with lowest grade." << std::endl;
+};
+
 Bureaucrat::Bureaucrat(const std::string& new_name, const int new_grade) : name(new_name)
 {
     std::cout << "Bureaucrat default constructor called." << std::endl;
     if (new_grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (new_grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     grade = new_grade;
 };
 
@@ -16,9 +22,9 @@ Bureaucrat::Bureaucrat(const Bureaucrat& origin) : name(origin.name)
 {
     std::cout << "Bureaucrat copy constructor called." << std::endl;
     if (origin.grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (origin.grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     this->grade = origin.grade;
 };
 
@@ -43,6 +49,16 @@ Bureaucrat::~Bureaucrat()
     std::cout << "Bureaucrat destructor called." << std::endl;
 };
 
+const char* Bureaucrat::GradeTooHighException::what() const throw()
+{
+    return "Bureaucrat Grade too high!";
+};
+
+const char* Bureaucrat::GradeTooLowException::what() const throw()
+{
+    return "Bureaucrat Grade too low!";
+};
+
 // ------------------------------------------ Member Functions -----------------------------------------------------
 
 std::string Bureaucrat::getName() const
@@ -58,9 +74,9 @@ int         Bureaucrat::getGrade() const
 void        Bureaucrat::incrementGrade()
 {
     if (grade <= 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     else
         grade--;
 };
@@ -68,9 +84,9 @@ void        Bureaucrat::incrementGrade()
 void        Bureaucrat::decrementGrade()
 {
     if (grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (grade >= 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     else
         grade++;
 };

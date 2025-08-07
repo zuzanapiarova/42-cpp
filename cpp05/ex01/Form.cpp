@@ -3,22 +3,27 @@
 
 // ----------------------------------------- Orthodox Canonical Form ------------------------------------
 
+Form::Form() : name("Empty"), isSigned(false), minimumSignGrade(1), minimumExecutionGrade(1)
+{
+    std::cout << "Form default constructor called, creating Empty form with highest grade needed." << std::endl;
+};
+
 Form::Form(const std::string& newName, const int newMinimumSignGrade, const int newMinimumExecutionGrade)
            : name(newName),
+             isSigned(false),
              minimumSignGrade(checkGrade(newMinimumSignGrade, 1, 150)),
              minimumExecutionGrade(checkGrade(newMinimumExecutionGrade, 1, 150))
 {
     std::cout << "Form overload constructor called." << std::endl;
-    isSigned = false;
 };
 
 Form::Form(const Form& origin)
          : name(origin.name),
+           isSigned(origin.isSigned),
            minimumSignGrade(checkGrade(origin.minimumSignGrade, 1, 150)),
            minimumExecutionGrade(checkGrade(origin.minimumExecutionGrade, 1, 150))
 {
     std::cout << "Form copy constructor called." << std::endl;
-    this->isSigned = origin.isSigned;
 };
 
 Form& Form::operator =(const Form& origin)
@@ -38,6 +43,16 @@ std::ostream& operator <<(std::ostream& os, const Form& form)
 Form::~Form()
 {
     std::cout << "Form destructor called." << std::endl;
+};
+
+const char* Form::GradeTooHighException::what() const throw()
+{
+    return "Form Grade too high!";
+};
+
+const char* Form::GradeTooLowException::what() const throw()
+{
+    return "Form Grade too low!";
 };
 
 // -------------------------------------------- Member Functions -----------------------------------------
@@ -75,6 +90,6 @@ int         Form::getMinimumExecutionGrade() const
 void        Form::beSigned(const Bureaucrat& bureaucrat)
 {
     if (bureaucrat.getGrade() > minimumSignGrade)
-        throw GradeTooLowException();
+        throw Form::GradeTooLowException();
     isSigned = true;
 };

@@ -1,5 +1,5 @@
-#ifndef INTERN_H
-# define INTERN_H
+#ifndef INTERN_HPP
+# define INTERN_HPP
 
 #include <string>
 #include <iostream>

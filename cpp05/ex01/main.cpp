@@ -5,14 +5,17 @@ int main(void)
 {
     try
     {
+        Form unpecified;
         Bureaucrat a("Anna", 20);
         Bureaucrat b("Bob", 20);
         Form c("Work Contract", 20, 10);
         Form d("Car Contract", 20, 10);
         std::cout << std::endl;
-
+        
+        std::cout << unpecified << std::endl;
         std::cout << b << std::endl;
         b.signForm(c); // works - Bob has access
+        b.signForm(c); // should work - trying to sign signed form
         std::cout << c << std::endl << std::endl;
     
         b.decrementGrade();

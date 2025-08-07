@@ -3,17 +3,21 @@
 
 // ----------------------------------------- Orthodox Canonical Form ------------------------------------
 
-ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
-    : AForm("Shrubbery Creation Form", 145, 137), targetFileName(target)
+ShrubberyCreationForm::ShrubberyCreationForm() : AForm("Shrubbery Creation Form", 145, 137), target("Unassigned")
 {
-    std::cout << "ShrubberyCreationForm constructor called for target " << targetFileName << std::endl;
+    std::cout << "ShrubberyCreationForm default constructor called for target " << target << std::endl;
+}
+
+ShrubberyCreationForm::ShrubberyCreationForm(const std::string& target)
+    : AForm("Shrubbery Creation Form", 145, 137), target(target)
+{
+    std::cout << "ShrubberyCreationForm constructor called for target " << target << std::endl;
 }
 
 ShrubberyCreationForm::ShrubberyCreationForm(const ShrubberyCreationForm& origin)
-    : AForm("Shrubbery Creation Form", 145, 137), targetFileName(origin.targetFileName)
+    : AForm(origin), target(origin.target)
 {
     std::cout << "ShrubberyCreationForm copy constructor called." << std::endl;
-    *this = origin;
 }
 
 ShrubberyCreationForm& ShrubberyCreationForm::operator =(const ShrubberyCreationForm& origin)
@@ -26,26 +30,26 @@ ShrubberyCreationForm& ShrubberyCreationForm::operator =(const ShrubberyCreation
 
 ShrubberyCreationForm::~ShrubberyCreationForm()
 {
-    std::cout << "ShrubberyCreationForm destructor called for target " << targetFileName << std::endl;
+    std::cout << "ShrubberyCreationForm destructor called for target " << target << std::endl;
 }
 
 // -------------------------------------------- Member Functions -----------------------------------------
 
-const std::string& ShrubberyCreationForm::getTargetFileName() const
+const std::string& ShrubberyCreationForm::getTarget() const
 {
-    return targetFileName;
+    return target;
 };
 
 bool    ShrubberyCreationForm::execute(const Bureaucrat& executor ) const 
 {
     if (!getIsSigned())
-        throw FormNotSignedException();
+        throw AForm::FormNotSignedException();
     if (executor.getGrade() > getMinimumExecutionGrade())
-        throw GradeTooLowException();
-    std::ofstream outputFile(targetFileName.c_str());
+        throw AForm::GradeTooLowException();
+    std::ofstream outputFile(target.c_str());
     if (!outputFile)
     {
-        std::cerr << targetFileName << ": file cannot be opened or created or other error." << std::endl;
+        std::cerr << target << ": file cannot be opened or created or other error." << std::endl;
         return false;
     }
     outputFile << "        *                ********" << std::endl;
@@ -59,6 +63,7 @@ bool    ShrubberyCreationForm::execute(const Bureaucrat& executor ) const
     outputFile << "        |||                 |||" << std::endl;
     outputFile << "        |||                 |||" << std::endl;
     outputFile.close();
+    std::cout << "Shrubbery Execution Form executed - check " << target << " file !" << std::endl;
 
     return 0;
 }

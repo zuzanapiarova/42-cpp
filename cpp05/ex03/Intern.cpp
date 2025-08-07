@@ -31,8 +31,7 @@ AForm* Intern::makePresidential(const std::string& target) const
     return new PresidentialPardonForm(target);
 }
 
-// instead of using if-else statements, use function pointers and corresponding form names array mapping
-// !!! Form returned must be freed 
+// instead of using if-else statements, I use function pointers and corresponding form names array mapping from Module01
 AForm*    Intern::makeForm(const std::string& formName, const std::string& formTarget) const
 {
     const std::string formNames[] = { 

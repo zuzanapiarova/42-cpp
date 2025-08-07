@@ -2,13 +2,19 @@
 
 // ---------------------------------------------- Orthodox Canonical Form -------------------------------------------------
 
+
+Bureaucrat::Bureaucrat() : name("Unclassified"), grade(150)
+{
+    std::cout << "Bureaucrat default constructor called with lowest grade." << std::endl;
+};
+
 Bureaucrat::Bureaucrat(const std::string& new_name, const int new_grade) : name(new_name)
 {
     std::cout << "Bureaucrat overload constructor called." << std::endl;
     if (new_grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (new_grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     grade = new_grade;
 };
 
@@ -16,9 +22,9 @@ Bureaucrat::Bureaucrat(const Bureaucrat& origin) : name(origin.name)
 {
     std::cout << "Bureaucrat copy constructor called." << std::endl;
     if (origin.grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (origin.grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     this->grade = origin.grade;
 };
 
@@ -42,6 +48,7 @@ Bureaucrat::~Bureaucrat()
 {
     std::cout << "Bureaucrat destructor called." << std::endl;
 };
+
 
 const char* Bureaucrat::GradeTooHighException::what() const throw()
 {
@@ -68,9 +75,9 @@ int         Bureaucrat::getGrade() const
 void        Bureaucrat::incrementGrade()
 {
     if (grade <= 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (grade > 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     else
         grade--;
 };
@@ -78,9 +85,9 @@ void        Bureaucrat::incrementGrade()
 void        Bureaucrat::decrementGrade()
 {
     if (grade < 1)
-        throw GradeTooHighException();
+        throw Bureaucrat::GradeTooHighException();
     else if (grade >= 150)
-        throw GradeTooLowException();
+        throw Bureaucrat::GradeTooLowException();
     else
         grade++;
 };   
@@ -96,17 +103,17 @@ void    Bureaucrat::signForm(AForm& form) const
     {
         std::cout << "Bureaucrat " << name << " couldn’t sign " << form.getName() << " because " << e.what() << std::endl;
     }
-}
+};
 
 void   Bureaucrat::executeForm(const AForm& form) const
 {
     try
     {
+        std::cout << "Bureaucrat " << name << " started executing " << form.getName() << std::endl;
         form.execute(*this);
-        std::cout << "Bureaucrat " << name << " executed " << form.getName() << std::endl;
     }
     catch (std::exception& e)
     {
         std::cout << "Bureaucrat " << name << " couldn’t execute " << form.getName() << " because " << e.what() << std::endl;
     }
-}
+};
