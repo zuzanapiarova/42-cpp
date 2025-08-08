@@ -1,5 +1,10 @@
 #include "ScalarConverter.hpp"
 
+ScalarConverter::ScalarConverter()
+{
+    std::cout << "ScalarConverter default constructor called." << std::endl;
+};
+
 bool isPseudoLiteral(const std::string& s)
 {
     return s == "nan" || s == "+inf" || s == "-inf" ||
@@ -93,7 +98,6 @@ void handleInt(const std::string& s)
         std::cerr << "Error: invalid integer input. " << std::endl;
         return ;
     }
-
     if (i < static_cast<int>(std::numeric_limits<char>::min()) || i > static_cast<int>(std::numeric_limits<char>::max()))
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<char>(i)))
@@ -110,23 +114,18 @@ void handleInt(const std::string& s)
 
 // floats have to be in decimal notation, with at least one digit after the dot and with f at the end
 // float → char: fractional part is discarded, int part is converted to char, but same problem as with int - higher numbers wrap with modulo 256 (only the last 8 bits are kept)
-
 bool isFloatLiteral(const std::string& s)
 {
     if (s == "nanf" || s == "+inff" || s == "-inff") 
         return true;
-
-    if (s.empty() || s.back() != 'f')
+    if (s.empty() || s[s.size() - 1] != 'f')
         return false;
-
     std::string core = s.substr(0, s.length() - 1);
-    size_t i = 0;
-    bool hasDot = false;
-    bool hasDigit = false;
-
+    size_t      i = 0;
+    bool        hasDot = false;
+    bool        hasDigit = false;
     if (core[i] == '-' || core[i] == '+')
         i++;
-
     while (i < core.length())
     {
         if (core[i] == '.')
@@ -141,19 +140,9 @@ bool isFloatLiteral(const std::string& s)
             return false;
         i++;
     }
-
     return hasDot && hasDigit;
 }
 
-    // if (isPseudoLiteral(s))
-    // {
-    //     std::cout << "char: impossible" << std::endl;
-    //     std::cout << "int: impossible" << std::endl;
-    //     std::cout << "float: " << std::showpos << f << "f" << std::endl;
-    //     std::cout << "double: " << std::showpos << static_cast<double>(f) << std::endl;
-    // }
-    // else
-    // {
 void handleFloat(const std::string& s)
 {
     float f;
@@ -162,18 +151,23 @@ void handleFloat(const std::string& s)
     iss >> f;
     if (iss.fail() || !iss.eof())
     {
-        std::cerr << "Error: invalid float input." << std::endl;
-        return ;
+        if (s == "nanf") f = std::numeric_limits<double>::quiet_NaN();
+        else if (s == "+inff") f = std::numeric_limits<double>::infinity();
+        else if (s == "-inff") f = -std::numeric_limits<double>::infinity();
+        else
+        {
+            std::cerr << "Error: invalid float input." << std::endl;
+            return ;
+        }
     }
-    
-    if (f < static_cast<float>(std::numeric_limits<char>::min()) || f > static_cast<float>(std::numeric_limits<char>::max()) || f != f /* NaN check */ )
+    if (f < static_cast<float>(std::numeric_limits<char>::min()) || f > static_cast<float>(std::numeric_limits<char>::max()) || std::isnan(f)) // nan and infinity checks
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<char>(f)))
         std::cout << "char: " << "'" << static_cast<char>(f) << "'" << std::endl;
     else
         std::cout << "char: Non displayable" << std::endl;
     double d = static_cast<double>(f); // best to compare to the float in the wider type (double) to avoid loss of precision
-    if (d < static_cast<double>(std::numeric_limits<int>::min()) || d > static_cast<double>(std::numeric_limits<int>::max()) || f != f /* NaN check */ )
+    if (d < static_cast<double>(std::numeric_limits<int>::min()) || d > static_cast<double>(std::numeric_limits<int>::max()) || std::isnan(f)) // infinity and nan check
         std::cout << "int: impossible" << std::endl;
     else
         std::cout << "int: " << static_cast<int>(f) << std::endl;
@@ -191,13 +185,11 @@ bool isDoubleLiteral(const std::string& s)
     if (s == "nan" || s == "+inf" || s == "-inf") 
         return true;
 
-    size_t i = 0;
-    bool hasDot = false;
-    bool hasDigit = false;
-
+    size_t  i = 0;
+    bool    hasDot = false;
+    bool    hasDigit = false;
     if (s[i] == '-' || s[i] == '+')
         i++;
-
     while (i < s.length())
     {
         if (s[i] == '.')
@@ -212,7 +204,6 @@ bool isDoubleLiteral(const std::string& s)
             return false;
         i++;
     }
-
     return hasDot && hasDigit;
 }
 
@@ -221,19 +212,24 @@ void handleDouble(const std::string& s)
     double d;
     std::istringstream iss(s);
     iss >> d;
-    if (iss.fail() || !iss.eof())
+    if ((iss.fail() || !iss.eof()))
     {
-        std::cerr << "Error: invalid double input." << std::endl;
-        return ;
+        if (s == "nan") d = std::numeric_limits<double>::quiet_NaN();
+        else if (s == "+inf") d = std::numeric_limits<double>::infinity();
+        else if (s == "-inf") d = -std::numeric_limits<double>::infinity();
+        else
+        {
+            std::cerr << "Error: invalid double input." << std::endl;
+            return ;
+        }
     }
-    
-    if (d < static_cast<double>(std::numeric_limits<char>::min()) || d > static_cast<double>(std::numeric_limits<char>::max())  || d != d /* NaN check */ )
+    if (d < static_cast<double>(std::numeric_limits<char>::min()) || d > static_cast<double>(std::numeric_limits<char>::max()) || std::isnan(d)) // infinity and nan check
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<int>(d)))
         std::cout << "char: " << "'" << static_cast<char>(d) << "'" << std::endl;
     else
         std::cout << "char: Non displayable" << std::endl;
-    if (d < std::numeric_limits<int>::min() || d > std::numeric_limits<int>::max() || d != d /* NaN check */ ) // static_cast<float>(INT_MAX) because float cannot represent every large int exactly, so comparison must happen in float
+    if (d < std::numeric_limits<int>::min() || d > std::numeric_limits<int>::max() || std::isnan(d)) // infinity and nan check // static_cast<float>(INT_MAX) because float cannot represent every large int exactly, so comparison must happen in float
         std::cout << "int: impossible" << std::endl;
     else 
         std::cout << "int: " << static_cast<int>(d) << std::endl;
@@ -266,4 +262,4 @@ void ScalarConverter::convert( const std::string& s)
     {
         std::cerr << "Invalid input: " << e.what() << std::endl;
     }
-}
+};

@@ -1,5 +1,9 @@
 #include "Serializer.hpp"
 
+// questions:
+// 1. do the classes in all excercises need cannonical form? 
+// 2. can i have a c data struct for data ?  
+
 int main()
 {
     // creating pointers
@@ -15,7 +19,7 @@ int main()
     }
     a[size] = NULL;
 
-    // testing execution - 10 proper, 1 NULL pointer
+    // testing execution - 10 proper, 1 last is NULL pointer
     i = 0;
     while (i < 11)
     {
@@ -25,14 +29,15 @@ int main()
             std::cout << "Serialized: " << b << std::endl;
     
             Data* c = Serializer::deserialize(b);
-            std::cout << "Deserialized: " << c->value << std::endl;
+            std::cout << "Deserialized: " << c << " with value " << c->value << std::endl;
     
             // the deserialized pointer must equal the pointer from which it was serialized
-            std::cout << static_cast<void*>(c) << " ?= " << static_cast<void*>(a[i]) << std::endl; // static cast to void pointer to ensure it is printed sa pointer
+            std::cout << c << " ?= " << a[i] << std::endl;
             if (c == a[i])
                 std::cout << "The pointer is the same after serialization and deserialization." << std::endl;
             else
                 std::cout << "The pointer is differenet after serialization and deserialization." << std::endl;
+            std::cout << std::endl;
         }
         catch (std::runtime_error e)
         {
@@ -55,6 +60,11 @@ int main()
         std::cout << "Error: " << e.what() << std::endl;
     }
     // test memory, esp. with exceptions/errors 
-    delete a[size];
+    i = 0;
+    while (i < size)
+    {
+        delete a[i];
+        i++;
+    }
     return 0;
 }

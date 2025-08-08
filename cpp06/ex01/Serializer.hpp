@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <stdint.h> // uintptr_
 #include "data.h" 
 
 class Serializer

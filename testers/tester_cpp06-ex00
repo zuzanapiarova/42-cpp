@@ -1,0 +1,44 @@
+#!/bin/bash
+
+OUTPUT_FILE="results_cpp06-ex00.txt"
+PROGRAM="./convert"   # PATH TO PROGRAM --> CHANGE 
+
+> "$OUTPUT_FILE"
+
+# NO ARAGUMENTS
+echo "case: ( no arguments ) " >> "$OUTPUT_FILE"
+$PROGRAM >> "$OUTPUT_FILE" 2>&1
+echo "" >> "$OUTPUT_FILE"   # blank line between runs
+
+# CORRECT
+BASIC_INPUTS=(8 -8 '8' '-8' '*' 42.0f 0 -0 +0 1.2334535 1.2345345f)
+for input in "${BASIC_INPUTS[@]}"; do
+    echo "case: $input" >> "$OUTPUT_FILE"
+    $PROGRAM "$input" >> "$OUTPUT_FILE" 2>&1
+    echo "" >> "$OUTPUT_FILE"   # blank line between runs
+done
+
+# # EDGE TEST CASES
+EDGE_INPUTS=(hello f af 0.4ff ---0.222 1.f 1. .f '' 1f '\'' - '\n'' '\g' '\1' 298)
+
+for input in "${EDGE_INPUTS[@]}"; do
+    echo "case: $input" >> "$OUTPUT_FILE"
+    $PROGRAM "$input" >> "$OUTPUT_FILE" 2>&1
+    echo "" >> "$OUTPUT_FILE"   # blank line between runs
+done
+
+# # PSEUDO-LITERALS - when checking, is it first converted and then printed, or hardcoded and printing the string itself ?
+PSEUDO_LITERALS=(nan nanf +inf +inff -inf -inff)
+for input in "${PSEUDO_LITERALS[@]}"; do
+    echo "case: $input" >> "$OUTPUT_FILE"
+    $PROGRAM "$input" >> "$OUTPUT_FILE" 2>&1
+    echo "" >> "$OUTPUT_FILE"   # blank line between runs
+done
+
+# # OUT OF RANGE DURING CAST - when checking, test it is first converted and then printed, not hardcoding and printing the string itself
+OUT_OF_RANGE=( 2147483649 2147483649.0f 2140000000000000000000000000000000000000000000000.0 100000000000000000000000000000000000000000000000.0f ) 
+for input in "${OUT_OF_RANGE[@]}"; do
+    echo "case: $input" >> "$OUTPUT_FILE"
+    $PROGRAM "$input" >> "$OUTPUT_FILE" 2>&1
+    echo "" >> "$OUTPUT_FILE"   # blank line between runs
+done

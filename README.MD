@@ -945,17 +945,31 @@ int main(void)
 
 This excercise taught us to safely cast among the primitive data types and between string and primitive data types. We had to think of many possible error situations.
 
+First, I have functions to figure out which data type is received. Then I have function for each data type to handle conversion and special cases for it.
+I do it with string streams and reading from them, which results in iss.fail() or !iss.eof() if there is problem in reading  the string into the specified data type.
+
+DID YOU KNOW that even if we makethe constructor private, it is still able to be instantiated by calling the constructor in its static member method and returning it? Then, calling this static method from outside of the class and assigning it to object of this class will make an instance of it and make it accessible to outside (but in c++98 we would also have to implement the copy constructor). HOWEVER, the subject it cannot e instantiable by user, it does not say it cannot be instantiable by the class methods. 
+
+Except for char parameters, only the decimal notation will be used - so no scientific notation etc. 
+
+I CREATED A TESTER THAT CHECKS ALL POSSIBLE CASES - CORRECT AND INCORRECT THAT SHOJLD BE HANDLED. THE OUTPUT IS WRITTEN TO cpp06-ex00_results.txt FILE. NEEDS TO BE CHECKED MANUALLY ( USE YOUR VISUAL AND LOGICAL ABILITIES :) CHANGE PATH TO EXECUTABLE ACCRDING TO YOUR PROJECT. HOWEVER, THE IMMPLEMENTATION OF EACH STUDENT CAN VARY, ESPECIALLY FOR HOW YOU CHECK FOR NAN,NANF... OR IF YOU INCLUDE '' FOR CHARS IN THE INPUT AND REMOVE IT FOR PROCESSING OR NOT OR IF SINGLE DIGITS ARE REPRESENTED AS CHAR OR INT. THUS IT IS JUST A TOOL FOR DISCUTTION, AND IS NOT GROUNDS FOR FAILING SOMEONE NOR AUTOMATIC SUCCESS. IF SOMETHING DOESN'T SEEM RIGHT, RUN THE PROGRAM WITH THAT ARGUMENT. 
+
 Tests:
 
 A. wrong input - does not match any types string literal
 1. af
 2. 0.4ff
+3. f
 3. --0.222
 4. 1.f - float ending with .
 5. 1. - double ending with .
 6. '' - empty string
 7. .f 
 8. 1f - not valid string literal in cpp but can possibly handle it
+9. 8 - check if it takes it as int or char 
+10. no input, more than 1 input
+11. '\j' - invalid escape sequence
+12. hello - not known string literal
 
 B. should print
 11. '\''
@@ -968,7 +982,7 @@ B. should print
 16. 0
 17. -0
 18. +0
-19. 298 - checks if wrapping is handled - if not, prints *
+19. 298 - checks if wrapping is handled - if not, prints * (char is max 255, so if it receives higher number, it will wrap - %256 - should it/ shuld it not ?)
 
 - pseudo-literals: char and int are impossible - when testing this, check that they print it as a converted type, not printing the string !
 21. nan
@@ -983,7 +997,6 @@ B. should print
 31. 2140000000000000000000000000000000000000000000000.0 - double cannot cast to float/int - impossible (overflow)
 
 C. should trigger error/exception
-35. '\j' - invalid escape sequence
 36. 2147483649 - < max int
 37. 100000000000000000000000000000000000000000000000.0f - < max float
 38. max double can hardly be tested since it is ~1.8 × 10^308
@@ -993,6 +1006,8 @@ C. should trigger error/exception
 This excercise taught us how to work with reinterpret casting. 
 - reinterpret_cast = used for low-level casting between unrelated types like pointers and integers
 - uintptr_t = unsigned integer type that can safely hold a pointer
+
+The deserialized pointer must equal the pointer from which it was serialized.
 
 Tests:
 1. Create pointers
@@ -1352,7 +1367,8 @@ int main()
     int arr5[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     std::deque<int> deque(arr5, arr5 + 9);
 
-    try {
+    try
+    {
 
         std::vector<int>::iterator it1 = easyfind(vec, 1); // element exists
         std::cout << "Found in vector: " << *it1 << std::endl;
