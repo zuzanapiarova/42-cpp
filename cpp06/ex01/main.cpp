@@ -7,7 +7,7 @@
 int main()
 {
     // creating pointers
-    int size = 10;
+    int size = 5;
     Data* a[size];
     
     int i = 0;
@@ -19,7 +19,7 @@ int main()
     }
     a[size] = NULL;
 
-    // testing execution - 10 proper, 1 last is NULL pointer
+    // testing execution - all [size - 1] proper, only 1 last is NULL pointer
     i = 0;
     while (i < 11)
     {
@@ -67,4 +67,4 @@ int main()
         i++;
     }
     return 0;
-}
+};

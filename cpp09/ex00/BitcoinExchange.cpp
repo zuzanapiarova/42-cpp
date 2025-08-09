@@ -36,7 +36,7 @@ BitcoinExchange::~BitcoinExchange()
 
 const char* BitcoinExchange::DuplicateDateException::what() const throw() 
 {
-    return ("Trying to add duplicate date.");
+    return ("Trying to add duplicate date");
 };
 
 const char* BitcoinExchange::DateNotExistException::what() const throw() 
@@ -57,7 +57,7 @@ void BitcoinExchange::_populateMap(std::ifstream& pricesDatabase)
     {
         unsigned int year, month, day;
         double value;
-        if (sscanf(line.c_str(), "%u-%u-%u,%lf", &year, &month, &day, &value) != 4)
+        if (sscanf(line.c_str(), "%u-%u-%u,%lf\n", &year, &month, &day, &value) != 4)
         {
             if (line == "date,exchange_rate" && firstLine)
             {
@@ -77,7 +77,7 @@ void BitcoinExchange::_populateMap(std::ifstream& pricesDatabase)
         }
         catch (std::exception& e)
         {
-            std::cerr << e.what() << ": omitting entry " << year << "-" << month << "-" << day << std::endl;
+            std::cerr << "Error: " << e.what() << ": omitting entry " << year << "-" << month << "-" << day << std::endl;
         }
     }
 };
@@ -90,27 +90,27 @@ void     BitcoinExchange::getPricesForDates( const std::string& inputFile) const
     
     std::string line;
     bool        firstLine = true;
+    unsigned int year, month, day;
+    double      ammount;
     while (std::getline(ammountsDatabase, line))
     {
-        unsigned int year, month, day;
-        double ammount;
-        if(sscanf(line.c_str(), "%u-%u-%u | %lf", &year, &month, &day, &ammount) != 4)
-        {
-            if (line == "date | value" && firstLine)
-            {
-                firstLine = false;
-                continue ;
-            }
-            std::cout << "Error: Bad format." << std::endl;
-            continue ;
-        }
-        firstLine = false;
         try
         {
+            if(sscanf(line.c_str(), "%u-%u-%u | %lf\n", &year, &month, &day, &ammount) != 4)
+            {
+                if (line == "date | value" && firstLine)
+                {
+                    firstLine = false;
+                    continue ;
+                }
+                throw std::runtime_error("Bad format.");
+                continue ;
+            }
+            firstLine = false;
             Date d(year, month, day);
             if (ammount < 0 || ammount > 1000)
                 throw std::runtime_error("Value out of bounds.");
-            double result = _getValue(d) * ammount; // what if this is out of bounds for double ? 
+            double result = _getValue(d) * ammount;
             std::cout << d << " => " << result << std::endl;
         }
         catch (std::exception& e)
@@ -118,9 +118,9 @@ void     BitcoinExchange::getPricesForDates( const std::string& inputFile) const
             std::cout << "Error: " << e.what() << std::endl;
         }
     }
-}
+};
 
-// temporary / testing
+// testing
 void BitcoinExchange::printDB() const
 {
     for (std::map<Date, double>::const_iterator it = _pricesMap.begin(); it != _pricesMap.end(); ++it)
@@ -130,16 +130,12 @@ void BitcoinExchange::printDB() const
 double BitcoinExchange::_getValue(const Date& date) const
 {
     std::map<Date, double>::const_iterator it = _pricesMap.lower_bound(date);
-
     //Exact match
     if (it != _pricesMap.end() && !(date < it->first))
         return it->second;
-
     // No earlier date available
     if (it == _pricesMap.begin()) 
         throw BitcoinExchange::DateNotExistException();
-    
-    // No exact match,M\ move to the previous (earlier) date
-    --it; // 
+    --it; // no exact match, move to the previous (earlier) date
     return it->second;
 };

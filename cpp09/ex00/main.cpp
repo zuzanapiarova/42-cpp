@@ -15,7 +15,6 @@ int main(int argc, char **argv)
     try
     {
         BitcoinExchange db("data.csv");
-        db.printDB(); // testing
         db.getPricesForDates(argv[1]);
     }
     catch(std::exception& e)

@@ -5,6 +5,25 @@ ScalarConverter::ScalarConverter()
     std::cout << "ScalarConverter default constructor called." << std::endl;
 };
 
+ScalarConverter::ScalarConverter(const ScalarConverter& origin)
+{
+    std::cout << "ScalarConverter copy constructor called." << std::endl;
+    (void)origin;
+};
+
+ScalarConverter& ScalarConverter::operator =(const ScalarConverter& origin)
+{
+    std::cout << "ScalarConverter copy assignment operator called." << std::endl;
+    if (this != &origin)
+        std::cout << "Copuy assignment returns same object." << std::endl;
+    return *this;
+};
+
+ScalarConverter::~ScalarConverter()
+{
+    std::cout << "ScalarConverter destructor called." << std::endl;
+};
+
 bool isPseudoLiteral(const std::string& s)
 {
     return s == "nan" || s == "+inf" || s == "-inf" ||
@@ -245,21 +264,14 @@ void handleDouble(const std::string& s)
 
 void ScalarConverter::convert( const std::string& s)
 {
-    try
-    {
         if (isFloatLiteral(s))
             handleFloat(s);
         else if (isDoubleLiteral(s))
             handleDouble(s);
         else if (isIntLiteral(s))
             handleInt(s);
-        else if (isCharLiteral(s)) //  char is lasts so single digits as '8' match int
+        else if (isCharLiteral(s)) //  char is last so single digits as '8' match int
             handleChar(s);
         else 
             throw std::invalid_argument("Not a string literal for known types.");
-    }
-    catch (std::invalid_argument e)
-    {
-        std::cerr << "Invalid input: " << e.what() << std::endl;
-    }
 };

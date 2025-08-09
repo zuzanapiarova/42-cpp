@@ -853,6 +853,8 @@ int main(void)
 
 Making an abstract class and making 3 classes that inherit from it. Must raise appropriate exceptions.
 
+Here we learn that 
+
 Tests:
 1. Creating Bureaucrat object with too low/high grade (other than range 1-150)
 2. Bureaucrat trying to sign/execute form with not enough high grade
@@ -1080,10 +1082,10 @@ int main()
 
 Dynamic cast only works with polymorphic types (that at least one virtual function) and only on pointers/references. 
 
-This excercise shows us difference between dynamic casts to pointers and to references. 
-
+This excercise shows us difference between dynamic casts to pointers and to references.
 - dynamic cast to pointer = it’s non-throwing, so no try-catch is needed, if fails, returns nullptr - you can check each cast afterwards with if (ptr) safely, works even if the pointer is nullptr
-- dynamic cast to reference = if cast fails, throws std::bad_cast exception, so must wrap it in a try-catch block and if checking for multiple types, check the rest in this block, reference must be non-null, so we do not have to check for nullptr because it will never happed
+- dynamic cast to reference = cast fails if type is not correct and throws std::bad_cast exception, so must wrap it in a try-catch block and if checking for multiple types, check the rest in this block, reference must be non-null, so we do not have to check for nullptr because it will never happen
+- ( result of the cast is cast to void - must be there because we have to do some operation with the casted deference to possibly trigger an exception, and it cannot be it (ref), cause that is illegal, and it cannot be assigned ot variable, since we will not use it and will get unused variable error )
 
 Tests:
 1. try to cast other class into identify
@@ -1555,6 +1557,8 @@ b. Database provided in argument does not exist or no read permission
 c. Provided file is empty
 d. Argument file is empty
 e. Wrong number of arguments
+f. check if it works both if column names are on first line and when are not
+
 1. Check both files for valid date and how thoroughly invalid dates are checked
 aa. correct date 
 a. day < 0
@@ -1567,9 +1571,8 @@ e. month  > 12
 f. month that doesn't have 31 days: 2025-04-31
 g. february has only 28 days: 2025-02-28
 h. leap year is allowed: 2024-02-29
-h. any value is more than max int
+h. any value more than max int
 g. any value value less than min int 
-i. check if it works both if column names are on first line and when are not
 2. Change the provided input file with prices to have wrong fields
 a. value missing
 b. wrong date 
@@ -1599,6 +1602,7 @@ l. Date in future ? not error
 
 Tests for the date:
 2025-01-31 | 1.1
+2025-01-31 | 1.1 // duplicate
 2025-02-31 | 1.1
 2025-03-31 | 1.1
 2025-04-31 | 1.1
@@ -1621,6 +1625,7 @@ Tests for the date:
 2011-02-29 | 1.1
 2024-02-29 | 1.1
 2024-02-30 | 1.1
+209876543234567-01-01 | 1.1
 2025-04-01 | -1
 2025-04-01 | 0
 2025-04-01 | 1000
