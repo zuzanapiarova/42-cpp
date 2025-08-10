@@ -1630,3 +1630,48 @@ Tests for the date:
 2025-04-01 | 0
 2025-04-01 | 1000
 2025-04-01 | 1001
+
+#### Excercise 01 - Reverse polish notation
+
+Reverse polish notation is another way of writing mathematical operations - the sign is not in the middle, but after both operands. 
+
+Logically I implement it as  stack, taking elements from top one by one, starting with the sign to know which operation to do and then taking first and second operand. 
+
+HOW IT WORKS: when reading the expression, the numbers are added to the stack, and as soon as operator is encounterd the 2 stored numbers are taken out and the operation is performed on them and pushed to stack. Then te next operand is pushed to stack. 
+
+Simple explanation on stacks in python:
+https://medium.com/@danish9980/solving-arithmetic-expressions-with-reverse-polish-notation-rpn-in-python-59c8aeec12a6
+
+Errors:
+1 + 
+1 2 3 +
+1 2 a
+a 2 +
++ 1 2
+1 3 + 9 + 4 2 + - = 7
+10 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 *
+
+Tests:
+Check for invalid argument
+Check for invalid formats (missing/extra opertors etc.)
+Check for overflow error: 10 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 *
+
+
+
+#### Excercise 02 - Merge insertion (Ford-Johnson algorithm) using 2 different container types
+
+The task is to implement this algorithm for 2 different container types (advised not to do a generic function) and compare how much time it takes for both. 
+
+Evaluation constraints:
+
+As an evaluator, you need to follow the scale, meaning that, the `proper algorithm, **Ford-Johnson**, **is used**` and the `proper sequence, **Jacobsthal** **numbers**, **as well**` . As the scale says, an explanation of these concepts is expected:
+
+> Check in the code that the merge-insert sort algorithm is present and is used for each container. The Ford-Johnson algorithm must be used.
+Therefore, the student must be capable of explaining the following concepts:
+> 
+> 
+> The key aspects of merge insertion, specifically the role of pairs.
+> The Jacobsthal sequence and its relevance.
+> The process of binary search.
+> A brief explanation is expected. In case of doubt, the evaluation stops here.
+>
