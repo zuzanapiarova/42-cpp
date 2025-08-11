@@ -26,7 +26,7 @@ Serializer::~Serializer()
 
 uintptr_t Serializer::serialize(Data* ptr)
 {
-    if (!ptr) throw std::invalid_argument("Cannot serialize null pointer");
+    // if (!ptr) throw std::invalid_argument("Cannot serialize null pointer");
     return reinterpret_cast<uintptr_t>(ptr);
 };
 

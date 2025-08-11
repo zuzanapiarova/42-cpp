@@ -19,9 +19,9 @@ int main()
     }
     a[size] = NULL;
 
-    // testing execution - all [size - 1] proper, only 1 last is NULL pointer
+    // testing execution - all besides last proper, 1 last is NULL pointer to test deserialize getting 0
     i = 0;
-    while (i < 11)
+    while (i <= size)
     {
         try
         {
@@ -39,25 +39,11 @@ int main()
                 std::cout << "The pointer is differenet after serialization and deserialization." << std::endl;
             std::cout << std::endl;
         }
-        catch (std::runtime_error e)
-        {
-            std::cout << "Error: " << e.what() << std::endl;
-        }
-        catch (std::invalid_argument e)
+        catch (std::exception& e)
         {
             std::cout << "Error: " << e.what() << std::endl;
         }
         i++;
-    }
-    // testing deserialize getting 0
-    try
-    {
-        Data* c = Serializer::deserialize(0);
-        std::cout << "Deserialized: " << c->value << std::endl;
-    }
-    catch (std::runtime_error e)
-    {
-        std::cout << "Error: " << e.what() << std::endl;
     }
     // test memory, esp. with exceptions/errors 
     i = 0;

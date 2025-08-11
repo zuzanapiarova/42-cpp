@@ -15,16 +15,16 @@ int main()
         if (i < count)
             b = generate();
         else
-            b = nullptr; // test last case with null poiner
+            b = NULL; // test last case with null poiner
         std::cout << "Identifying via pointer: ";
         identify(b);
         std::cout << "Identifying via reference: ";
-        identify(&(*b));
+        identify(*b);
 
         delete b;
     }
     std::cout << "Base object:" << std::endl;
-	Base* baseobj = new Base();
+	Base* baseobj = new Base;
 	identify(baseobj);
 	identify(*baseobj);
 	delete baseobj;

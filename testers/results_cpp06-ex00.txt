@@ -1,0 +1,204 @@
+case: ( no arguments ) 
+Invalid input. Expect ./convert <literal>
+
+case: 8
+char: Non displayable
+int: 8
+float: 8.0f
+double: 8.0
+
+case: -8
+char: Non displayable
+int: -8
+float: -8.0f
+double: -8.0
+
+case: *
+char: '*'
+int: 42
+float: 42.0f
+double: 42.0
+
+case: 42.0f
+char: '*'
+int: 42
+float: 42.0f
+double: 42.0
+
+case: 0
+char: Non displayable
+int: 0
+float: 0.0f
+double: 0.0
+
+case: -0
+char: Non displayable
+int: 0
+float: 0.0f
+double: 0.0
+
+case: +0
+char: Non displayable
+int: 0
+float: 0.0f
+double: 0.0
+
+case: 42.2334535
+char: '*'
+int: 42
+float: 42.2335f
+double: 42.2335
+
+case: 42.2345345f
+char: '*'
+int: 42
+float: 42.2345f
+double: 42.2345
+
+case: hello
+Error: Not a string literal for known types.
+
+case: f
+char: 'f'
+int: 102
+float: 102.0f
+double: 102.0
+
+case: af
+Error: Not a string literal for known types.
+
+case: 0.4ff
+Error: Not a string literal for known types.
+
+case: ---0.222
+Error: Not a string literal for known types.
+
+case: 1.f
+Error: Not a string literal for known types.
+
+case: 1.
+Error: Not a string literal for known types.
+
+case: .f
+Error: Not a string literal for known types.
+
+case: 
+Error: Not a string literal for known types.
+
+case: 1f
+Error: Not a string literal for known types.
+
+case: '
+char: '''
+int: 39
+float: 39.0f
+double: 39.0
+
+case: -
+char: '-'
+int: 45
+float: 45.0f
+double: 45.0
+
+case: \n
+char: Non displayable
+int: 10
+float: 10.0f
+double: 10.0
+
+case: \a
+char: Non displayable
+int: 7
+float: 7.0f
+double: 7.0
+
+case: \?
+char: '?'
+int: 63
+float: 63.0f
+double: 63.0
+
+case: ?
+char: '?'
+int: 63
+float: 63.0f
+double: 63.0
+
+case: \g
+Error: Invalid escape sequence
+
+case: \1
+Error: Invalid escape sequence
+
+case: 298
+char: impossible
+int: 298
+float: 298.0f
+double: 298.0
+
+case: nan
+char: impossible
+int: impossible
+float: nanf
+double: nan
+
+case: nanf
+char: impossible
+int: impossible
+float: nanf
+double: nan
+
+case: +inf
+char: impossible
+int: impossible
+float: inff
+double: inf
+
+case: +inff
+char: impossible
+int: impossible
+float: inff
+double: inf
+
+case: -inf
+char: impossible
+int: impossible
+float: -inff
+double: -inf
+
+case: -inff
+char: impossible
+int: impossible
+float: -inff
+double: -inf
+
+case: 2147483647
+char: impossible
+int: 2147483647
+float: 2147483648.0f
+double: 2147483647.0
+
+case: -2147483648
+char: impossible
+int: -2147483648
+float: -2147483648.0f
+double: -2147483648.0
+
+case: 2147483649
+Error: Invalid integer input.
+
+case: 2147483650.0f
+char: impossible
+int: impossible
+float: 2147483648.0f
+double: 2147483648.0
+
+case: 2140000000000000000000000000000000000000000000000.0
+char: impossible
+int: impossible
+float: impossible
+double: 2140000000000000142507887165227071356390265061376.0
+
+case: 100000000000000000000000000000000000000000000000.0f
+Error: Invalid float input.
+

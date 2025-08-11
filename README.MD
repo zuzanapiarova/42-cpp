@@ -947,10 +947,15 @@ int main(void)
 
 This excercise taught us to safely cast among the primitive data types and between string and primitive data types. We had to think of many possible error situations.
 
-First, I have functions to figure out which data type is received. Then I have function for each data type to handle conversion and special cases for it.
-I do it with string streams and reading from them, which results in iss.fail() or !iss.eof() if there is problem in reading  the string into the specified data type.
+I choose static cast, because it is used for safe casting of one type to another at compile time, and since we know which data types we are casting to, it is a logical choice.
 
-DID YOU KNOW that even if we makethe constructor private, it is still able to be instantiated by calling the constructor in its static member method and returning it? Then, calling this static method from outside of the class and assigning it to object of this class will make an instance of it and make it accessible to outside (but in c++98 we would also have to implement the copy constructor). HOWEVER, the subject it cannot e instantiable by user, it does not say it cannot be instantiable by the class methods. 
+Steps:
+1. First, I have functions to figure out which data type is represented by the input string literal - char/int/float/double
+2. After figuring out which type I received, I use string streams to read from the input literal string into that data type, which results in iss.fail() or !iss.eof() if there is problem in reading the string into the specified data type.
+3. Then I have function for each data type to handle explicit casting to the other 3 types, handling also pseudo-literals.
+4. If in any case an error happens - invalid argument, overflow error, excape sequence does not exist, etc. is handled via exceptions.
+
+The subject sayst we cannot be able to instantiaate the class, which can be done by maing the constructor private. But DID YOU KNOW that even if we make the constructor private, it is still able to be instantiated by calling the constructor in its static member method and returning it? Then, calling this static method from outside of the class and assigning it to object of this class will make an instance of it and make it accessible to outside (but in c++98 we would also have to implement the copy constructor). HOWEVER, the subject it cannot e instantiable by user, it does not say it cannot be instantiable by the class methods. 
 
 Except for char parameters, only the decimal notation will be used - so no scientific notation etc. 
 
@@ -1642,6 +1647,8 @@ HOW IT WORKS: when reading the expression, the numbers are added to the stack, a
 Simple explanation on stacks in python:
 https://medium.com/@danish9980/solving-arithmetic-expressions-with-reverse-polish-notation-rpn-in-python-59c8aeec12a6
 
+THERE IS A TESTER FOR THIS EXCERCISE IN testers/ RUNNING THE PRIGRAM WITH VARIOUS CORRECT AND WRONG EXPRESSIONS, CHECKING CORRECTNESS OF THE OUTPUT, WRONG FORMAT HANDLING, INT OVERFLOW HANDLING, WRONG ARGUMENTS, ETC. IT OUTPUTS A RESULTS FILE WITH TEST CASE, EXPECED OUTPUT, AND PROGRAM OUTPUT. IT IS UP TO THE EVALUATOR TO CHECK IF THE PROGRAM OUTPUT MATCHES EXPECTED RESULT AND TO CHECK THAT ERRORS ARE PROPERLY HANDLED. HOWEVER, THIS IS MERELY A TOOL FOR DISCUSSION ADN AUTOMATION OF MANUAL WORK, AND ITSELF IT SHOULD NOT BE THE BASIS FOR EVALUATION RESULT. THE EVALUATOR SHOULD PERFORM THEIR OWN TESTS IF THE RESULT SEEMS NOT CORRECT, AND DISCUSS WITH THE EVALUATEE WHY THEY CHOSE THAT HANDLING.
+
 Errors:
 1 + 
 1 2 3 +
@@ -1650,28 +1657,54 @@ a 2 +
 + 1 2
 1 3 + 9 + 4 2 + - = 7
 10 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 *
-
-Tests:
-Check for invalid argument
+Check for invalid arguments
 Check for invalid formats (missing/extra opertors etc.)
 Check for overflow error: 10 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 * 10 *
-
-
+Check for wrong number of arguments
+Division by 0
 
 #### Excercise 02 - Merge insertion (Ford-Johnson algorithm) using 2 different container types
 
 The task is to implement this algorithm for 2 different container types (advised not to do a generic function) and compare how much time it takes for both. 
 
 Evaluation constraints:
-
 As an evaluator, you need to follow the scale, meaning that, the `proper algorithm, **Ford-Johnson**, **is used**` and the `proper sequence, **Jacobsthal** **numbers**, **as well**` . As the scale says, an explanation of these concepts is expected:
-
 > Check in the code that the merge-insert sort algorithm is present and is used for each container. The Ford-Johnson algorithm must be used.
 Therefore, the student must be capable of explaining the following concepts:
-> 
-> 
 > The key aspects of merge insertion, specifically the role of pairs.
 > The Jacobsthal sequence and its relevance.
 > The process of binary search.
 > A brief explanation is expected. In case of doubt, the evaluation stops here.
->
+
+Concepts:
+- Ford-Johnson Algorithm = it is a sorting algorithm, and although it is not the fastest nor the most optimal, it was for a long time the algorithm that took the least numbers of comparisons. 
+- Jacobsthal numbers = integer sequence like related Fibonacci numbers that starts with 0 and 1, then each following number is found by adding the number before it to twice the number before that - the first Jacobsthal numbers are 0, 1, 1, 3, 5, 11, 21, 43, 85, 171 - they fulfill the recursive Lucas sequence in which xn = (P * xn-1) - (Q * xn-2) --> for Jacobsthal numbers, P = 1, Q = -2
+- binary search = searching algorithm that operates on sorted sequence, repeatedly dividing it into halves to find a target - has logarithmic time O(log N)
+- binary insertion = we use binary search to find the location where an element should be inserted - reduces number of comparisons for inserting a single element from O (N) to O (log N)
+
+It is often confused with the merge sort algorithm. 
+
+The Wikipedia page and the corespnding graph seem to underestimate the recursive step of pairing and sorting pairs of numbers, pairs of airs of numbers, pairs of pairs of pairs of numbers ... etc.
+
+Steps of the algorithm as I understand them:
+A. SPLITTING
+1. make adjacent elementes into pairs, if the number of elementes is odd, keep the last one separate
+2. sort these pairs - here and for the future operations, the bigger element is refered to as a, the smaller as b, each marked with the number of the pair in the sequence - a1 > b1, a2 > b2, a3 > b3, ...
+3. we can refer to the level of pairing as LEVELS - first pair of 2 numbers is L1, the next pair of pairs of numbers is L2, the next pair of pairs of pairs of numebrs is L3, etc. Each level has its a and b element
+3. when each pair is sorted, use recursion for step 2 - again make pairs - but now one level higher - pairs of pairs, and sort them based on the bigger element in each pair (a)
+4. recursively repeat step 2 until there are 2 last pairs, and they get sorted - always compare on the largest element of pair (it should always be the last one). !!! when switching pairs, always change the whole pairs, not only 2 elements - eg if each pair has 2 pairs on lower level, always change the whole "box", not changing the order within them anymore
+5. --> so the comparison always happens on teh largest(last) element of the pair, but the swapping occurs on the whole sequence
+6. odd size - if a number/pair("box") does not have a pair, we simply leave it at the end (since we start forming the pairs from the beginning, if there is any leftover number/pair, it will always be at the end)
+B. MERGING
+1. we start from the highest level. As mentioned before, each pair has its a and b element
+2. we start the final sequence with 
+
+https://en.wikipedia.org/wiki/Merge-insertion_sort
+https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
+
+Tests:
+1. Check how duplicates are handled
+2. 1 number
+3. empty input
+4. wrong arguments - a, ., > MAX_INT, ...
+5. 

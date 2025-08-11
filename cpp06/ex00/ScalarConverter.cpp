@@ -15,7 +15,7 @@ ScalarConverter& ScalarConverter::operator =(const ScalarConverter& origin)
 {
     std::cout << "ScalarConverter copy assignment operator called." << std::endl;
     if (this != &origin)
-        std::cout << "Copuy assignment returns same object." << std::endl;
+        std::cout << "Copy assignment returns same object." << std::endl;
     return *this;
 };
 
@@ -45,24 +45,23 @@ char parseEscapeChar(const std::string& s)
 {
     switch (s[1])
     {
-        case 'n':  return '\n';  // newline
-        case 't':  return '\t';  // horizontal tab
-        case 'v':  return '\v';  // vertical tab
-        case 'b':  return '\b';  // backspace
-        case 'r':  return '\r';  // carriage return
-        case 'f':  return '\f';  // form feed
+        case '0':  return '\0';  // null character
         case 'a':  return '\a';  // alert (bell)
+        case 'b':  return '\b';  // backspace
+        case 't':  return '\t';  // horizontal tab
+        case 'n':  return '\n';  // newline
+        case 'v':  return '\v';  // vertical tab
+        case 'f':  return '\f';  // form feed
+        case 'r':  return '\r';  // carriage return
         case '\\': return '\\';  // backslash
         case '\'': return '\'';  // single quote
         case '\"': return '\"';  // double quote
-        case '?':  return '\?';  // question mark
-        case '0':  return '\0';  // null character
+        case '?':  return '\?';  // question mark - becasue of trigraphs
     }
     throw std::invalid_argument("Invalid escape sequence");
 }
 
-// -! escape characters transform input from '\n' to "\\n", so handle this second string
-
+// -! escape characters transform input from '\n' to "\\n", since \ is itself an excaped character, so handle this second string
 bool isCharLiteral(const std::string& s)
 {
     if (s.length() == 1 )
@@ -112,11 +111,7 @@ void handleInt(const std::string& s)
     int i;
     std::istringstream iss(s); // string stream is only safe and standard way to convert strings to numbers in c++98
     iss >> i; // reads input from string and checks for integer format and range
-    if (iss.fail() || !iss.eof())
-    {
-        std::cerr << "Error: invalid integer input. " << std::endl;
-        return ;
-    }
+    if (iss.fail() || !iss.eof()) throw std::invalid_argument("Invalid integer input.");
     if (i < static_cast<int>(std::numeric_limits<char>::min()) || i > static_cast<int>(std::numeric_limits<char>::max()))
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<char>(i)))
@@ -173,11 +168,7 @@ void handleFloat(const std::string& s)
         if (s == "nanf") f = std::numeric_limits<double>::quiet_NaN();
         else if (s == "+inff") f = std::numeric_limits<double>::infinity();
         else if (s == "-inff") f = -std::numeric_limits<double>::infinity();
-        else
-        {
-            std::cerr << "Error: invalid float input." << std::endl;
-            return ;
-        }
+        else throw std::invalid_argument("Invalid float input.");
     }
     if (f < static_cast<float>(std::numeric_limits<char>::min()) || f > static_cast<float>(std::numeric_limits<char>::max()) || std::isnan(f)) // nan and infinity checks
         std::cout << "char: impossible" << std::endl;
@@ -236,11 +227,7 @@ void handleDouble(const std::string& s)
         if (s == "nan") d = std::numeric_limits<double>::quiet_NaN();
         else if (s == "+inf") d = std::numeric_limits<double>::infinity();
         else if (s == "-inf") d = -std::numeric_limits<double>::infinity();
-        else
-        {
-            std::cerr << "Error: invalid double input." << std::endl;
-            return ;
-        }
+        else throw std::invalid_argument("Invalid double input.");
     }
     if (d < static_cast<double>(std::numeric_limits<char>::min()) || d > static_cast<double>(std::numeric_limits<char>::max()) || std::isnan(d)) // infinity and nan check
         std::cout << "char: impossible" << std::endl;

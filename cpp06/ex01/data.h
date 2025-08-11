@@ -4,7 +4,6 @@
 typedef struct s_Data
 {
     int value;
-    struct s_Data *next;
 }               Data;
 
 #endif
