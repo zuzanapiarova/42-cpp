@@ -170,6 +170,7 @@ void handleFloat(const std::string& s)
         else if (s == "-inff") f = -std::numeric_limits<double>::infinity();
         else throw std::invalid_argument("Invalid float input.");
     }
+   std::cout << std::fixed << std::setprecision(8);
     if (f < static_cast<float>(std::numeric_limits<char>::min()) || f > static_cast<float>(std::numeric_limits<char>::max()) || std::isnan(f)) // nan and infinity checks
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<char>(f)))
@@ -229,6 +230,7 @@ void handleDouble(const std::string& s)
         else if (s == "-inf") d = -std::numeric_limits<double>::infinity();
         else throw std::invalid_argument("Invalid double input.");
     }
+    std::cout << std::fixed << std::setprecision(8);
     if (d < static_cast<double>(std::numeric_limits<char>::min()) || d > static_cast<double>(std::numeric_limits<char>::max()) || std::isnan(d)) // infinity and nan check
         std::cout << "char: impossible" << std::endl;
     else if (isPrintable(static_cast<int>(d)))

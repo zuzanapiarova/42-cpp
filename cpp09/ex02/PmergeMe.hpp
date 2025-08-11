@@ -4,26 +4,26 @@
 #include <string>
 #include <exception>
 #include <istream>
+#include <limits>
+#include <cerrno>
 #include <algorithm>
 #include <vector>
 #include <deque>
 
+template <typename Container>
 class PmergeMe
 {
     private:
-        std::vector<unsigned int>   _v;
-        std::deque<unsigned int>    _d;
+        Container _container;
 
     public:
         PmergeMe();
-        PmergeMe(const std::string& input);
+        PmergeMe(const Container& container);
         PmergeMe(const PmergeMe& origin);
         PmergeMe& operator =(const PmergeMe& origin);
         ~PmergeMe();
     
-        void populateVector(int size, char **members);
-        void populateDeque(int size, char **members);
-        void mergeInsertVector();
-        void mergeInsertDeque();
+        void sort();
 
 };
+

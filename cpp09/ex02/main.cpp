@@ -1,4 +1,5 @@
 #include "PmergeMe.hpp"
+#include "helpers.cpp"
 
 int main(int argc, char **argv)
 {
@@ -9,9 +10,14 @@ int main(int argc, char **argv)
     }
     try
     {
-        PmergeMe p;
-        p.populateVector(argc, argv);
-        p.populateDeque(argc, argv);
+        std::vector<unsigned int> v = populateVector(argc, argv);
+        std::deque<unsigned int> d = populateDeque(argc, argv);
+
+        PmergeMe<std::vector<unsigned int> > vec(v);
+        PmergeMe<std::deque<unsigned int> > deq(d);
+
+        vec.sort();
+        deq.sort();
 
     }
     catch (std::exception& e)

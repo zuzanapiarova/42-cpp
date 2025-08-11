@@ -1,76 +1,50 @@
 #include "PmergeMe.hpp"
 
-PmergeMe::PmergeMe()
+template <typename Container>
+PmergeMe<Container>::PmergeMe()
 {
     // std::cout << "PmergeMe default constructor called." << std::endl;
-    _v = 
-    _d = 
+    throw std::runtime_error("Cannot instantiate with empty default constuctor. Aborting.");
 };
 
-PmergeMe::PmergeMe(const PmergeMe& origin) : _v(origin._v), _d(origin._d)
+template <typename Container>
+PmergeMe<Container>::PmergeMe(const Container& container) : _container(container)
+{
+    // std::cout << "PmergeMe default constructor called." << std::endl;
+    throw std::runtime_error("Cannot instantiate with empty default constuctor. Aborting.");
+};
+
+template <typename Container>
+PmergeMe<Container>::PmergeMe(const PmergeMe& origin) : _container(origin._container)
 {
     // std::cout << "PmergeMe copy constructor called." << std::endl;
 };
-PmergeMe& PmergeMe::operator =(const PmergeMe& origin)
+
+template <typename Container>
+PmergeMe<Container>& PmergeMe<Container>::operator =(const PmergeMe& origin)
 {
     // std::cout << "PmergeMe copy constructor called." << std::endl;
     if (this != &origin)
-    {
-        _v = origin._v;
-        _d = origin._d;
-    }
+        _container = origin._container;
     return *this;
 };
 
-PmergeMe::~PmergeMe()
+template <typename Container>
+PmergeMe<Container>::~PmergeMe()
 {
     // std::cout << "PmergeMe destructor called." << std::endl;
 };
 
-bool safeStrToInt(const char* str, int &res)
+// template<> means is explicit template specialization
+//  empty angle brackets <> mean it is no longer a template definition for a generic T, but that the type parameters are already fixed, in this case to either vector or deque, and that it will be the one exact, concrete version of that function
+template <>
+void PmergeMe<std::vector<unsigned int> >::sort()
 {
-    errno = 0;
-    char *endptr;
-    long val = std::strtol(str, &endptr, 10);
-    if (*endptr != '\0') return false; 
-    if ((errno == ERANGE) || val > INT_MAX || val < INT_MIN) return false; // check for overflow or out of int
-    res = static_cast<int>(val);
-    return true;
-}
-
-void PmergeMe::populateVector(int size, char **members)
-{
-    int num;
-
-    for (int i = 1; i < size; ++i)
-    {
-        if (safeStrToInt(members[i], num))
-            _v.push_back(num);
-        else
-            throw std::runtime_error("Invalid argument.");
-    }
+    _container.push_back(1);
 };
 
-void PmergeMe::populateDeque(int size, char **members)
+template <>
+void PmergeMe<std::deque<unsigned int> >::sort()
 {
-    int num;
-
-    for (int i = 1; i < size; ++i)
-    {
-        if (safeStrToInt(members[i], num))
-            _d.push_back(num);
-        else
-            throw std::runtime_error("Invalid argument.");
-    }
-
-};
-
-void PmergeMe::mergeInsertVector()
-{
-
-};
-
-void PmergeMe::mergeInsertDeque()
-{
-
+    _container.push_back(2);
 };

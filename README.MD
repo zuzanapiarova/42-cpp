@@ -1681,6 +1681,7 @@ Concepts:
 - Jacobsthal numbers = integer sequence like related Fibonacci numbers that starts with 0 and 1, then each following number is found by adding the number before it to twice the number before that - the first Jacobsthal numbers are 0, 1, 1, 3, 5, 11, 21, 43, 85, 171 - they fulfill the recursive Lucas sequence in which xn = (P * xn-1) - (Q * xn-2) --> for Jacobsthal numbers, P = 1, Q = -2
 - binary search = searching algorithm that operates on sorted sequence, repeatedly dividing it into halves to find a target - has logarithmic time O(log N)
 - binary insertion = we use binary search to find the location where an element should be inserted - reduces number of comparisons for inserting a single element from O (N) to O (log N)
+- 
 
 It is often confused with the merge sort algorithm. 
 
@@ -1707,4 +1708,4 @@ Tests:
 2. 1 number
 3. empty input
 4. wrong arguments - a, ., > MAX_INT, ...
-5. 
+5. negative number cannot wrap - we are casting to unsigned int 
