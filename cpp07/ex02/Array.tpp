@@ -1,3 +1,5 @@
+#include "Array.hpp"
+
 #include <stdexcept>
 
 template <typename T>

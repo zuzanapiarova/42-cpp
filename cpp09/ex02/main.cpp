@@ -1,11 +1,10 @@
 #include "PmergeMe.hpp"
-#include "helpers.cpp"
 
 int main(int argc, char **argv)
 {
     if (argc < 2)
     {
-        std::cerr << "Wrong arguments. Program expects: ./PmergeMe int1 int2 ... intn";
+        std::cerr << "Wrong arguments. Program expects: ./PmergeMe int(1) int(2) ... int(n)" << std::endl;
         return 1;
     }
     try
@@ -16,8 +15,14 @@ int main(int argc, char **argv)
         PmergeMe<std::vector<unsigned int> > vec(v);
         PmergeMe<std::deque<unsigned int> > deq(d);
 
+        printContainer(vec.getContainer());
+        printContainer(deq.getContainer());
+
         vec.sort();
         deq.sort();
+
+        printContainer(vec.getContainer());
+        printContainer(deq.getContainer());
 
     }
     catch (std::exception& e)

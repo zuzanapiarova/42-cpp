@@ -948,6 +948,7 @@ int main(void)
 This excercise taught us to safely cast among the primitive data types and between string and primitive data types. We had to think of many possible error situations.
 
 I choose static cast, because it is used for safe casting of one type to another at compile time, and since we know which data types we are casting to, it is a logical choice.
+However static_cast is unsafe, meaning it does not handle runtime errors like overflow, underflow, or invalid conversions. It simply performs the conversion you tell it to, assuming you know what you’re doing. So it is your job to check if teh cast is safe by manually checking the range before casting.
 
 Steps:
 1. First, I have functions to figure out which data type is represented by the input string literal - char/int/float/double
@@ -1119,7 +1120,7 @@ int main()
 }
 ```
 
-## CPP07 - Casting
+## CPP07 - STL
 
 #### Excercise 0 - Function templates
 

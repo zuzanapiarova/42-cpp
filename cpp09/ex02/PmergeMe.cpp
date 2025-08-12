@@ -1,50 +1,48 @@
 #include "PmergeMe.hpp"
 
-template <typename Container>
-PmergeMe<Container>::PmergeMe()
+#include <string>
+#include <iostream>
+#include <exception>
+#include <cerrno>
+#include <limits>
+#include <cmath>
+#include <algorithm>
+#include <vector>
+#include <deque>
+
+bool safeStrToUnsignedInt(const char* str, unsigned int &res)
 {
-    // std::cout << "PmergeMe default constructor called." << std::endl;
-    throw std::runtime_error("Cannot instantiate with empty default constuctor. Aborting.");
+    errno = 0;
+    char *endptr;
+    unsigned long val = strtoul(str, &endptr, 10);
+    if (*endptr != '\0') return false; 
+    if ((errno == ERANGE) || val > std::numeric_limits<unsigned int>::max() || val < std::numeric_limits<unsigned int>::min()) return false; // check for overflow or out of int
+    res = static_cast<unsigned int>(val);
+    return true;
+}
+
+std::vector<unsigned int> populateVector(int size, char **arguments)
+{
+    unsigned int                 num;
+    std::vector<unsigned int>    v;
+
+    for (int i = 1; i < size; ++i)
+    {
+        if (!safeStrToUnsignedInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
+        v.push_back(num);
+    }
+    return v;
 };
 
-template <typename Container>
-PmergeMe<Container>::PmergeMe(const Container& container) : _container(container)
+std::deque<unsigned int> populateDeque(int size, char **arguments)
 {
-    // std::cout << "PmergeMe default constructor called." << std::endl;
-    throw std::runtime_error("Cannot instantiate with empty default constuctor. Aborting.");
-};
+    unsigned int             num;
+    std::deque<unsigned int> d;
 
-template <typename Container>
-PmergeMe<Container>::PmergeMe(const PmergeMe& origin) : _container(origin._container)
-{
-    // std::cout << "PmergeMe copy constructor called." << std::endl;
-};
-
-template <typename Container>
-PmergeMe<Container>& PmergeMe<Container>::operator =(const PmergeMe& origin)
-{
-    // std::cout << "PmergeMe copy constructor called." << std::endl;
-    if (this != &origin)
-        _container = origin._container;
-    return *this;
-};
-
-template <typename Container>
-PmergeMe<Container>::~PmergeMe()
-{
-    // std::cout << "PmergeMe destructor called." << std::endl;
-};
-
-// template<> means is explicit template specialization
-//  empty angle brackets <> mean it is no longer a template definition for a generic T, but that the type parameters are already fixed, in this case to either vector or deque, and that it will be the one exact, concrete version of that function
-template <>
-void PmergeMe<std::vector<unsigned int> >::sort()
-{
-    _container.push_back(1);
-};
-
-template <>
-void PmergeMe<std::deque<unsigned int> >::sort()
-{
-    _container.push_back(2);
+    for (int i = 1; i < size; ++i)
+    {
+        if (!safeStrToUnsignedInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
+        d.push_back(num);
+    }
+    return d;
 };
