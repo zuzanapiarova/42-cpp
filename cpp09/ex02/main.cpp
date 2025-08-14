@@ -9,20 +9,20 @@ int main(int argc, char **argv)
     }
     try
     {
-        std::vector<unsigned int> v = populateVector(argc, argv);
-        std::deque<unsigned int> d = populateDeque(argc, argv);
+        std::vector<unsigned int>v = populateContainer<std::vector<unsigned int> >(argc, argv);
+        std::deque<unsigned int>d = populateContainer<std::deque<unsigned int> >(argc, argv);
 
-        PmergeMe<std::vector<unsigned int> > vec(v);
-        PmergeMe<std::deque<unsigned int> > deq(d);
+        PmergeMe<std::vector<unsigned int> > V(v);
+        // PmergeMe<std::deque<unsigned int> > D(d);
 
-        printContainer(vec.getContainer());
-        printContainer(deq.getContainer());
+        std::cout << V << std::endl;
+        // std::cout << D << std::endl;
 
-        vec.sort();
-        deq.sort();
+        V.sort();
+        // D.sort();
 
-        printContainer(vec.getContainer());
-        printContainer(deq.getContainer());
+        std::cout << V << std::endl;
+        // std::cout << D << std::endl;
 
     }
     catch (std::exception& e)

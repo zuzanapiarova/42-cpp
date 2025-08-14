@@ -943,22 +943,22 @@ int main(void)
 
 ## CPP06 - Casting
 
-#### Excercise 0 - Function pointers again
+#### Excercise 0 - Static cast between known data types at compile time - unsafe, must check overflow etc. before
 
-This excercise taught us to safely cast among the primitive data types and between string and primitive data types. We had to think of many possible error situations.
+This excercise taught us to safely cast among the primitive data types and between string and primitive data types. 
 
-I choose static cast, because it is used for safe casting of one type to another at compile time, and since we know which data types we are casting to, it is a logical choice.
-However static_cast is unsafe, meaning it does not handle runtime errors like overflow, underflow, or invalid conversions. It simply performs the conversion you tell it to, assuming you know what you’re doing. So it is your job to check if teh cast is safe by manually checking the range before casting.
+I choose static cast, because it is used for casting of one type to another at compile time, and since we know which data types we are casting to, it is a logical choice.
+However static_cast is unsafe, meaning it does not handle runtime errors like overflow, underflow, or invalid conversions. It simply performs the conversion you tell it to. So it is your job to check if teh cast is safe by manually checking the range before casting.
 
 Steps:
-1. First, I have functions to figure out which data type is represented by the input string literal - char/int/float/double
-2. After figuring out which type I received, I use string streams to read from the input literal string into that data type, which results in iss.fail() or !iss.eof() if there is problem in reading the string into the specified data type.
-3. Then I have function for each data type to handle explicit casting to the other 3 types, handling also pseudo-literals.
+1. First, I have functions to figure out which data type is represented by the input string literal - char/int/float/double based on specifiers like ., f.
+2. After figuring out which type I received, I use string streams to read from the input literal string into that data type, which results in iss.fail() or !iss.eof() if there is problem in reading the string into the selected data type.
+3. Last;y I have function for each data type to handle explicit casting to the other 3 types, handling also pseudo-literals, and printing it to stdout.
 4. If in any case an error happens - invalid argument, overflow error, excape sequence does not exist, etc. is handled via exceptions.
 
-The subject sayst we cannot be able to instantiaate the class, which can be done by maing the constructor private. But DID YOU KNOW that even if we make the constructor private, it is still able to be instantiated by calling the constructor in its static member method and returning it? Then, calling this static method from outside of the class and assigning it to object of this class will make an instance of it and make it accessible to outside (but in c++98 we would also have to implement the copy constructor). HOWEVER, the subject it cannot e instantiable by user, it does not say it cannot be instantiable by the class methods. 
+The subject sayst we cannot be able to instantiaate the class, which can be done by making the constructor private. But DID YOU KNOW that even if we make the constructor private, it is still able to be instantiated by calling the constructor in its static member method and returning it? Then, calling this static method from outside of the class and assigning it to object of this class will make an instance of it and make it accessible to outside (but in c++98 we would also have to implement the copy constructor). HOWEVER, the subject it cannot e instantiable by user, it does not say it cannot be instantiable by the class methods. 
 
-Except for char parameters, only the decimal notation will be used - so no scientific notation etc. 
+Except for char parameters, only the decimal notation will be used - so no scientific notation etc. We had to think of many possible error situations.
 
 I CREATED A TESTER THAT CHECKS ALL POSSIBLE CASES - CORRECT AND INCORRECT THAT SHOJLD BE HANDLED. THE OUTPUT IS WRITTEN TO cpp06-ex00_results.txt FILE. NEEDS TO BE CHECKED MANUALLY ( USE YOUR VISUAL AND LOGICAL ABILITIES :) CHANGE PATH TO EXECUTABLE ACCRDING TO YOUR PROJECT. HOWEVER, THE IMMPLEMENTATION OF EACH STUDENT CAN VARY, ESPECIALLY FOR HOW YOU CHECK FOR NAN,NANF... OR IF YOU INCLUDE '' FOR CHARS IN THE INPUT AND REMOVE IT FOR PROCESSING OR NOT OR IF SINGLE DIGITS ARE REPRESENTED AS CHAR OR INT. THUS IT IS JUST A TOOL FOR DISCUTTION, AND IS NOT GROUNDS FOR FAILING SOMEONE NOR AUTOMATIC SUCCESS. IF SOMETHING DOESN'T SEEM RIGHT, RUN THE PROGRAM WITH THAT ARGUMENT. 
 
@@ -1009,7 +1009,7 @@ C. should trigger error/exception
 37. 100000000000000000000000000000000000000000000000.0f - < max float
 38. max double can hardly be tested since it is ~1.8 × 10^308
 
-#### Excercise 1 - casting pointers - reinterpret cast
+#### Excercise 1 - Reinterpret cast - Casting between uneralted data types
 
 This excercise taught us how to work with reinterpret casting. 
 - reinterpret_cast = used for low-level casting between unrelated types like pointers and integers
@@ -1084,7 +1084,7 @@ int main()
 }
 ```
 
-#### Excercise 02 - dynamic casts
+#### Excercise 02 - Dynamic casts - using them at pointers/references that use polymorphism to identify the data type
 
 Dynamic cast only works with polymorphic types (that at least one virtual function) and only on pointers/references. 
 
@@ -1703,6 +1703,11 @@ B. MERGING
 
 https://en.wikipedia.org/wiki/Merge-insertion_sort
 https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
+
+Program structure:
+1. Class holds a container, which is a template Container
+2. Separate high-level separate sort functions for different container types if each should be handled a bit differently
+3. But shared logic using templated containers in helper functions like insertionSort, merge, FindJacobsonNumbers ... 
 
 Tests:
 1. Check how duplicates are handled
