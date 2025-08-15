@@ -3,6 +3,7 @@
 #include <vector>
 #include <list>
 #include <deque>
+
 #include "easyfind.hpp"
 
 int main()
@@ -31,18 +32,44 @@ int main()
     {
         std::vector<int>::iterator it1 = easyfind(vec, 1); // element exists
         std::cout << "Found in vector: " << *it1 << std::endl;
-
-        std::list<int>::const_iterator it2 = easyfind(lst, 300);  // element exists - const container
-        std::cout << "Found in list: " << *it2 << std::endl;
-
-        std::vector<int>::const_iterator it3 = easyfind(duplicates, 2);  // duplicate elements - gets the first occurence
-        std::cout << "Found in list: " << *it3 << " on index: " << it3 - duplicates.begin() << std::endl;
-
-        std::deque<int>::const_iterator it4 = easyfind(empty, 1);  // empty container - element is not found
-        std::cout << "Found in list: " << *it4 << std::endl;
-
-        std::deque<int>::iterator it5 = easyfind(deque, 0); // outside of container
-        std::cout << "Found in deque: " << *it5 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::vector<int>::iterator it2 = easyfind(vec, 10); // element does not exist
+        std::cout << "Found in vector: " << *it2 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+        std::list<int>::const_iterator it3 = easyfind(lst, 300);  // element exists - const container
+        std::cout << "Found in list: " << *it3 << std::endl;
+    try
+    {
+        std::vector<int>::const_iterator it4 = easyfind(duplicates, 2);  // duplicate elements - gets the first occurence
+        std::cout << "Found in list: " << *it4 << " on index: " << it4 - duplicates.begin() << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::deque<int>::const_iterator it5 = easyfind(empty, 1);  // empty container - element is not found
+        std::cout << "Found in list: " << *it5 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::deque<int>::iterator it6 = easyfind(deque, 0); // outside of container
+        std::cout << "Found in deque: " << *it6 << std::endl;
     }
     catch (const std::out_of_range& e)
     {

@@ -27,7 +27,36 @@ int nearestLowerPowerOf2(int size)
         return 0;
 
     int res = 1;    
-    while (size > res*2)
+    while (size >= res*2)
         res *= 2;
     return res;
+};
+
+int calculateMaxNumberOfComparisons(int n)
+{
+    int sum = 0;
+    for (int k = 1; k <= n; ++k)
+    {
+        double value = (3.0 / 4.0) * k;
+        sum += static_cast<int>(ceil(log2(value)));
+    }
+    return sum;
+};
+
+int getNextJacobsthal(int previousJacobsthal)
+{
+    if (previousJacobsthal < 0) return 0;
+    if (previousJacobsthal < 1) return 1;
+    
+    int result;
+    int a = 0;
+    int b = 1;
+
+    while (a < previousJacobsthal)
+    {
+        int next = b + 2*a;
+        a = b;
+        b = next;
+    }
+    return b;
 }

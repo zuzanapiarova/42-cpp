@@ -15,12 +15,12 @@ class Array
         Array();
         Array(unsigned int n);
         Array(const Array& origin);
-        Array& operator=(const Array& origin);
-        T& operator[](unsigned int index);
-        const T& operator[](unsigned int index) const ;
+        Array& operator =(const Array& origin);
+        T& operator [](unsigned int index);
+        const T& operator [](unsigned int index) const ;
         ~Array();
 
-        unsigned int    size() const ;
+        unsigned int size() const ;
 
 };
 

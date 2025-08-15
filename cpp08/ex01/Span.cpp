@@ -15,11 +15,12 @@ Span::Span(const Span& origin) : _size(origin._size), _v(origin._v)
     std::cout << "Span copy constructor called." << std::endl;
 };
 
-Span& Span::operator=(const Span& origin)
+Span& Span::operator =(const Span& origin)
 {
     std::cout << "Span copy assignment operator called." << std::endl;
     (void)origin;
-    std::cerr << "Cannot call copy assignment operator because of const members." << std::endl;
+    if (this != &origin)
+        std::cerr << "Cannot call copy assignment operator because of const members." << std::endl;
     return *this;
 };
 

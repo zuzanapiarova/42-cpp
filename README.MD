@@ -1124,7 +1124,7 @@ int main()
 
 #### Excercise 0 - Function templates
 
-This excercise introduces function templates. What is important to know is to always define (declare+implement) it in header file, because compiler must see the definition then it instantiates the funciton with the type it received. 
+This excercise introduces function templates. What is important to know is to always define (declare+implement) it in header file, because compiler must see the definition then it instantiates the function with the type it received. 
 
 Pass in references or pointers where possible to avoid copying large objects. 
 
@@ -1135,21 +1135,41 @@ T functionName(T& x, U& y) {}
 
 Test (from subject):
 ```
-int
-main( void )
-{
+int main( void )
+{ 
     int a = 2;
     int b = 3;
     ::swap( a, b );
     std::cout << "a = " << a << ", b = " << b << std::endl;
     std::cout << "min( a, b ) = " << ::min( a, b ) << std::endl;
     std::cout << "max( a, b ) = " << ::max( a, b ) << std::endl;
-    std::string c = "chaine1";
-    std::string d = "chaine2";
+    std::cout << std::endl;
+
+    std::string c = "apple";
+    std::string d = "banana";
     ::swap(c, d);
     std::cout << "c = " << c << ", d = " << d << std::endl;
     std::cout << "min( c, d ) = " << ::min( c, d ) << std::endl;
     std::cout << "max( c, d ) = " << ::max( c, d ) << std::endl;
+    std::cout << std::endl;
+
+    float e = 1.123f;
+    float f = 0.55f;
+    ::swap(e, f);
+    std::cout << "e = " << e << ", f = " << f << std::endl;
+    std::cout << "min( e, f ) = " << ::min( e, f ) << std::endl;
+    std::cout << "max( e, f ) = " << ::max( e, f ) << std::endl;
+    std::cout << std::endl;
+
+    char g = '*';
+    char h = '?';
+    ::swap(g, h);
+    std::cout << "g = " << g << ", h = " << h << std::endl;
+    std::cout << "min( g, h ) = " << ::min( g, h ) << std::endl;
+    std::cout << "max( g, h ) = " << ::max( g, h ) << std::endl;
+    std::cout << std::endl;
+
+
     return 0;
 }
 ```
@@ -1197,48 +1217,49 @@ void print_arr_el(const I& el)
 
 int main( void )
 {
-    int size = 5;
+    int size = 7;
 
     // some arrays of different types 
-    char char_arr[] = { '!', '"', '#', '$', '%' };
-    const char c_char_arr[] = { '^', '&', '*', '(', ')' };
     int int_arr[] = { 1, 2, 3, 4, 5 };
-    const int c_int_arr[] = { 100, 200, 300, 400, 500 };
+    const int const_int_arr[] = { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000 };
+    char char_arr[] = { '!', '"', '#', '$', '%' };
+    const char const_char_arr[] = { '^', '&', '*', '(', ')' };
     std::string str_arr[] = { "Dog", "Cat", "Cow", "Mouse", "Tiger" };
-    const std::string c_str_arr[] = { "Giraffe", "Monkey", "Bug", "Elephant", "Wolf" };
+    const std::string const_str_arr[] = { "Giraffe", "Monkey", "Bug", "Elephant", "Wolf" };
 
     // passing in functions
-    ::iter(int_arr, size, add_one); // --> works - int arr, int function
-    ::iter(int_arr, size, print_int_arr); // --> works - int arr, int template function
+    ::iter(int_arr, sizeof(int_arr) / sizeof(int_arr[0]), add_one); // --> works - int arr, int function
+    ::iter(int_arr, sizeof(int_arr) / sizeof(int_arr[0]), print_int_arr); // --> works - int arr, const int function
     //::iter(char_arr, size, add_one); // --> does not work - char arr, int function
     std::cout << std::endl << std::endl;
     
     // passing in template functions:
-    ::iter(char_arr, size, add); // --> works - char arr, template function
-    ::iter(char_arr, size, print_arr_el); // --> works - char arr, const template function
+    ::iter(char_arr, sizeof(char_arr) / sizeof(char_arr[0]), add); // --> works - non-const char arr, non-const template function
+    ::iter(char_arr, sizeof(char_arr) / sizeof(char_arr[0]), print_arr_el); // --> works - non-const char arr, const template function
+    // ::iter(char_arr, size, add_one); // --> does not work - char array, int function
     std::cout << std::endl;
-    //::iter(c_char_arr, size, add); // --> does not work -  const char arr, non-const template function that tries to modify the array
-    ::iter(c_char_arr, size, print_arr_el); // --> works - const char arr, const template function
+    //::iter(const_char_arr, size, add); // --> does not work - const char arr, non-const template function that tries to modify the array
+    ::iter(const_char_arr, sizeof(const_char_arr) / sizeof(const_char_arr[0]), print_arr_el); // --> works - const char arr, const template function
     std::cout << std::endl << std::endl;
 
-    ::iter(int_arr, size, add); // --> works - int arr, non-const template function
-    ::iter(int_arr, size, print_arr_el); // --> works - int arr, const template function
+    ::iter(int_arr, sizeof(int_arr) / sizeof(int_arr[0]), add); // --> works - int arr, non-const template function
+    ::iter(int_arr, sizeof(int_arr) / sizeof(int_arr[0]), print_arr_el); // --> works - int arr, const template function
+    //::iter(const_int_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
     std::cout << std::endl;
-    //::iter(c_int_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
-    ::iter(c_int_arr, size, print_arr_el); // --> works - const array, const template function
+    ::iter(const_int_arr, sizeof(const_int_arr) / sizeof(const_int_arr[0]), print_arr_el); // --> works - const array, const template function
     std::cout << std::endl << std::endl;
 
-    ::iter(str_arr, size, add); // --> works - int arr, template function
-    ::iter(str_arr, size, print_arr_el); // --> works  - string arr, template function
+    ::iter(str_arr, sizeof(str_arr) / sizeof(str_arr[0]), add); // --> works - int arr, template function
+    ::iter(str_arr, sizeof(str_arr) / sizeof(str_arr[0]), print_arr_el); // --> works  - string arr, template function
+    //::iter(const_str_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
     std::cout << std::endl;
-    //::iter(c_str_arr, size, add); // --> does not work - const array, non-const template function add tries to modify the array
-    ::iter(c_str_arr, size, print_arr_el); // --> works - const string array, const template function
-    std::cout << std::endl <<std::endl;
+    ::iter(const_str_arr, sizeof(const_str_arr) / sizeof(const_str_arr[0]), print_arr_el); // --> works - const string array, const template function
+    std::cout << std::endl << std::endl;
 
     // edge cases tests
     ::iter<int>(NULL, size, print_int_arr); // should safely do nothing
     ::iter(int_arr, 0, print_int_arr); // empty array, prints nothing
-    ::iter(int_arr, 1, print_int_arr); // small array, runs once
+    ::iter(int_arr, -1, print_int_arr); // egative length, does not run
 
     return 0;
 }
@@ -1256,12 +1277,14 @@ Create object of class template as Array<int> IntArray; Array<std::string> Strin
 
 Tests:
 1. check with valgrind when there is destructor AND copy assignment operator - they must delete the created array, else there WILL be leaks 
-2. check that the array cretaed with default constructor exists but its empty and that the size is initialized
+2. check that the array created with default constructor exists but its empty and that the size is initialized
 3. check that the array created with overload constructor is value-initialized with default values for their data type - there is () after new T[n]() in overload constructor!
-4. do assignment from array that has size 0, check valgrind and print the [0] value
-5. copy the same element with copy assignment operator - should not do anything - check the values 
-6. test the size() function on empty and non-empty array
-7. test out of bounds access - should throw exception
+4. check that the array created with copy asssignment creates deep copy - change newArr[0] to something else and then check values in both newArr[0] and oldArr[0] - should be different
+5. do the same for copy assignment
+6. do assignment from array that has size 0, check valgrind and print the [0] value
+7. copy the same element with copy assignment operator - should not do anything - check the values 
+8. test the size() function on empty and non-empty array
+9. test out of bounds access - should throw exception
 ```
 int main( void )
 {
@@ -1269,20 +1292,37 @@ int main( void )
 
     try
     {
-        // empty array with default constructor - should have size 0 and _array initialized to NULL
+        // 1. empty array with default constructor - should have size 0 and _array initialized to NULL
         Array<int> emptyArr;
-        std::cout << "Empty array size: " << emptyArr.size() << std::endl << std::endl;
-        //std::cout << "Empty array[0]: " << emptyArr[0]; // throws out of bounds exception
+        std::cout << "Empty array size: " << emptyArr.size() << std::endl;
+        try
+        {
+            std::cout << "Empty array[0]: " << emptyArr[0] << std::endl; // should throw out of bounds exception
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+        std::cout << std::endl;
 
-        // int array created with overload constructor - should have size n and values are initialized to default value of provided data type
-        Array<int>intArr(size);
+        // 2. int array created with overload constructor - should have size n and values are initialized to default value of provided data type
+        Array<int> intArr(size);
         std::cout << "Int array size: " << intArr.size() << std::endl;
         for (unsigned int i = 0; i < intArr.size(); ++i)
             std::cout << intArr[i] << ", ";
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;
+        try
+        {
+            std::cout << "intArray[7]: " <<  intArr[7] << std::endl; // should throw out of bounds exception
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+        std::cout << std::endl;
 
-        // string array created with overload constructor - must be value-initialized
-        Array<std::string>strArr(size);
+        // 3. string array created with overload constructor - must be value-initialized
+        Array<std::string> strArr(size);
         std::cout << "String array size: " << strArr.size() << std::endl;
         for (unsigned int i = 0; i < strArr.size(); ++i)
             std::cout << strArr[i] << ", ";
@@ -1294,44 +1334,59 @@ int main( void )
             std::cout << strArr[i] << ", ";
         std::cout << std::endl << std::endl;
 
-        // test copy constructor
+        // 4. test copy constructor - should create deep copy
         //Array<char> charArr(strArr); // does not work - not allowed - trying to construct from different type
-        const Array<std::string> otherStrArr(strArr);
-        std::cout << "Other string array size: " << otherStrArr.size() << std::endl;
-        for (unsigned int i = 0; i < otherStrArr.size(); ++i)
-            std::cout << otherStrArr[i] << ", ";
-        std::cout << std::endl << std::endl;
+        Array<std::string> copyStrArr(strArr);
+        std::cout << "Other string array size: " << copyStrArr.size() << std::endl;
+        for (unsigned int i = 0; i < copyStrArr.size(); ++i)
+            std::cout << copyStrArr[i] << ", ";
+        std::cout << std::endl;
+        // testing if deep copy was created
+        copyStrArr[0] = "Mouse";
+        std::cout << "strArr[0]: " << strArr[0] << ", copyStrArr[0]: " << copyStrArr[0] <<" => should be different!" << std::endl << std::endl;
 
-        // const string array - works as others, but does not allow a[10] = ...
-        const Array<std::string>constStrArr(size);
+        // 5. const string array - works as others, but does not allow a[10] = ...
+        const Array<std::string> constStrArr(strArr);
+        std::cout << std::endl;
         //constStrArr[0] = "Cow"; // does not work - not allowed - trying to reassign const element
 
-        // testing copy assignment operator for size 0 - Empty Array
+        // 6. testing copy assignment operator for size 0 - Empty Array
         Array<int> newIntArr(5);
+        std::cout << "New Int array size: " << newIntArr.size() << std::endl;
         newIntArr = emptyArr;
-        std::cout << "New Int array size: " << newIntArr.size() << std::endl << std::endl;
-
-        // testing copy assignment operator for size 
+        std::cout << "New Int array size: " << newIntArr.size() << std::endl;
+        try
+        {
+            std::cout << "newIntArr[0]: " << newIntArr[0] << std::endl; // should raise exception since we copied it from an empty array
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "Error: " << e.what() << std::endl;
+        }
+        std::cout << std::endl;
+        
+        // 7. testing copy assignment operator creates a deep copy -- check there are no leaks !
         intArr[0] = 42;
         newIntArr = intArr;
-        std::cout << "New Int array size: " << newIntArr.size() << std::endl << std::endl;
+        std::cout << "New Int array size: " << newIntArr.size() << std::endl;
         for (unsigned int i = 0; i < newIntArr.size(); ++i)
             std::cout << newIntArr[i] << ", ";
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl;
+        newIntArr[0] = 43;
+        std::cout << "newIntArr[0]: " << newIntArr[0] << ", intArr[0]: " << intArr[0] <<" => should be different!" << std::endl;
+        std::cout << std::endl;
 
-        // testint copying the same element with copy assignment operator --> should do nothing
+        // 8. testing copying the same element with copy assignment operator --> should do nothing AND no leaks
         // intArr = intArr;
         // std::cout << "Int array size: " << intArr.size() << std::endl << std::endl;
         // for (unsigned int i = 0; i < intArr.size(); ++i)
         //     std::cout << intArr[i] << ", ";
         // std::cout << std::endl << std::endl;
 
-        // accessing invalid element - should raise exception
-        std::cout << "Trying to access invalid element of Int array: " << intArr[6] << "." << std::endl << std::endl;
     }
     catch (std::exception& e)
     {
-        std::cout << "Error: " << e.what() << std::endl;
+        std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
 
@@ -1377,21 +1432,46 @@ int main()
 
     try
     {
-
         std::vector<int>::iterator it1 = easyfind(vec, 1); // element exists
         std::cout << "Found in vector: " << *it1 << std::endl;
-
-        std::list<int>::const_iterator it2 = easyfind(lst, 300);  // element exists - const container
-        std::cout << "Found in list: " << *it2 << std::endl;
-
-        std::vector<int>::const_iterator it3 = easyfind(duplicates, 2);  // duplicate elements - gets the first occurence
-        std::cout << "Found in list: " << *it3 << " on index: " << it3 - duplicates.begin() << std::endl;
-
-        std::deque<int>::const_iterator it4 = easyfind(empty, 1);  // empty container - element is not found
-        std::cout << "Found in list: " << *it4 << std::endl;
-
-        std::deque<int>::iterator it5 = easyfind(deque, 0); // outside of container
-        std::cout << "Found in deque: " << *it5 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::vector<int>::iterator it2 = easyfind(vec, 10); // element does not exist
+        std::cout << "Found in vector: " << *it2 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+        std::list<int>::const_iterator it3 = easyfind(lst, 300);  // element exists - const container
+        std::cout << "Found in list: " << *it3 << std::endl;
+    try
+    {
+        std::vector<int>::const_iterator it4 = easyfind(duplicates, 2);  // duplicate elements - gets the first occurence
+        std::cout << "Found in list: " << *it4 << " on index: " << it4 - duplicates.begin() << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::deque<int>::const_iterator it5 = easyfind(empty, 1);  // empty container - element is not found
+        std::cout << "Found in list: " << *it5 << std::endl;
+    }
+    catch (const std::out_of_range& e)
+    {
+        std::cerr << "Exception: " << e.what() << std::endl;
+    }
+    try
+    {
+        std::deque<int>::iterator it6 = easyfind(deque, 0); // outside of container
+        std::cout << "Found in deque: " << *it6 << std::endl;
     }
     catch (const std::out_of_range& e)
     {
@@ -1692,13 +1772,14 @@ Steps of the algorithm as I understand them:
 A. SPLITTING
 1. make adjacent elementes into pairs, if the number of elementes is odd, keep the last one separate
 2. sort these pairs - here and for the future operations, the bigger element is refered to as a, the smaller as b, each marked with the number of the pair in the sequence - a1 > b1, a2 > b2, a3 > b3, ...
-3. we can refer to the level of pairing as LEVELS - first pair of 2 numbers is L1, the next pair of pairs of numbers is L2, the next pair of pairs of pairs of numebrs is L3, etc. Each level has its a and b element
+3. when the pairs of  numberes are sorted, move to next "level" where you operate on pair of pairs of numbers - first pair of 2 numbers is L1(size 2), the next pair of pairs of numbers is L2(size 4 - 2 + 2), the next pair of pairs of pairs of numebrs is L3(size 8), etc. With each level the size of the "box" wrapping a pair grows by powers of 2. Each level has its a and b element, which is always the last element of each pair 
 3. when each pair is sorted, use recursion for step 2 - again make pairs - but now one level higher - pairs of pairs, and sort them based on the bigger element in each pair (a)
 4. recursively repeat step 2 until there are 2 last pairs, and they get sorted - always compare on the largest element of pair (it should always be the last one). !!! when switching pairs, always change the whole pairs, not only 2 elements - eg if each pair has 2 pairs on lower level, always change the whole "box", not changing the order within them anymore
 5. --> so the comparison always happens on teh largest(last) element of the pair, but the swapping occurs on the whole sequence
 6. odd size - if a number/pair("box") does not have a pair, we simply leave it at the end (since we start forming the pairs from the beginning, if there is any leftover number/pair, it will always be at the end)
+7. if the box does not have a pair becasue a box of the same size cannot be created from the leftover elements/boxed, just leave them at the end
 B. MERGING
-1. we start from the highest level. As mentioned before, each pair has its a and b element
+1. we start from the highest level - the largest box that encompasses smaller pairs, possible leftovers are at the end, not considered yet. As mentioned before, each pair has its a and b element where a > b.
 2. we start the final sequence with 
 
 https://en.wikipedia.org/wiki/Merge-insertion_sort
@@ -1710,8 +1791,9 @@ Program structure:
 3. But shared logic using templated containers in helper functions like insertionSort, merge, FindJacobsonNumbers ... 
 
 Tests:
-1. Check how duplicates are handled
-2. 1 number
-3. empty input
+1. duplicates (handling up to student)
+2. 1 number, 2 numbers
+3. no argument - ./PmergeMe 
 4. wrong arguments - a, ., > MAX_INT, ...
-5. negative number cannot wrap - we are casting to unsigned int 
+5. empty argument - ./PmergeMe  1 2 "" "   " 5
+6. negative number cannot wrap - we are casting to unsigned int 

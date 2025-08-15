@@ -10,7 +10,8 @@ int main(int argc, char **argv)
     try
     {
         std::vector<unsigned int>v = populateContainer<std::vector<unsigned int> >(argc, argv);
-        std::deque<unsigned int>d = populateContainer<std::deque<unsigned int> >(argc, argv);
+        // std::deque<unsigned int>d = populateContainer<std::deque<unsigned int> >(argc, argv);
+        std::cout << "Max number of calculations (in the worst case): " << calculateMaxNumberOfComparisons(v.size()) << std::endl;
 
         PmergeMe<std::vector<unsigned int> > V(v);
         // PmergeMe<std::deque<unsigned int> > D(d);
