@@ -2,31 +2,32 @@
 
 Span::Span() : _size(), _v()
 {
-    std::cout << "Span default constructor called." << std::endl;
+    // std::cout << "Span default constructor called." << std::endl;
 };
 
-Span::Span(unsigned int N) : _size(N), _v()
+Span::Span(long N) : _size(static_cast<unsigned int>(N)), _v()
 {
-    std::cout << "Span overload constructor called." << std::endl;
+    // std::cout << "Span overload constructor called." << std::endl;
+    if (N < std::numeric_limits<unsigned int>::min() || N > std::numeric_limits<unsigned int>::max())
+        throw std::out_of_range("Value outside of unsigned int not allowed.");
 }
 
 Span::Span(const Span& origin) : _size(origin._size), _v(origin._v)
 {
-    std::cout << "Span copy constructor called." << std::endl;
+    // std::cout << "Span copy constructor called." << std::endl;
 };
 
 Span& Span::operator =(const Span& origin)
 {
-    std::cout << "Span copy assignment operator called." << std::endl;
-    (void)origin;
+    // std::cout << "Span copy assignment operator called." << std::endl;
     if (this != &origin)
-        std::cerr << "Cannot call copy assignment operator because of const members." << std::endl;
+        std::cerr << "Cannot call copy assignment operator because of const members. Aborting without change" << std::endl;
     return *this;
 };
 
 Span::~Span()
 {
-    std::cout << "Span destructor called." << std::endl;
+    // std::cout << "Span destructor called." << std::endl;
 };
 
 unsigned int Span::getMaxSize()
@@ -42,8 +43,7 @@ unsigned int Span::getRealSize()
 // finds smallest value distance between 2 elements in the container
 unsigned int Span::shortestSpan()
 {
-    if (_v.size() < 2)
-        throw std::logic_error("Container needs at least 2 elements to calculate span.");
+    if (_v.size() < 2) throw std::logic_error("Container needs at least 2 elements to calculate span.");
     std::vector<int> temp = _v;
     std::sort(temp.begin(), temp.end());
     unsigned int minSpan = *(temp.begin() + 1) - *temp.begin();
@@ -59,21 +59,17 @@ unsigned int Span::shortestSpan()
 // finds largest value distance between 2 elements in the container
 unsigned int Span::longestSpan()
 {
-    if (_v.size() < 2)
-        throw std::logic_error("Container needs at least 2 elements to calculate span.");
+    if (_v.size() < 2) throw std::logic_error("Container needs at least 2 elements to calculate span.");
     int min = *std::min_element(_v.begin(), _v.end());
     int max = *std::max_element(_v.begin(), _v.end());
-
     return max - min;
 };
 
 void Span::addNumber(int number)
 {
-    if (_v.size() >= _size)
-    {
+    if (_v.size() < _size)
+        _v.push_back(number);
+    else
         throw std::length_error("Error: Container full.");
-        return ;
-    }
-    _v.push_back(number);
 };
 

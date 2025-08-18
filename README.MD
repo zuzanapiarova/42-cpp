@@ -1482,7 +1482,9 @@ int main()
 }
 ```
 
-#### Excercise 01 - Iterators 
+#### Excercise 01 - Container functions 
+
+I gathered this excercise is about using the STL functions that can operate on containers.
 
 Tests:
 1. default constructor - initializes empty array
@@ -1494,6 +1496,8 @@ Tests:
 8. adding a range(iterators from other containers) - add more numbers so size would be exceeded
 10. adding a range(iterators from other containers) - add from container of different type
 11. adding a range(iterators from other containers) - add from a const container - the iterator will be different - so the function to add multiple numbres must be a template
+12. initialize Span with negative size, try to populate and show min/max spans - has to be 0 to 4294967295
+13. Span with over 10,000 numbers
 ```
 int main( void )
 {
@@ -1563,6 +1567,8 @@ int main( void )
 
 In this excercises, we explore the Stack container type, which is not iterable, LIFO structure, and implement out own Stack class, which is based on the stack and offers the stack functions, but also allows iteration. 
 
+Not all containers support same operations or operators or iterators !!! 
+
 Reference: https://cplusplus.com/reference/stack/stack/
 
 So this is the template: it receives one member T, which is type of the elements, and optional second element Container type, which is the type of container used, default is deque.
@@ -1580,6 +1586,7 @@ Tests:
 4. Test copy constructor and copy assignment operator and check they have the same elements as what they were created from
 5. Test iterator, reverse iterator - ask how they would print the element on which the iterator is
 6. Test const iterator, reverse const iterator
+7. test mutantStack<int, std::list<int> > and try to print *(++stack1.begin()) vs. *(stack1.begin() + 4) --> why does the latter not work ?
 ```
 int main(void)
 {

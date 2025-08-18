@@ -5,10 +5,9 @@ int main(void)
 {
     // testing construction with default container type - should be deque
     MutantStack<int> stack1;   
-    MutantStack<int> stack2; 
 
     // testing basic stack operations
-    for (int i = 1; i <= 10; i++)
+    for (int i = 1; i <= 10000; i++)
         stack1.push(i);
     stack1.pop();
     std::cout << "Stack1: " << stack1.size() << ", empty: " << stack1.empty() << std::endl;
@@ -22,6 +21,7 @@ int main(void)
     std::cout << "CopyStack: " << copyStack.size() << ", empty: " << copyStack.empty() << std::endl;
 
     // testing copy assignment operator
+    MutantStack<int> stack2; 
     stack2 = stack1;
     // vectorStack = stack1; // should not work - different types - vector vs deque
 
@@ -30,16 +30,16 @@ int main(void)
     std::cout << "ConstStack: " << constStack.size() << ", empty: " << constStack.empty() << std::endl << std::endl;
 
     // testing the basic iterator
-    std::cout << "Begin: " << *(stack1.begin()) << ", end: " << *(--stack1.end()) << std::endl;
+    std::cout << "Begin: " << *(stack1.begin()) << ", inside: " << *(++stack1.begin()) << ", end: " << *(--stack1.end()) << std::endl;
 
     // testing the reverse iterator
-    std::cout << "Reverse begin: " << *(stack1.rbegin()) << ", reverse end: " << *(--stack1.rend()) << std::endl;
+    std::cout << "Reverse begin: " << *(stack1.rbegin()) << ", inside: " << *(stack1.begin() + 2) << ", reverse end: " << *(--stack1.rend()) << std::endl;
 
     // testing the const iterator
-    std::cout << "Const Begin: " << *(constStack.begin()) << ", const end: " << *(--constStack.end()) << std::endl;
+    std::cout << "Const Begin: " << *(constStack.begin()) << ", inside: " << *(++stack1.begin() + 4) << ", const end: " << *(--constStack.end()) << std::endl;
 
     // testing the const reverse iterator
-    std::cout << "Const reverse begin: " << *(constStack.rbegin()) << ", const reverse end: " << *(--constStack.rend()) << std::endl;
+    std::cout << "Const reverse begin: " << *(constStack.rbegin()) << ", inside: " << *(++stack1.begin() + 6) << ", const reverse end: " << *(--constStack.rend()) << std::endl;
 
-    return 0;
-}
+    // return 0;
+};

@@ -12,13 +12,13 @@ int main()
     int arr1[] = {1, 2, 3, 4, 5};
     std::vector<int> vec(arr1, arr1 + 5);
 
-    // list
+    // const list
     int arr2[] = { 100, 200, 300 };
     const std::list<int> lst(arr2, arr2 + 3);
 
-    // vector
+    // const vector
     int arr3[] = { 1, 2, 2, 2, 2};
-    std::vector<int> duplicates(arr3, arr3 + 5);
+    const std::vector<int> duplicates(arr3, arr3 + 5);
 
     // empty
     int arr4[] = {};

@@ -2,6 +2,7 @@
 # define SPAN_H
 
 #include <iostream>
+#include <exception>
 #include <string>
 #include <algorithm>
 #include <vector>
@@ -15,7 +16,7 @@ class Span
 
     public:
         Span();
-        Span(unsigned int N);
+        Span(long N);
         Span(const Span& origin);
         Span& operator=(const Span& origin);
         ~Span();
@@ -34,8 +35,7 @@ class Span
 template <typename IT>
 void Span::addNumbers(IT first, IT last)
 {
-    if (_v.size() + std::distance(first, last) >= _size)
-        throw std::runtime_error("Resulting container would exceed maximum elements.");
+    if (_v.size() + std::distance(first, last) >= _size) throw std::runtime_error("Resulting container would exceed maximum elements.");
     _v.insert(_v.end(), first, last);
 };
 
