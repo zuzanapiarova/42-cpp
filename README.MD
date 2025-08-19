@@ -1398,7 +1398,11 @@ int main( void )
 
 #### Excercise 00 - Containers and iterators
 
-This excercise teached usabout basic containers and iterators. 
+This excercise teached us about iterators and STL algorithms. 
+
+Iterators are objects like pointers used to iterate over containers - always point to some element of the container. The begin() and end() member functions of the containers can be used to set the initial position and the iterators can be operated on with + and- operators like normal pointers. 
+
+STL algorithms are functions that operate on containers using iterators.
 
 Tests:
 0. Check STL is used - algorithm functoins, iterators, not C syntax 
