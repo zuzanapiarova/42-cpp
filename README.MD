@@ -1794,7 +1794,7 @@ B. MERGING
 2. we start the final sequence with 
 
 https://en.wikipedia.org/wiki/Merge-insertion_sort
-https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91
+https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91 - however this is WRONG - it suggests making recursive pairs and pairs of pairs etc and always sorting tese based on teh biggest element, but it is not correct acording to the description in The Art of Computer Algorithms by Knuth!
 
 Program structure:
 1. Class holds a container, which is a template Container

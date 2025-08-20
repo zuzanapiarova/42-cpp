@@ -1,4 +1,7 @@
-#include "PmergeMe.hpp"
+#include "PmergeMeRec.hpp"
+
+// TODO:
+// 1. handle duplicates
 
 int main(int argc, char **argv)
 {
