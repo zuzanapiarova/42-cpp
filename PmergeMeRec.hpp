@@ -9,19 +9,25 @@
 #include <algorithm>
 #include <vector>
 #include <deque>
+#include <utility>
 
-bool safeStrToUnsignedInt(const char* str, unsigned int &res);
+bool safeStrToPositiveInt(const char* str, int &res);
 int nearestLowerPowerOf2(int size);
 int calculateMaxNumberOfComparisons(int n);
+
+// Primary template declaration (needed for specializations)
+template <typename Container>
+inline void _initialPairing(Container _container);
 
 template <typename Container>
 class PmergeMe
 {
     private:
-        Container _container;
-        int       _comparisonCount;
-        void      comparePairs(int level, typename Container::iterator& containerBegin, typename Container::iterator& containerEnd);
-        void      mergeJacobsthalBinaryInsert(int boxSize);
+        Container           _container;
+        int                 _comparisonCount;
+
+        std::vector<int>                    _mergeInsertion(std::vector<std::pair<int, int> >& pairContainer);
+        std::vector<std::pair<int, int> >   _initialPairing(Container& _container);
 
     public:
         PmergeMe();
@@ -112,18 +118,19 @@ std::ostream& operator <<(std::ostream& os, const PmergeMe<Container>& origin)
 template <typename Container>
 Container populateContainer(int size, char **arguments)
 {
-    unsigned int    num;
+    int    num;
     Container       c;
 
     for (int i = 1; i < size; ++i)
     {
         if (arguments[i] == NULL || arguments[i][0] == '\0') throw std::runtime_error("Invalid argument.");
-        if (!safeStrToUnsignedInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
+        if (!safeStrToPositiveInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
         if (std::find(c.begin(), c.end(), num) != c.end()) throw std::runtime_error("Duplicate arguments.");
         c.push_back(num);
     }
     return c;
 };
+
 // levelN = size of container is 2^N
 // level0 = single numbers - 1 - access every one element with itself -> prevent
 // level1 = pairs of elements - 2 - compare every second eeement with the next
@@ -131,39 +138,34 @@ Container populateContainer(int size, char **arguments)
 // level3 = ...
 // index is always index of the last element in the box, as in the Ford-Johnson algorithm, this element is used for comparison
 template <typename Container>
-void PmergeMe<Container>::comparePairs(int level, typename Container::iterator& containerBegin, typename Container::iterator& containerEnd)
+std::vector<int> PmergeMe<Container>::_mergeInsertion(std::vector<std::pair<int, int> >& pairContainer)
 {
-    typedef Container::iterator& first = _container.begin();
-    typedef Container::iterator& second = first + pow(2, level);
-    while (std::distance)
-    {
-        comparePairs(level / 2, containerBegin, containerBegin + pow(2, level))
-        comparePairs(level / 2, containerBegin + pow(2, level) + 1, containerBegin + 2 * pow(2, level))
-    }
-    if (containerEnd)
+
 
 
 };
 
 // ---------------------------------------------------- Template Specialization Functions -------------------------------------------------------------------------------------
 
-// template<> means is explicit template specialization
-//  empty angle brackets <> mean it is no longer a template definition for a generic T, but that the type parameters are already fixed, in this case to either vector or deque, and that it will be the one exact, concrete version of that function
 template <>
-inline void PmergeMe<std::vector<unsigned int> >::sort()
+inline std::vector<std::pair<int, int> > _initialPairing(std::vector<int> _container)
 {
-    int maxLevel = nearestLowerPowerOf2(_container.size() / 2);
-    // comparePairs(maxLevel, _container.begin(), --_container.end());
-    // 1. create pairs of 2 elements
-    // 2. sort this pair
-    // 3. recursion
-    // 4. take the smaller element of pair and put it 
-    
-    
+
 };
 
 template <>
-inline void PmergeMe<std::deque<unsigned int> >::sort()
+inline std::deque<std::pair<int, int> > _initialPairing(std::deque<int> _container)
 {
-   
+
+};
+
+// template<> means is explicit template specializatio
+//  empty angle brackets <> mean it is no longer a template definition for a generic T, but that the type parameters are already fixed, in this case to either vector or deque, and that it will be the one exact, concrete version of that function
+template <typename Container>
+inline void PmergeMe<Container>::sort()
+{
+    std::vector<std::pair<int, int> > pairContainer = _initialPairing(_container);
+    std::vector<int> sorted = _mergeInsertion(pairContainer);
+    
+    
 };

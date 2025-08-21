@@ -1,20 +1,5 @@
 #include "Rpn.hpp"
 
-bool Rpn::_isValidInt(const std::string &s)
-{
-    char    *endptr;
-    errno = 0; // reset errno before call
-    long    value = std::strtol(s.c_str(), &endptr, 10);
-
-    // check conversion succeeded and parsed the whole string - if not, it encountered non-numeric character
-    if (*endptr != '\0')
-        throw std::invalid_argument("Invalid argument.");
-    // check no overflow and value fits in int
-    if ((errno == ERANGE) || value < std::numeric_limits<int>::min() || value > std::numeric_limits<int>::max()) 
-        throw std::runtime_error("Overflow error.");
-    return true;
-}
-
 int Rpn::_add(int a, int b)
 {
     if ((b > 0 && a > std::numeric_limits<int>::max() - b) ||
@@ -63,14 +48,15 @@ void Rpn::_calculate( void )
     {
         if (token != "+" && token != "-" && token != "*" && token != "/")
         {
-            if (_isValidInt(token))
-            {
-                s.push(std::atoi(token.c_str()));
-                continue ;
-            }
-            throw std::runtime_error("Invalid argument.");
+            int res;
+            std::istringstream iss(token); // string stream is only safe and standard way to convert strings to numbers in c++98
+            iss >> res; // reads input from string and checks for integer format and range
+            if (iss.fail() || !iss.eof()) throw std::invalid_argument("Invalid integer input."); // iss sets flags if reading from string goes wrong
+            if (res < std::numeric_limits<int>::min() || res > std::numeric_limits<int>::max()) throw std::out_of_range("Value outside of unsigned int not allowed."); // we only want positive integers
+            s.push(std::atoi(token.c_str()));
+            continue ;
         }
-        if (s.size() < 2) throw std::runtime_error("Wrong expression format.");
+        if (s.size() < 2) throw std::runtime_error("Wrong expression format."); // throws error if first two are not numbers
         n2 = s.top();
         s.pop();
         n1 = s.top();
@@ -80,7 +66,7 @@ void Rpn::_calculate( void )
         else if (token == "*") s.push(Rpn::_multiply(n1, n2));
         else if (token == "/") s.push(Rpn::_divide(n1, n2));
     }
-    if (s.size() != 1) throw std::runtime_error("Wrong expression format.");
+    if (s.size() != 1) throw std::runtime_error("Wrong expression format."); // throws exception if there is anything extra in the expression that does not fit the format
     _result = (s.top());
 };
 

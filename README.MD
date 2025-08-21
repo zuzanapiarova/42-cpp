@@ -1796,10 +1796,65 @@ B. MERGING
 https://en.wikipedia.org/wiki/Merge-insertion_sort
 https://dev.to/emuminov/human-explanation-and-step-by-step-visualisation-of-the-ford-johnson-algorithm-5g91 - however this is WRONG - it suggests making recursive pairs and pairs of pairs etc and always sorting tese based on teh biggest element, but it is not correct acording to the description in The Art of Computer Algorithms by Knuth!
 
+Forming pairs:
+So i always have at most a pair of large-small ints, never pair of large Pair - small Pair ? I always create new pairs on each level of recursion from main?
+
+Extra(odd) elements:
+If at one recursion level you have an odd number of elements, the extra element automatically goes into the main chain. On the next recursion level, that element is now part of the new main chain and it can be paired with an adjacent element from this new main chain. Then it participates normally in winner/loser classification at that level.
+
+0. initial container - is container oof ints, not container of pairs:
+18 15 4 6 12 1 21 10 19 17 5 14 2 8 3 20 16 11 13 7 9 
+
+1. form pairs of adjacenet ints
+(18 15) (4 6) (12 1) (21 10) (19 17) (5 14) (2 8) (3 20) (16 11) (13 7) 9 
+
+2. sort these pairs - make a Pair struct from them and push this struct into a new container called MAIN
+(15 18) (4 6) (1 12) (10 21) (17 19) (5 14) (2 8) (3 20) (11 16) (7 13) 9 
+
+3. form main and pend - main has larger elements, pend has smaller elements: - pass the container of Pairs into a recursive function which will only operate on the Large element of the pair 
+M1: 18 6 12 21 19 14 8 20 16 13 9
+P1: 15 4  1 10 17  5 2  3 11  7
+
+4. recurse on main until it has one element - the recursive function takes a container of Pairs - uses the larger ones in operations, but then when going back, each Large remembers its Small:
+4.0 18 6 12 21 19 14 8 20 16 13 9
+4.1 (18 6) (12 21) (19 14) (8 20) (16 13) 9
+4.2 (6 18) (12 21) (14 19) (8 20) (13 16) 9
+4.3 M2: 18 21 19 20 16 9
+    P2:  6 12 14  8 13
+5. recurse on main until it has one element:
+5.0 18 21 19 20 16 9
+5.1 (18 21) (19 20) (16 9)
+5.2 (18 21) (19 20) (9 16)
+5.3 M3: 21 20 16
+    P3: 18 19  9
+6. recurse on main until it has one element:
+6.0 21 20 16
+6.1 (21 20) 16
+6.2 (20 21) 16
+6.3 M4: 21 16
+    P4: 20
+7. recurse on main until it has one element:
+7.0 21 16
+7.1 (21 16)
+7.2 (16 21)
+7.3 M5: 21
+    P5: 16
+--> BASE condition triggered - main has 1 element - create a <int> container and this is what the recursive function returns
+- create MAIN container of ints and push the element there:
+    M_int: 21
+    --> 21 is a pair , so it knows its Small element, so after recursion, the Small elements is put to MAIN based on Jacobsthal, always before their Large
+    M_int: 16 21
+- return the int container
+9. returning out of recursion - sort the pend elemends back - each el in MAIN is Large in a Pair and has Smaller somewhere
+- returned final container M_int: 16 21
+- pairs to add: 
+
+
+
 Program structure:
 1. Class holds a container, which is a template Container
 2. Separate high-level separate sort functions for different container types if each should be handled a bit differently
-3. But shared logic using templated containers in helper functions like insertionSort, merge, FindJacobsonNumbers ... 
+3. But shared logic using templated containers in helper functions like insertionSort, merge, FindJacobsthalNumbers ... 
 
 Tests:
 1. duplicates (handling up to student)

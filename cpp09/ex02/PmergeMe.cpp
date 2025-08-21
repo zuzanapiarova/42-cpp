@@ -1,4 +1,4 @@
-#include "PmergeMe.hpp"
+#include "PmergeVector.hpp"
 
 #include <string>
 #include <iostream>
@@ -9,15 +9,16 @@
 #include <algorithm>
 #include <vector>
 #include <deque>
+#include <sstream> // string streams
 
-bool safeStrToUnsignedInt(const char* str, unsigned int &res)
+// ---------------------------------------------------- Helper Functions -------------------------------------------------------------------------------------
+
+bool safeStrToPositiveInt(const char* str, int &res)
 {
-    errno = 0;
-    char *endptr;
-    unsigned long val = strtoul(str, &endptr, 10);
-    if (*endptr != '\0') return false; 
-    if ((errno == ERANGE) || val > std::numeric_limits<unsigned int>::max() || val < std::numeric_limits<unsigned int>::min()) return false; // check for overflow or out of int
-    res = static_cast<unsigned int>(val);
+    std::istringstream iss(str); // string stream is only safe and standard way to convert strings to numbers in c++98
+    iss >> res; // reads input from string and checks for integer format and range
+    if (iss.fail() || !iss.eof()) throw std::invalid_argument("Invalid integer input."); // iss sets flags if reading from string goes wrong
+    if (res < 0 || res > std::numeric_limits<int>::max()) throw std::out_of_range("Value outside of unsigned int not allowed."); // we only want positive integers
     return true;
 };
 
@@ -45,18 +46,212 @@ int calculateMaxNumberOfComparisons(int n)
 
 int getNextJacobsthal(int previousJacobsthal)
 {
+    if (previousJacobsthal == 1)
+        return 3;
     if (previousJacobsthal < 0) return 0;
     if (previousJacobsthal < 1) return 1;
     
-    int result;
     int a = 0;
     int b = 1;
 
     while (a < previousJacobsthal)
     {
-        int next = b + 2*a;
+        int next = b + 2 * a;
         a = b;
         b = next;
     }
     return b;
 }
+
+std::vector<int>   populateContainer(int size, char **arguments)
+{
+    int                 num;
+    std::vector<int>    c;
+
+    for (int i = 1; i < size; ++i)
+    {
+        if (arguments[i] == NULL || arguments[i][0] == '\0') throw std::runtime_error("Invalid argument.");
+        if (!safeStrToPositiveInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
+        if (std::find(c.begin(), c.end(), num) != c.end()) throw std::runtime_error("Duplicate arguments.");
+        c.push_back(num);
+    }
+    return c;
+};
+
+void printPairsContainer(std::vector<std::pair<int, int> >& container, bool onlyLarge)
+{
+    for (std::vector<std::pair<int, int> >::iterator it = container.begin(); it != container.end(); it++)
+    {
+        if (onlyLarge)
+            std::cout << (*it).second << " ";
+        else
+            std::cout << "(" << (*it).first << " " << (*it).second << ") ";
+    }
+    std::cout << std::endl;
+}
+
+// ---------------------------------------------------- Orthodox Canonical Form -------------------------------------------------------------------------------------
+PmergeMe::PmergeMe()
+{
+    throw std::runtime_error("Cannot instantiate with empty default constuctor. Aborting.");
+};
+
+PmergeMe::PmergeMe(const std::vector<int>  & container) : _container(container) {};
+
+PmergeMe::PmergeMe(const PmergeMe& origin) : _container(origin._container) {};
+
+PmergeMe& PmergeMe::operator =(const PmergeMe& origin)
+{
+    if (this != &origin)
+        std::cerr << "Cannot copy assign on class with const members. Returning without change." << std::endl;
+    return *this;
+};
+
+PmergeMe::~PmergeMe() {};
+
+std::ostream& operator <<(std::ostream& os, const PmergeMe& origin)
+{
+    const std::vector<int>& c = origin.getContainer();
+    for (std::vector<int>::const_iterator it = c.begin(); it != c.end(); ++it)
+        os << *it << " ";
+    return os;
+};
+
+// ---------------------------------------------------- Member Functions -------------------------------------------------------------------------------------
+
+const std::vector<int>  & PmergeMe::getContainer() const 
+{
+    return _container;
+};
+
+void PmergeMe::sort()
+{
+    int leftover = -1;
+    std::vector<std::pair<int, int> > pairContainer = _initialPairing(_container, leftover);
+    printPairsContainer(pairContainer, 0);
+    _mergeInsertion(_sorted, pairContainer, leftover);
+};  
+
+// ---------------------------------------------------- Algorithm -------------------------------------------------------------------------------------
+
+// maybe this is not optimal since it first must find the upperBound by making comparisons ? 
+void PmergeMe::_binaryInsertion(std::vector<int>& sortedContainer, int value, int upperBound)
+{
+    std::vector<int>::iterator limit = sortedContainer.begin(); // place end iterator before upper bound
+    while (limit != sortedContainer.end() && *limit < upperBound)
+        ++limit;
+    
+    std::vector<int>::iterator low = sortedContainer.begin();
+    std::vector<int>::iterator high = limit;
+    // binary search
+    while (low < high)
+    {
+        std::vector<int>::iterator mid = low + (high - low) / 2; // for even numbers it selects the left(first,sooner) one as middle
+        if (*mid < value)
+            low = mid + 1;
+        else
+            high = mid;
+    }
+
+    sortedContainer.insert(low, value);
+}
+
+void PmergeMe::_createMain(std::vector<std::pair<int,int> >& pairContainer, std::vector<std::pair<int,int> >& main, std::vector<std::pair<int,int> >::iterator& it1)
+{
+    for (it1 = pairContainer.begin(); it1 != pairContainer.end() && it1 + 1 !=  pairContainer.end(); ++it1)
+    {
+        // if elements in the pair are not in order, swap their values
+        if (*it1 > *(it1 + 1))
+            std::iter_swap(it1, it1 + 1);
+        main.push_back(std::make_pair((*it1).second, (*(it1 + 1)).second));
+        it1 += 1; // protect against odd input - leftover
+    }
+    // if there is leftover, it is ignored when adding to main and in caller it is passed to recursion - to main, only valid pairs get in
+}
+
+// TODO !!!
+// we take toInsert that was just inserted adn move it to the next viable one based on Jacobsthal numbers 
+void getElToInsert(std::vector<std::pair<int, int> >::iterator& toInsert, std::vector<std::pair<int, int> >& pairContainer, int prevJacobsthal)
+{
+    // make algorithm for inserting based on jacobsthal sequence (always first number from a pair, use second as its bounding element)
+    // lasInserted - points to last inserted element, so we do not insert twice - eg. first iteration 1, second 3,2,1, third 5,4,3,2,1 etc.
+    // toInsert - get next Jacobsthal number, if distance from end is smaller or equal to 0, go to --container.end()
+    std::vector<std::pair<int, int> >::iterator lastJacobsthalEl = pairContainer.begin() + prevJacobsthal - 1;
+    // the previous Jacobsthal was already the last element/out of container, we return the end and end the loop
+    if (std::distance(lastJacobsthalEl, --pairContainer.end()) >= 0)
+    {
+        toInsert = pairContainer.end();
+        return ;
+    }
+    if (std::distance(lastJacobsthalEl, toInsert) < 0)
+        --toInsert;
+    else 
+        toInsert = pairContainer.begin() + getNextJacobsthal(prevJacobsthal);
+
+    // if the next jacobsthal is already outside of container
+    while (std::distance(toInsert, --pairContainer.end()) > 0)
+        --toInsert;
+}
+
+void PmergeMe::_mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover)
+{
+    // BASE CASE - must be before recustion call so we can actually escape
+    if (pairContainer.size() == 1)
+    {
+        sortedContainer.push_back((*pairContainer.begin()).second); // populate sorted container with 
+        //sortedContainer.insert(sortedContainer.begin(), (*pairContainer.begin()).first); // insert to front - always smaller
+        return ;
+    }
+
+    // debug
+    std::cout << "MAIN: ";
+    printPairsContainer(pairContainer, 1);
+    if (leftover > 0) 
+        std::cout << " ( leftover " << leftover << ")" << std::endl;
+    else
+        std::cout << " ( leftover none )" << std::endl;
+    
+    // create main
+    std::vector<std::pair<int, int> >::iterator it1;
+    std::vector<std::pair<int, int> > main;
+    _createMain(pairContainer, main, it1);
+    int newLeftover = (it1 != pairContainer.end()) ? (*it1).first : -1; // store leftover, if any, so we can insert it
+
+    // recurse on main
+    _mergeInsertion(sortedContainer, main, newLeftover); // the elements from main are already in in sorted sequence, pass in leftover without storing it 
+    
+    // TODO: function that finds me the next element to sort form the main, starting at next jacobsthal, then reducing until hits previous jacobsthal, since that one is already sorted into final container
+    // // without comparing, we can store first mains's small before its large, which is at the beginning
+    // //sortedContainer.insert(sortedContainer.begin(), (*(main.begin())).first);
+    int Jacobsthal = 1;
+    std::vector<std::pair<int, int> >::iterator toInsert = pairContainer.begin(); // without comparing, we can store first mains's small before its large, which is at the beginning
+    while (toInsert != pairContainer.end())
+    {
+        // we are not adding elements from pairContainer(main) since they are already in from the previous recusrions step - we are only checking them but adding their smaller pairings
+        // binary insertion
+        _binaryInsertion(sortedContainer, (*toInsert).first, (*toInsert).second);
+        getElToInsert(toInsert, pairContainer, Jacobsthal);
+        Jacobsthal = getNextJacobsthal(Jacobsthal);
+        std::cout << "end" << std::endl;
+    }
+
+    if (leftover > -1)
+        _binaryInsertion(sortedContainer, leftover, *(--sortedContainer.end()));
+    std::cout << "Sorted container: " << sortedContainer << "." << std::endl;
+};
+
+std::vector<std::pair<int, int> > PmergeMe::_initialPairing(std::vector<int>& container, int& leftover)
+{
+    std::vector<std::pair<int, int> > pairedContainer;
+    std::vector<int>::iterator it;
+    for (it = container.begin(); it != container.end() && it + 1 !=  container.end(); ++it)
+    {
+        if (*it > *(it + 1)) // why does it only work with this operator ????????? it should work with >
+            std::iter_swap(it, it + 1); // swap pairs if needed
+        pairedContainer.push_back(std::make_pair(*it, *(it + 1)));
+        it += 1;
+    }
+    if (it != container.end())
+        leftover = *it; // maybe change the second element 
+    return pairedContainer;
+};
