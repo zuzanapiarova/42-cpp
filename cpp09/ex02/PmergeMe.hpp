@@ -23,7 +23,6 @@ class PmergeMe
 {
     private:
         std::vector<int>      _container;
-        std::vector<int>      _sorted;
 
         void                                _binaryInsertion(std::vector<int>& sortedContainer, int value, int upperBound);
         void                                _mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover);
