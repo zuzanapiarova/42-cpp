@@ -11,7 +11,13 @@
 #include <deque>
 #include <utility>
 
+// helpers.cpp
+bool safeStrToPositiveInt(const char* str, int &res);
+int nearestLowerPowerOf2(int size);
+int calculateMaxNumberOfComparisons(int n);
+int getNextJacobsthal(int previousJacobsthal);
 std::vector<int>   populateContainer(int size, char **arguments);
+void printPairsContainer(std::vector<std::pair<int, int> >& container, bool onlyLarge);
 
 class PmergeMe
 {
@@ -23,7 +29,7 @@ class PmergeMe
         void                                _mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover);
         std::vector<std::pair<int, int> >   _initialPairing(std::vector<int>& _container, int& leftover);
         void                                _createMain(std::vector<std::pair<int,int> >& pairContainer, std::vector<std::pair<int,int> >& main, std::vector<std::pair<int,int> >::iterator& it1);
-
+        void                                _sortThree();
     public:
         PmergeMe();
         PmergeMe(const std::vector<int>& vector);

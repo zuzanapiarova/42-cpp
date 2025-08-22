@@ -1,4 +1,4 @@
-#include "PmergeVector.hpp"
+#include "PmergeMe.hpp"
 
 #include <string>
 #include <iostream>
@@ -10,85 +10,6 @@
 #include <vector>
 #include <deque>
 #include <sstream> // string streams
-
-// ---------------------------------------------------- Helper Functions -------------------------------------------------------------------------------------
-
-bool safeStrToPositiveInt(const char* str, int &res)
-{
-    std::istringstream iss(str); // string stream is only safe and standard way to convert strings to numbers in c++98
-    iss >> res; // reads input from string and checks for integer format and range
-    if (iss.fail() || !iss.eof()) throw std::invalid_argument("Invalid integer input."); // iss sets flags if reading from string goes wrong
-    if (res < 0 || res > std::numeric_limits<int>::max()) throw std::out_of_range("Value outside of unsigned int not allowed."); // we only want positive integers
-    return true;
-};
-
-int nearestLowerPowerOf2(int size)
-{
-    if (size < 1)
-        return 0;
-
-    int res = 1;    
-    while (size >= res*2)
-        res *= 2;
-    return res;
-};
-
-int calculateMaxNumberOfComparisons(int n)
-{
-    int sum = 0;
-    for (int k = 1; k <= n; ++k)
-    {
-        double value = (3.0 / 4.0) * k;
-        sum += static_cast<int>(ceil(log2(value)));
-    }
-    return sum;
-};
-
-int getNextJacobsthal(int previousJacobsthal)
-{
-    if (previousJacobsthal == 1)
-        return 3;
-    if (previousJacobsthal < 0) return 0;
-    if (previousJacobsthal < 1) return 1;
-    
-    int a = 0;
-    int b = 1;
-
-    while (a < previousJacobsthal)
-    {
-        int next = b + 2 * a;
-        a = b;
-        b = next;
-    }
-    return b;
-}
-
-std::vector<int>   populateContainer(int size, char **arguments)
-{
-    int                 num;
-    std::vector<int>    c;
-
-    for (int i = 1; i < size; ++i)
-    {
-        if (arguments[i] == NULL || arguments[i][0] == '\0') throw std::runtime_error("Invalid argument.");
-        if (!safeStrToPositiveInt(arguments[i], num)) throw std::runtime_error("Invalid argument.");
-        if (std::find(c.begin(), c.end(), num) != c.end()) throw std::runtime_error("Duplicate arguments.");
-        c.push_back(num);
-    }
-    return c;
-};
-
-void printPairsContainer(std::vector<std::pair<int, int> >& container, bool onlyLarge)
-{
-    for (std::vector<std::pair<int, int> >::iterator it = container.begin(); it != container.end(); it++)
-    {
-        if (onlyLarge)
-            std::cout << (*it).second << " ";
-        else
-            std::cout << "(" << (*it).first << " " << (*it).second << ") ";
-    }
-    std::cout << std::endl;
-}
 
 // ---------------------------------------------------- Orthodox Canonical Form -------------------------------------------------------------------------------------
 PmergeMe::PmergeMe()
@@ -124,12 +45,33 @@ const std::vector<int>  & PmergeMe::getContainer() const
     return _container;
 };
 
+void    PmergeMe::_sortThree()
+{
+    std::vector<int>::iterator it = _container.begin();
+    if (_container.size() <= 1)
+        return ;
+    if (_container.size() == 2)
+    {
+        if (*it > *(it + 1)) std::iter_swap(it, it + 1);
+        return ;
+    }
+    if (*(it + 1) > *(it + 2)) std::iter_swap(it + 1, it + 2);
+    if (*(it) > *(it + 2)) std::iter_swap(it, it + 2);
+    if (*it > *(it + 1)) std::iter_swap(it, it + 1);
+}
+
 void PmergeMe::sort()
 {
+    if (_container.size() <= 3)
+    {
+        _sortThree();
+        return ;
+    }
     int leftover = -1;
     std::vector<std::pair<int, int> > pairContainer = _initialPairing(_container, leftover);
+    _container.clear();   // removes all elements
     printPairsContainer(pairContainer, 0);
-    _mergeInsertion(_sorted, pairContainer, leftover);
+    _mergeInsertion(_container, pairContainer, leftover);
 };  
 
 // ---------------------------------------------------- Algorithm -------------------------------------------------------------------------------------
@@ -195,22 +137,23 @@ void getElToInsert(std::vector<std::pair<int, int> >::iterator& toInsert, std::v
 
 void PmergeMe::_mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover)
 {
-    // BASE CASE - must be before recustion call so we can actually escape
-    if (pairContainer.size() == 1)
-    {
-        sortedContainer.push_back((*pairContainer.begin()).second); // populate sorted container with 
-        //sortedContainer.insert(sortedContainer.begin(), (*pairContainer.begin()).first); // insert to front - always smaller
-        return ;
-    }
-
     // debug
     std::cout << "MAIN: ";
     printPairsContainer(pairContainer, 1);
-    if (leftover > 0) 
-        std::cout << " ( leftover " << leftover << ")" << std::endl;
-    else
-        std::cout << " ( leftover none )" << std::endl;
-    
+    if (leftover > 0) std::cout << " ( leftover " << leftover << ")" << std::endl;
+    else std::cout << " ( leftover none )" << std::endl;
+
+    // BASE CASE - must be before recustion call so we can actually escape
+    if (pairContainer.size() <= 1)
+    {
+        sortedContainer.push_back((*pairContainer.begin()).second); // populate sorted container with 
+        // sortedContainer.insert(sortedContainer.begin(), (*pairContainer.begin()).first); // insert to front - always smaller
+        // if 3 elements only, leftover will not be added
+        // if (leftover > -1)
+        //     _binaryInsertion(_sorted, leftover, *(--_sorted.end()));
+        return ;
+    }
+
     // create main
     std::vector<std::pair<int, int> >::iterator it1;
     std::vector<std::pair<int, int> > main;
@@ -219,7 +162,6 @@ void PmergeMe::_mergeInsertion(std::vector<int>& sortedContainer, std::vector<st
 
     // recurse on main
     _mergeInsertion(sortedContainer, main, newLeftover); // the elements from main are already in in sorted sequence, pass in leftover without storing it 
-    
     // TODO: function that finds me the next element to sort form the main, starting at next jacobsthal, then reducing until hits previous jacobsthal, since that one is already sorted into final container
     // // without comparing, we can store first mains's small before its large, which is at the beginning
     // //sortedContainer.insert(sortedContainer.begin(), (*(main.begin())).first);
