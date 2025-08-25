@@ -1,16 +1,5 @@
 #include "PmergeMe.hpp"
 
-#include <string>
-#include <iostream>
-#include <exception>
-#include <cerrno>
-#include <limits>
-#include <cmath>
-#include <algorithm>
-#include <vector>
-#include <deque>
-#include <sstream> // string streams
-
 // ---------------------------------------------------- Orthodox Canonical Form -------------------------------------------------------------------------------------
 PmergeMe::PmergeMe()
 {
@@ -49,11 +38,24 @@ void PmergeMe::sort()
 {
     if (_container.size() <= 3) return _sortThree();
 
-    int leftover = -1;
-    std::vector<std::pair<int, int> > pairContainer = _initialPairing(_container, leftover); // overrides leftover, if any
-    _container.clear(); // removes all elements
-    printPairsContainer(pairContainer, 0);
-    _mergeInsertion(_container, pairContainer, leftover);
+    // make initial 
+    std::vector<Pair*> input = _initialPairing(_container); // overrides leftover, if any
+    std::vector<Pair*> result = _mergeInsertion(input);
+    // cleanup
+    for (std::vector<Pair*>::iterator it = input.begin(); it != input.end(); ++it)
+    {
+        delete *it;
+    }
+    _container.clear();
+    std::cout << "Finished" << std::endl;
+    // populate container back
+    for (std::vector<Pair*>::iterator it = result.begin(); it != result.end(); ++it)
+    {
+        Pair* el = *it;
+        int value = (*el).value;
+        std::cout << value << std::endl;
+        _container.push_back((*(*it)).value);
+    }
 }; 
 
 void    PmergeMe::_sortThree()
@@ -71,117 +73,79 @@ void    PmergeMe::_sortThree()
     if (*it > *(it + 1)) std::iter_swap(it, it + 1);
 };
 
-std::vector<std::pair<int, int> > PmergeMe::_initialPairing(std::vector<int>& container, int& leftover)
+// create initial Pair* container from int container, where pair.value=int and pair.winner=NULL
+std::vector<Pair*> PmergeMe::_initialPairing(std::vector<int>& container)
 {
-    std::vector<std::pair<int, int> > pairedContainer;
-    std::vector<int>::iterator it;
-    for (it = container.begin(); it != container.end() && it + 1 !=  container.end(); ++it)
+    std::vector<Pair*> pairedContainer;
+    for (std::vector<int>::iterator it = container.begin(); it != container.end(); ++it)
     {
-        if (*it > *(it + 1))
-            std::iter_swap(it, it + 1); // swap pairs if needed
-        pairedContainer.push_back(std::make_pair(*it, *(it + 1)));
-        it += 1;
+        Pair* pair = new Pair(*it);
+        pairedContainer.push_back(pair);
     }
-    if (it != container.end())
-        leftover = *it;
     return pairedContainer;
 };
 
-// Creates new MAIN - creates pairs from largest elements of pairs, sorts in-pair, and puts to container of pairs
-void PmergeMe::_createMain(std::vector<std::pair<int,int> >& pairContainer, std::vector<std::pair<int,int> >& main, std::vector<std::pair<int,int> >::iterator& it1)
+// _binaryInsertion(result, pend[i], pend[i]->winnerPtr);
+void PmergeMe::_binaryInsertion(std::vector<Pair*>& result, Pair* toInsert)
 {
-    for (it1 = pairContainer.begin(); it1 != pairContainer.end() && it1 + 1 !=  pairContainer.end(); ++it1)
-    {
-        // if elements in the pair are not in order, swap their values
-        if ((*it1).second > (*(it1 + 1)).second)
-            std::iter_swap(it1, it1 + 1);
-        main.push_back(std::make_pair((*it1).second, (*(it1 + 1)).second));
-        it1 += 1; // protect against odd input - leftover
-    }
-    // if there is leftover, it is ignored when adding to main and in caller it is passed to recursion - to main, only valid pairs get in
-};
+    std::cout << "Binary insert: " << (*toInsert).value << " with upper bound " << (*(*toInsert).winnerPtr).value << std::endl;
 
-// maybe this is not optimal since it first must find the upperBound by making comparisons ? 
-void PmergeMe::_binaryInsertion(std::vector<int>& sortedContainer, int value, int upperBound)
-{
-    std::cout << "Binary insert: " << value << " with upper bound " << upperBound << std::endl;
-    std::vector<int>::iterator limit = sortedContainer.begin(); // place end iterator before upper bound
-    while (limit != sortedContainer.end() && *limit < upperBound)
-        ++limit;
-
-    std::vector<int>::iterator low = sortedContainer.begin();
-    std::vector<int>::iterator high = limit;
-    // binary search
-    while (low < high)
+    std::vector<Pair*>::iterator low = result.begin();
+    std::vector<Pair*>::iterator high = result.begin();
+    while (*high != (*toInsert).winnerPtr) // cannot use this here because iterator in a container is not a pointer
+        high++;
+    while ((*(*low)).value < (*(*high)).value)
     {
-        std::vector<int>::iterator mid = low + (high - low) / 2; // for even numbers it selects the left(first,sooner) one as middle
-        if (*mid < value)
+        std::vector<Pair*>::iterator mid = low + (high - low) / 2; // for even numbers it selects the left(first,sooner) one as middle
+        if ((*(*mid)).value < (*toInsert).value)
             low = mid + 1;
         else
             high = mid;
     }
-    sortedContainer.insert(low, value);
+    result.insert(low, toInsert);
 };
 
-// TODO !!!
-// we take toInsert that was just inserted and move it to the next viable one based on Jacobsthal numbers 
-// index keeps which element was last inserted
-// when index == prevJacobsthal, increase index, move toInsert up
-// when index  > prevJacobsthal 
-void getNextJacobsthalEl(std::vector<std::pair<int, int> >::iterator& toInsert, std::vector<std::pair<int, int> >& pairContainer, int& prevJacobsthal, int& index)
-{
-    // not using jacobsthal but going from beginning
-    (void)pairContainer;
-    (void)index;
-    (void)prevJacobsthal;
-    ++toInsert;
-
-   
-};
-
-void PmergeMe::_mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover)
+std::vector<Pair*> PmergeMe::_mergeInsertion(std::vector<Pair*>& input)
 {
     // debug
-    std::cout << "MAIN: ";
-    printPairsContainer(pairContainer, 1);
-    if (leftover > 0) std::cout << " ( leftover " << leftover << ")" << std::endl;
-    else std::cout << " ( leftover none )" << std::endl;
+    std::cout << "INPUT: ";
+    printPairsContainer(input);
 
     // BASE CASE - must be before recustion call so we can actually escape
-    if (pairContainer.size() <= 1)
+    // starts the resulting list of Pair pointers
+    if (input.size() <= 1)
     {
-        sortedContainer.push_back((*pairContainer.begin()).second); // populate sorted container with the larger element, smaller will be added outside the recursion step
-        sortedContainer.insert(sortedContainer.begin(), (*pairContainer.begin()).first); // insert to front - always smaller
-        if (leftover > -1)
-            _binaryInsertion(sortedContainer, leftover, (leftover > *(--sortedContainer.end())) ? leftover : *(--sortedContainer.end()));
-        return ;
+        return std::vector<Pair*>(input.begin(), input.end());
     }
 
-    // create main from larger elements for next recursion step
-    std::vector<std::pair<int, int> >::iterator it1;
-    std::vector<std::pair<int, int> > main;
-    _createMain(pairContainer, main, it1);
-    int newLeftover = (it1 != pairContainer.end()) ? (*it1).second : -1; // store leftover, if any, so we can insert it
-
-    // recurse on main
-    _mergeInsertion(sortedContainer, main, newLeftover); // the elements from main are already in in sorted sequence, pass in leftover without storing it 
-    
-    std::cout << "Sorted container: " << sortedContainer << "." << std::endl;
-
-    // TODO: function that finds me the next element to sort form the main, starting at next jacobsthal, then reducing until hits previous jacobsthal, since that one is already sorted into final container
-    // // without comparing, we can store first mains's small before its large, which is at the beginning
-    int Jacobsthal = 1;
-    int index = 1;
-    // sortedContainer.insert(sortedContainer.begin(), (*(main.begin())).first);
-    std::vector<std::pair<int, int> >::iterator toInsert = pairContainer.begin(); // without comparing, we can store first mains's small before its large, which is at the beginning
-    while (toInsert != pairContainer.end())
+    // make main and pend
+    std::vector<Pair*> main;
+    std::vector<Pair*> pend;
+    // always create new pair from adjacent elements, swap if needed, and 
+    for (size_t i = 0; i + 1 < input.size(); i += 2)
     {
-        // we are not adding elements from pairContainer(main) since they are already in from the previous recusrions step - we are only checking them but adding their smaller pairings
-        _binaryInsertion(sortedContainer, (*toInsert).first, (*toInsert).second);
-        getNextJacobsthalEl(toInsert, pairContainer, Jacobsthal, index); // updates Jacobsthal when necessary
-        std::cout << "end" << std::endl;
+        Pair* a = input[i]; // smaller
+        Pair* b = input[i + 1]; // larger
+        if (a->value > b->value) std::swap(a,b); // ? does this swap their values or the pointers ? 
+        b->winnerPtr = NULL;
+        a->winnerPtr = b;
+        main.push_back(b);
+        pend.push_back(a);
+    }
+    if (input.size() % 2 == 1) // if one is leftover, put it to main with winnerPtr as NULL
+    {
+        Pair* leftover = input.back();
+        main.push_back(leftover); // !  --> LATER change this as leftover is supposed to be in pend, not it main
     }
 
-    if (leftover > -1)
-        _binaryInsertion(sortedContainer, leftover, (leftover > *(--sortedContainer.end())) ? leftover : *(--sortedContainer.end())); // when inserting leftovers, if it is larger than teh max element, it would never get to back becasue last el is largest and set as upper bound - set this leftover el as upperbound instead
+    // recurse on main. result is sorted list of Pair*
+    std::vector<Pair*> result = _mergeInsertion(main); // the elements from main are already in in sorted sequence, pass in leftover without storing it 
+
+    // put back pend to result
+    for (size_t i = 0; i < pend.size(); i++)
+    {
+        _binaryInsertion(result, pend[i]);
+    }
+
+    return result;
 };

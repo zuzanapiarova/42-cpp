@@ -1,34 +1,45 @@
 # pragma once
 
-#include <iostream>
+
 #include <string>
+#include <iostream>
 #include <exception>
-#include <istream>
-#include <limits>
 #include <cerrno>
+#include <limits>
+#include <cmath>
 #include <algorithm>
 #include <vector>
 #include <deque>
-#include <utility>
+#include <list>
+
+// struct to store pairs of loser-winnerPtr
+struct Pair
+{
+    int value;
+    Pair* winnerPtr;
+
+    Pair(int v) : value(v), winnerPtr(NULL) {};
+
+};
 
 // helpers.cpp
-bool safeStrToPositiveInt(const char* str, int &res);
-int nearestLowerPowerOf2(int size);
-int calculateMaxNumberOfComparisons(int n);
-int getNextJacobsthal(int previousJacobsthal);
-std::vector<int>   populateContainer(int size, char **arguments);
-void printPairsContainer(std::vector<std::pair<int, int> >& container, bool onlyLarge);
+bool                safeStrToPositiveInt(const char* str, int &res);
+int                 nearestLowerPowerOf2(int size);
+int                 calculateMaxNumberOfComparisons(int n);
+int                 getNextJacobsthal(int previousJacobsthal);
+std::vector<int>    populateContainer(int size, char **arguments);
+void                printPairsContainer(std::vector<Pair*> container);
 
 class PmergeMe
 {
     private:
         std::vector<int>      _container;
 
-        void                                _binaryInsertion(std::vector<int>& sortedContainer, int value, int upperBound);
-        void                                _mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover);
-        std::vector<std::pair<int, int> >   _initialPairing(std::vector<int>& _container, int& leftover);
-        void                                _createMain(std::vector<std::pair<int,int> >& pairContainer, std::vector<std::pair<int,int> >& main, std::vector<std::pair<int,int> >::iterator& it1);
         void                                _sortThree();
+        std::vector<Pair*>                  _initialPairing(std::vector<int>& _container);
+        std::vector<Pair*>                    _mergeInsertion(std::vector<Pair*>& sortedContainer);
+        void                                _binaryInsertion(std::vector<Pair*>& result, Pair* value);
+    
     public:
         PmergeMe();
         PmergeMe(const std::vector<int>& vector);

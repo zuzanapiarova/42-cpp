@@ -3,7 +3,6 @@
 #include <string>
 #include <iostream>
 #include <exception>
-#include <cerrno>
 #include <limits>
 #include <cmath>
 #include <algorithm>
@@ -76,14 +75,13 @@ std::vector<int>   populateContainer(int size, char **arguments)
     return c;
 };
 
-void printPairsContainer(std::vector<std::pair<int, int> >& container, bool onlyLarge)
+void printPairsContainer(std::vector<Pair*> container)
 {
-    for (std::vector<std::pair<int, int> >::iterator it = container.begin(); it != container.end(); it++)
+    for (std::vector<Pair*>::iterator it = container.begin(); it != container.end(); it++)
     {
-        if (onlyLarge)
-            std::cout << (*it).second << " ";
-        else
-            std::cout << "(" << (*it).first << " " << (*it).second << ") ";
+        std::cout << (*(*it)).value << " ";
+        // if ((*it).winnerPtr)
+        //     std::cout << "(" << (*(*it).winnerPtr).value << ")";
     }
     std::cout << std::endl;
 }

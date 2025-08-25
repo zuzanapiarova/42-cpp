@@ -1849,7 +1849,12 @@ P1: 15 4  1 10 17  5 2  3 11  7
 - returned final container M_int: 16 21
 - pairs to add: 
 
+Check that when sorting back, the algo does not use the find() function to get the bounding upper element as this invalides entire ford-johnson idea of minimal comparisons - man comparisons ust be carried out to find every bounding element.
 
+We acn insert “immediately before” the bounding elemetn only  if:
+
+The winners’ chain is fully sorted recursively, AND
+Losers are inserted in the correct Jacobsthal order that guarantees no earlier loser will appear after a later loser of the same winner.
 
 Program structure:
 1. Class holds a container, which is a template Container
