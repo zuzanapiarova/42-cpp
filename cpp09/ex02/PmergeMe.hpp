@@ -11,6 +11,8 @@
 #include <deque>
 #include <utility>
 
+typedef std::pair<int,int> Pair;
+
 // helpers.cpp
 bool safeStrToPositiveInt(const char* str, int &res);
 int nearestLowerPowerOf2(int size);
@@ -24,11 +26,11 @@ class PmergeMe
     private:
         std::vector<int>      _container;
 
-        void                                _binaryInsertion(std::vector<int>& sortedContainer, int value, int upperBound);
-        void                                _mergeInsertion(std::vector<int>& sortedContainer, std::vector<std::pair<int, int> >& pairContainer, int& leftover);
+        void                                _binaryInsertion(std::vector<Pair>& to, std::vector<Pair>::iterator& toInsert, std::vector<Pair>::iterator& upperBound);
+        void                                _mergeInsertion(std::vector<std::vector<Pair>::iterator>& input, int& leftover);
         std::vector<std::pair<int, int> >   _initialPairing(std::vector<int>& _container, int& leftover);
-        void                                _createMain(std::vector<std::pair<int,int> >& pairContainer, std::vector<std::pair<int,int> >& main, std::vector<std::pair<int,int> >::iterator& it1);
         void                                _sortThree();
+   
     public:
         PmergeMe();
         PmergeMe(const std::vector<int>& vector);

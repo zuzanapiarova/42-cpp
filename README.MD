@@ -1802,16 +1802,17 @@ So i always have at most a pair of large-small ints, never pair of large Pair - 
 Extra(odd) elements:
 If at one recursion level you have an odd number of elements, the extra element automatically goes into the main chain. On the next recursion level, that element is now part of the new main chain and it can be paired with an adjacent element from this new main chain. Then it participates normally in winner/loser classification at that level.
 
-0. initial container - is container oof ints, not container of pairs:
+0. initial container - is container of ints, not container of pairs:
 18 15 4 6 12 1 21 10 19 17 5 14 2 8 3 20 16 11 13 7 9 
 
 1. form pairs of adjacenet ints
 (18 15) (4 6) (12 1) (21 10) (19 17) (5 14) (2 8) (3 20) (16 11) (13 7) 9 
 
 2. sort these pairs - make a Pair struct from them and push this struct into a new container called MAIN
+- first = smaller, second = larger (that’s one convention)
 (15 18) (4 6) (1 12) (10 21) (17 19) (5 14) (2 8) (3 20) (11 16) (7 13) 9 
 
-3. form main and pend - main has larger elements, pend has smaller elements: - pass the container of Pairs into a recursive function which will only operate on the Large element of the pair 
+3. pass this main into recursive function and recursively form main - forms has pairs, puts the pair into main (so main contains larger but smaller is attached)
 M1: 18 6 12 21 19 14 8 20 16 13 9
 P1: 15 4  1 10 17  5 2  3 11  7
 
@@ -1849,6 +1850,28 @@ P1: 15 4  1 10 17  5 2  3 11  7
 - returned final container M_int: 16 21
 - pairs to add: 
 
+You never nest bundles; you just keep a vector of pointers to these same bundles (std::vector<Bundle*>).
+
+CONSIDER UNPAIRED ELEMENTS IN JACOBSTHAL SEQUENCE, EVEN IF TEHY ARE LAST, THEY ARE INSERTED AS IF THEY WERE IN SEQUENCE SO BASED ON THEIR JACOBSTHAL NUMBER
+
+So the container is: 9 7 11 8 6 4 13 2 10 5 1.
+I create a container of pairs from it and sort in-pair: (7 9)(8 11)(4 6)(2 13)(5 10) 1
+I create a container of pointers to these bundles: *std::pair<int,int> (7 9)(8 11)(4 6)(2 13)(5 10) 1
+Then at each recursion level i make a new MAIN container and put pointers to the larger pair in it: ((7 9)(8 11))((4 6)(2 13))(5 10) 1 => (9 11)(6 13)
+Nextv recursion step: ((9 11)(6 13)) => (11 13)
+Next recursion step: met base condition when size == 0
+Then to go back: i have no idea how to use the pointers to make the resulting container. How do i keep the boundingElememt at each recursion level ? 
+
+
+OR 
+
+Can i make pair of iterators on the original contianer ?
+
+Initial container: (7 9)(8 11)(4 6)(2 13)(5 10) 1
+Main on level 1: 9 11 6 13 10
+Main on level 2: 11 13 
+Main on level 3: 13 -> base case
+What data structure do i create to store the sorted sequence? 
 
 
 Program structure:
