@@ -1644,8 +1644,6 @@ I use the map container here to store Date objets as keys and doubles as values:
 
 The files can have first line representing column names but do not have to, work also when starting with dates right away.
 
-
-
 Tests:
 0. Basic checks
 aa. All tests that end in error and end program execution should end with 1 error code (or other non-0)
