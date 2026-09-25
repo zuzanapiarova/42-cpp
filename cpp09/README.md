@@ -22,7 +22,7 @@ This module consists of 3 excercises:
 
 ## Ex00
 
-Container type: **map container** - I store Date objects as keys and doubles as values: std::map map<Date, double>
+Container type: **map** container - I store Date objects as keys and doubles as values: std::map map<Date, double>
 
 Program (defaultly) receives a csv table of dates and prices, and a second csv table with  dates and ammounts as the parameter. 
 
@@ -40,7 +40,7 @@ Parsing rules date-amount table:
 
 ## Ex01
 
-Container type: **list** - I store the numbers in a list and perform the sorting algorithm on them.
+Container type: **stack** container - I store the numbers in a stack and push and pop from the top
 
 
 ## Ex02

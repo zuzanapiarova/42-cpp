@@ -45,17 +45,19 @@ void Rpn::_calculate( void )
 
     while (iss >> token)
     {
+        // read the token and check if it is a number or an operator
+        // if not one of the allowed operators (number or invalid):
         if (token != "+" && token != "-" && token != "*" && token != "/")
         {
             int res;
             std::istringstream iss(token); // string stream is only safe and standard way to convert strings to numbers in c++98
-            iss >> res; // reads input from string and checks for integer format and range
+            iss >> res; // iss reads input from string and checks for integer format and range
             if (iss.fail() || !iss.eof()) throw std::invalid_argument("Invalid integer input."); // iss sets flags if reading from string goes wrong
             if (res < std::numeric_limits<int>::min() || res > std::numeric_limits<int>::max()) throw std::out_of_range("Value outside of unsigned int not allowed."); // we only want positive integers
             s.push(std::atoi(token.c_str()));
             continue ;
         }
-        if (s.size() < 2) throw std::runtime_error("Wrong expression format."); // throws error if first two are not numbers
+        if (s.size() < 2) throw std::runtime_error("Wrong expression format."); // throws error if top two are not numbers
         n2 = s.top();
         s.pop();
         n1 = s.top();
@@ -75,7 +77,7 @@ Rpn::Rpn()
 };
 Rpn::Rpn(const std::string& exp)
 {
-    if (exp.empty()) throw std::runtime_error("Empty expression");
+    if (exp.empty()) throw std::runtime_error("Empty expression.");
     _expression = exp;
     _calculate();
 };
