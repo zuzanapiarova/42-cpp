@@ -42,6 +42,7 @@ Parsing rules date-amount table:
 
 Container type: **stack** container - I store the numbers in a stack and push and pop from the top
 
+A loop goes over the input reading the tokens (numbers and operators) and pushes numbers to the stack. When an operator is read, it pops the top two numbers from the stack, applies the operator, and pushes the result back to the stack. 
 
 ## Ex02
 
