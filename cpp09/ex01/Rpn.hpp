@@ -19,7 +19,6 @@ class Rpn
         int             _subtract(int n1, int n2);
         int             _multiply(int n1, int n2);
         int             _divide(int n1, int n2);
-        bool            _isValidInt(const std::string &s);
         void            _calculate();
         
     public:

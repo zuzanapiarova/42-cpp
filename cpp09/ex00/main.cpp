@@ -14,14 +14,18 @@ int main(int argc, char **argv)
     }
     try
     {
-        BitcoinExchange db("data.csv");
-        db.getPricesForDates(argv[1]);
+        BitcoinExchange origin("data.csv"); // test overloaded constructor
+        BitcoinExchange copy(origin);       // test copy constructor
+        // BitcoinExchange assign;             // test default constructor - should error
+        // copy = origin;                      // test copy assignment operator (should not change assign object, since it has const members)
+
+        copy.getPricesForDates(argv[1]);
+
     }
     catch(std::exception& e)
     {
-        std::cerr << "Error: " << e.what() << std::endl;
+        std::cerr << "Main Error: " << e.what() << std::endl;
         return 1;
     }
-
     return 0;
 };

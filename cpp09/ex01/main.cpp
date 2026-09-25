@@ -7,12 +7,14 @@ int main(int argc, char **argv)
 {
     if (argc != 2)
     {
-        std::cout << "Wrong number of arguments. Program expects: ./rpn <expr_in_reverse_polish_notation>" << std::endl;
+        std::cout << "Wrong number of arguments. Program expects: ./RPN \"expr_in_reverse_polish_notation\"" << std::endl;
         return 1;
     }
     try
     {
-        // Rpn empty; // test default constructor
+        // Rpn x; // defalt constructor - should error
+        // std::cout << "Result: " << x.getResult() << std::endl;
+
         Rpn r(argv[1]);
         std::cout << "Result: " << r.getResult() << std::endl;
     }

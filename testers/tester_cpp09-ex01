@@ -28,6 +28,11 @@ INPUTS=("8 9 * 9 - 9 - 9 - 4 - 1 + = 42"
         "= empty expression"
         "1 = 1 or some other handling, discuss"
         "1 0 / = Zero division error"
+        "1 2147483646 + = 2147483647"
+        "1 2147483647 + = Overflow error or other handling (discuss)"
+        "-2147483647 1 - = -2147483648"
+        "1 -2147483647 - = Overflow error BECAUSE it is actually 1 - (-2147483647) = 2147483648, which is out of range for a 32-bit signed integer. This is a case of integer overflow. If the program handles this correctly, it should throw an error. Otherwise, it will wrap around to a negative value. Discuss the appropriate handling."
+        "1 -2147483648 - = Overflow error or other handling (discuss)"
         )
 
 for i in "${!INPUTS[@]}"; do

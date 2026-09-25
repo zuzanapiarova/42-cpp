@@ -28,7 +28,6 @@ Date::Date() : _year(0), _month(1), _day(1)
 
 Date::Date(int year, int month, int day)
 {
-    // std::cout << "Date overload constructor called. " <<std::endl;
     if (checkDate(year, month, day) == false)
         throw Date::DateNotExistException();
     _year = year;

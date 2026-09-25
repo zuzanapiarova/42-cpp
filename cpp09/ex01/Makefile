@@ -5,7 +5,7 @@ NAME = RPN
 SRCS = Rpn.cpp main.cpp
 OBJS = $(SRCS:.cpp=.o)
 
-all: $(NAME)
+all: $(NAME) clean
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)

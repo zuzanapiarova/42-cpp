@@ -10,7 +10,6 @@ int Rpn::_add(int a, int b)
 
 int Rpn::_subtract(int a, int b)
 {
-    // Check for overflow: a - b
     if ((b > 0 && a < std::numeric_limits<int>::min() + b) ||
         (b < 0 && a > std::numeric_limits<int>::max() + b))
         throw std::runtime_error("Overflow error.");
@@ -72,24 +71,18 @@ void Rpn::_calculate( void )
 
 Rpn::Rpn() 
 {
-    // std::cout << "Rpn default constructor called." << std::endl;
-    throw std::runtime_error("Default constructor would create empty stack.");
+    throw std::runtime_error("Default constructor - would create empty stack. Aborting.");
 };
 Rpn::Rpn(const std::string& exp)
 {
-    // std::cout << "Rpn overload constructor called." << std::endl;
     if (exp.empty()) throw std::runtime_error("Empty expression");
     _expression = exp;
     _calculate();
 };
 
-Rpn::Rpn(const Rpn& origin) : _expression(origin._expression), _result(origin._result)
-{
-    // std::cout << "Rpn default constructor called." << std::endl;
-}
+Rpn::Rpn(const Rpn& origin) : _expression(origin._expression), _result(origin._result) {};
 Rpn& Rpn::operator =(const Rpn& origin)
 {
-    // std::cout << "Rpn default constructor called." << std::endl;
     if (this != &origin)
     {
         _expression = origin._expression;
@@ -98,10 +91,7 @@ Rpn& Rpn::operator =(const Rpn& origin)
     return *this;
 };
 
-Rpn::~Rpn()
-{
-    // std::cout << "Rpn destructor called." << std::endl;
-};
+Rpn::~Rpn() {};
 
 int Rpn::getResult()
 {

@@ -11,14 +11,13 @@
 
 #include "Date.hpp"
 
-// in ex00 I use the map container to store Date objets as keys and doubles as values: std::map map<Date, double>
 class BitcoinExchange
 {
     private:
         const std::string       _filename;
         std::map<Date, double>  _pricesMap;
-        void                    _populateMap(std::ifstream& pricesDatabase);
-        double                  _getValue(const Date& key) const ;
+        void                    _populateMap(std::ifstream& pricesDatabase); // from the provided date-price db, populate the map
+        double                  _getValue(const Date& key) const;
 
     public:
         BitcoinExchange();
@@ -27,8 +26,8 @@ class BitcoinExchange
         BitcoinExchange& operator =(const BitcoinExchange& origin);
         ~BitcoinExchange();
 
-        void    getPricesForDates( const std::string& inputFile) const ;
-        void    printDB() const ;
+        void    getPricesForDates( const std::string& inputFile) const;
+        void    printDB() const;
 
         class DuplicateDateException;
         class DateNotExistException;
