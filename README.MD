@@ -1637,12 +1637,47 @@ int main(void)
 ```
 
 ## CPP09 - STL
+*This project has been created as part of the 42 curriculum by zpiarova.*
+
+# CPP09
+
+This module consists of 3 excercises:
+1. BTC - get a csv table of dates and return the price of bitcoin for that date (retrieved from another input csv table that mapas dates to prices). If date not exist, return closest sooner date.
+2. RPN - Reverse polish notation - is another way of writing mathematical operations - the sign is not in the middle, but after both operands. 
+3. Sorting algorithm based on Jacobsthal numbers - 
+
+*Constraint:* Allowed to use containers from the C++ Standard Template Library (STL) only. Further, for each excercise the container used must be different. Ex02 uses 2 containers and compares their performance.
+
+**Containers and STL:**
+- The STL provides a set of common classes and interfaces for various data structures, such as vectors, lists, maps, and sets. 
+- Containers are used to store data in memory, and they are part of the C++ Standard Template Library (STL).
+- Each container has its own characteristics and is suitable for different use cases.
+
+**Container types:**
+1. Sequence containers: store data in a linear sequence, such as std::vector, std::list, and std::deque.
+2. Associative containers: store data in a way that allows for fast retrieval based on keys, such as std::map and std::set.
+3. Unordered associative containers: store data in a way that allows for fast retrieval based on keys, but do not maintain any specific order, such as std::unordered_map and std::unordered_set.
+4. Container adaptors: provide a different interface for existing containers, such as std::stack, std::queue, and std::priority_queue.
 
 #### Excercise 00 - Bitcoin Exchange (maps)
 
-I use the map container here to store Date objets as keys and doubles as values: std::map map<Date, double>
+Container type: **map** container - I store Date objects as keys and doubles as values: std::map map<Date, double>
 
-The files can have first line representing column names but do not have to, work also when starting with dates right away.
+Program (defaultly) receives a csv table of dates and prices, and a second csv table with  dates and ammounts as the parameter. 
+
+It returns the prices of bitcoin for the dates (retrieved from another input csv table that maps dates to prices). 
+
+If date does not exist, return closest sooner date.
+
+Parsing rules date-price table:
+- Date format: YYYY-MM-DD
+
+Parsing rules date-amount table:
+- Date format: YYYY-MM-DD
+- Value: float 0-1000
+- If the date from input does not exist in date-price DB, use the closest lower date in date-price DB
+
+The input files can have first line representing column names but do not have to, work also when starting with dates right away.
 
 Tests:
 0. Basic checks
@@ -1728,6 +1763,10 @@ Tests for the date:
 
 #### Excercise 01 - Reverse polish notation
 
+Container type: **stack** container - I store the numbers in a stack and push and pop from the top
+
+A loop goes over the input reading the tokens (numbers and operators) and pushes numbers to the stack. When an operator is read, it pops the top two numbers from the stack, applies the operator, and pushes the result back to the stack. 
+
 Reverse polish notation is another way of writing mathematical operations - the sign is not in the middle, but after both operands. 
 
 Logically I implement it as  stack, taking elements from top one by one, starting with the sign to know which operation to do and then taking first and second operand. 
@@ -1755,7 +1794,22 @@ Division by 0
 
 #### Excercise 02 - Merge insertion (Ford-Johnson algorithm) using 2 different container types
 
+Container type(s): **vector** and **deque** - I store the numbers in both containers and compare their performance. The task is to implement this algorithm for 2 different container types (advised not to do a generic function) and compare how much time it takes for both. 
+
 The task is to implement this algorithm for 2 different container types (advised not to do a generic function) and compare how much time it takes for both. 
+
+Its goal is to perform. the least number of comparisons - check where the comparisons are made and mark it
+
+problem:
+How to preserve the association between levels?
+
+The common logic is (recursively):
+1. Create leftover
+2. Create pairs
+3. Create result
+4. Perform initial pairing
+5. Perform merge-insertion
+6. Assign result back to the container
 
 Evaluation constraints:
 As an evaluator, you need to follow the scale, meaning that, the `proper algorithm, **Ford-Johnson**, **is used**` and the `proper sequence, **Jacobsthal** **numbers**, **as well**` . As the scale says, an explanation of these concepts is expected:
@@ -1775,7 +1829,7 @@ Concepts:
 
 It is often confused with the merge sort algorithm. 
 
-The Wikipedia page and the corespnding graph seem to underestimate the recursive step of pairing and sorting pairs of numbers, pairs of airs of numbers, pairs of pairs of pairs of numbers ... etc.
+The Wikipedia page and the corespnding graph seem to underestimate the recursive step of pairing and sorting pairs of numbers, pairs of pairs of numbers, pairs of pairs of pairs of numbers ... etc.
 
 Steps of the algorithm as I understand them:
 A. SPLITTING
@@ -1860,7 +1914,6 @@ Nextv recursion step: ((9 11)(6 13)) => (11 13)
 Next recursion step: met base condition when size == 0
 Then to go back: i have no idea how to use the pointers to make the resulting container. How do i keep the boundingElememt at each recursion level ? 
 
-
 OR 
 
 Can i make pair of iterators on the original contianer ?
@@ -1873,7 +1926,7 @@ What data structure do i create to store the sorted sequence?
 
 
 Program structure:
-1. Class holds a container, which is a template Container
+1. Class holds a vector container and a deque container 
 2. Separate high-level separate sort functions for different container types if each should be handled a bit differently
 3. But shared logic using templated containers in helper functions like insertionSort, merge, FindJacobsthalNumbers ... 
 
@@ -1881,6 +1934,6 @@ Tests:
 1. duplicates (handling up to student)
 2. 1 number, 2 numbers
 3. no argument - ./PmergeMe 
-4. wrong arguments - a, ., > MAX_INT, ...
+4. wrong arguments - negatives, a, ., > MAX_INT, ...
 5. empty argument - ./PmergeMe  1 2 "" "   " 5
 6. negative number cannot wrap - we are casting to unsigned int 

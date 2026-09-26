@@ -1,4 +1,7 @@
 #include "PmergeMe.hpp"
+#include <cstdlib>
+#include <cerrno>
+#include <climits>
 
 // TODO:
 // 1. handle duplicates - now errors if there are any
@@ -7,27 +10,58 @@
 // 4. add second container type and optimize for it 
 // 5. add measuring time
 
-int main(int argc, char **argv)
+static bool parsePositiveInt(const char* str, int& result)
 {
-    if (argc < 2)
-    {
-        std::cerr << "Wrong arguments. Program expects: ./PmergeMe int1 int2 ... intn" << std::endl;
-        return 1;
-    }
-    try
-    {
-        std::vector<int>v = populateContainer(argc, argv);
-        // std::cout << "Max number of calculations (in the worst case): " << calculateMaxNumberOfComparisons(v.size()) << std::endl;
+	char* end;
 
-        PmergeMe V(v);
-        std::cout << V << std::endl;
-        V.sort();
-        std::cout << V << std::endl;
-    }
-    catch (std::exception& e)
-    {
-        std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
-    }
-    return 0;
+	if (str == NULL || *str == '\0')
+		return false;
+
+	errno = 0;
+	long value = std::strtol(str, &end, 10);
+
+	if (errno == ERANGE || *end != '\0')
+		return false;
+
+	if (value < 0 || value > INT_MAX)
+		return false;
+
+	result = static_cast<int>(value);
+	return true;
+}
+
+int main(int argc, char** argv)
+{
+	if (argc < 2)
+	{
+		std::cerr << "Error: not enough numbers provided." << std::endl;
+		return 1;
+	}
+
+	std::vector<int> vectorContainer;
+	std::deque<int> dequeContainer;
+
+    // populate both containers
+	for (int i = 1; i < argc; ++i)
+	{
+		int value;
+        
+		if (!parsePositiveInt(argv[i], value))
+		{
+			std::cerr << "Error: invalid number: " << argv[i] << ". Aborting." << std::endl;
+			return 1;
+		}
+		if (std::find(vectorContainer.begin(), vectorContainer.end(), value) != vectorContainer.end()) {
+			std::cerr << "Error: duplicates: " << argv[i] << ". Aborting." << std::endl;
+			return 1;
+		}
+		vectorContainer.push_back(value);
+		dequeContainer.push_back(value);
+	}
+
+	// create class and sort and print results
+	PmergeMe pmergeMe(vectorContainer, dequeContainer);
+	pmergeMe.sort();
+
+	return 0;
 }
