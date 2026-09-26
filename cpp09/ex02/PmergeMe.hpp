@@ -25,20 +25,20 @@ struct Pair
 class PmergeMe
 {
 	private:
-		std::vector<int> _vector;
-		std::deque<int>  _deque;
+		std::vector<int> _vector; // vector stores elements continuously
+		std::deque<int>  _deque; // deque is segmented and stores elements segmented accross memory and provides random access
 
 		// Vector implementation
 		void _sortVector();
-		void _makeIndexPairsVector(const std::vector<std::size_t>& indices, std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover);
-		void _sortVectorRecursion(const std::vector<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::vector<std::size_t>& sortedIds);
-        void _printPairsVector(const std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover);
-		void _insertSmall(std::vector<std::size_t>& mainChain, const Pair& pair);
+		void _makeIndexPairs(const std::vector<std::size_t>& indices, std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover);
+		void _sortRecursion(const std::vector<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::vector<std::size_t>& sortedIds);
+		void _insertSmall(std::vector<std::size_t>& mainChain, const Pair& pair, std::vector<std::size_t>& positionOf, const std::vector<std::size_t>& levelLarges);
 
 		// Deque implementation
 		void _sortDeque();
-		void _makeeIndexPairsDeque(std::deque<Pair>& pairs, int& leftover);
-		void _mergeInsertionDeque(std::deque<Pair>& pairs, int leftover);
+		void _makeIndexPairs(const std::deque<std::size_t>& indices, std::deque<Pair>& pairs, bool& hasLeftover, std::size_t& leftover);
+		void _sortRecursion(const std::deque<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::deque<std::size_t>& sortedIds);
+		void _insertSmall(std::deque<std::size_t>& mainChain, const Pair& pair, std::vector<std::size_t>& positionOf, const std::vector<std::size_t>& levelLarges);
 
 	public:
 		PmergeMe();
@@ -55,5 +55,3 @@ class PmergeMe
 
 std::ostream& operator<<(std::ostream& os, const std::vector<int>& container); // print vector
 std::ostream& operator<<(std::ostream& os, const std::deque<int>& container); // print deque
-
-std::ostream& operator<<(std::ostream& os, const std::vector<Pair>& container); // print pair vector

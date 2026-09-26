@@ -52,13 +52,14 @@ void PmergeMe::sort()
     double vectorTime = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
 
     start = clock();
-    // _sortDeque(); // TODO
+    _sortDeque();
     end = clock();
     double dequeTime = static_cast<double>(end - start) / CLOCKS_PER_SEC * 1000000;
 
-    std::cout << "Sorted sequence: " << this->getVector() <<  std::endl;
-    std::cout << "Vector sort time: " << vectorTime << "(ms)?" << std::endl;
-    std::cout << "Deque sort time: " << dequeTime << "(ms)?" << std::endl;
+    std::cout << "Sorted sequence (vector): " << this->getVector() <<  std::endl;
+    std::cout << "Sorted sequence (deque): " << this->getDeque() <<  std::endl;
+    std::cout << "Vector sort time: " << vectorTime << " microseconds" << std::endl;
+    std::cout << "Deque sort time: " << dequeTime << " microseconds" << std::endl;
 }
 
 const std::vector<int>& PmergeMe::getVector() const
@@ -71,33 +72,40 @@ const std::deque<int>& PmergeMe::getDeque() const
     return this->_deque;
 };
 
-// ----------------------------------------------- private functions ---------------------------------------------------
+// ----------------------------------------------- private functions - vector ---------------------------------------------------
 
 void PmergeMe::_sortVector()
 {
-	std::vector<Pair>           pairs;      // vector of pairs of indexes of larger and smaller elements, sorted in-pair
-	std::vector<std::size_t>    sortedIds;  // vector of sorted IDs
-	std::vector<int>            result;
-	bool                        hasLeftover = false;
-	std::size_t                 leftover;
+    std::vector<Pair>           pairs;
+    std::vector<std::size_t>    sortedIds;
+    std::vector<int>            result;
+    std::vector<std::size_t>    indices;
+    bool                        hasLeftover = false;
+    std::size_t                 leftover = 0;
 
-    std::vector<std::size_t>    indices; // turn vector of pairs to initially into a vector of indexes
+    // optimization so vector know how large it will be and does not realocate
+    indices.reserve(_vector.size());
+    pairs.reserve(_vector.size() / 2);
+    sortedIds.reserve(_vector.size());
+    result.reserve(_vector.size());
+
     for (std::size_t i = 0; i < _vector.size(); ++i)
         indices.push_back(i);
 
-	_makeIndexPairsVector(indices, pairs, hasLeftover, leftover); // prepare vector of sorted pairs, check and save if has leftover
-	_sortVectorRecursion(pairs, hasLeftover, leftover, sortedIds); // recursion step
+    _makeIndexPairs(indices, pairs, hasLeftover, leftover);
+    _sortRecursion(pairs, hasLeftover, leftover, sortedIds);
 
-	// Convert sorted IDs back to values
-	for (std::size_t i = 0; i < sortedIds.size(); ++i)
-		result.push_back(_vector[sortedIds[i]]);
-	_vector = result;
+    for (std::size_t i = 0; i < sortedIds.size(); ++i)
+        result.push_back(_vector[sortedIds[i]]);
+
+    _vector = result;
 }
 
 // prepare the numbers into pairs and sort them in-pair
-void PmergeMe::_makeIndexPairsVector(const std::vector<std::size_t>& indices, std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover)
+void PmergeMe::_makeIndexPairs(const std::vector<std::size_t>& indices, std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover)
 {
     hasLeftover = false;
+    pairs.reserve(pairs.size() + indices.size() / 2);
 
     for (std::size_t i = 0; i + 1 < indices.size(); i += 2)
     {
@@ -125,106 +133,111 @@ void PmergeMe::_makeIndexPairsVector(const std::vector<std::size_t>& indices, st
 }
 
 // the recursive function - takes in vector of pairs and populates the vector with indexes of sorted numbers
-void PmergeMe::_sortVectorRecursion(const std::vector<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::vector<std::size_t>& sortedIds)
+void PmergeMe::_sortRecursion(const std::vector<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::vector<std::size_t>& sortedIds)
 {
-    std::vector<std::size_t> larges;   // indexes of large element in pairs
-	std::vector<Pair> nextPairs;       // new pairs of large elements into new pairs and create a vector
-	bool nextHasLeftover = false;
-	std::size_t nextLeftover = 0;
-	std::vector<std::size_t> sortedLarges; // sorted larger IDs - output after recursion escapes
-	std::vector<Pair> sortedPairs;  // sorted pairs based on their large elements
-    std::vector<std::size_t> mainChain;      // final main chain to which we push after recursion excapes and we put the elements back
+    std::vector<std::size_t> larges;
+    std::vector<Pair>         nextPairs;
+    std::vector<std::size_t> sortedLarges;
+    std::vector<Pair>         sortedPairs;
+    std::vector<std::size_t> mainChain;
 
-	// 1. Base case
-	if (pairs.empty())
-	{
-		if (hasLeftover) sortedIds.push_back(leftover);
-		return;
-	}
+    bool nextHasLeftover = false;
+    std::size_t nextLeftover = 0;
 
-	// 2. Extract, pair, and sort large elements into new pairs vector
+    if (pairs.empty())
+    {
+        if (hasLeftover)
+            sortedIds.push_back(leftover);
+        return;
+    }
+
+    larges.reserve(pairs.size());
+    nextPairs.reserve(pairs.size() / 2);
+    sortedLarges.reserve(pairs.size());
+    sortedPairs.reserve(pairs.size());
+    mainChain.reserve(pairs.size() * 2);
+
+    // 1. Extract the large elements.
     for (std::size_t i = 0; i < pairs.size(); ++i)
         larges.push_back(pairs[i].large);
-    _makeIndexPairsVector(larges, nextPairs, nextHasLeftover, nextLeftover);
 
-	// 3. Recursively call the unction on the new vector of pairs
-	_sortVectorRecursion(nextPairs, nextHasLeftover, nextLeftover, sortedLarges);
+    // 2. Pair the large elements and recurse.
+    _makeIndexPairs(larges, nextPairs, nextHasLeftover, nextLeftover);
+    _sortRecursion(nextPairs, nextHasLeftover, nextLeftover, sortedLarges);
 
-	// 4. Reorder current pairs according to sorted large elements - entire pairs are now sorted based on their large element
-	for (std::size_t i = 0; i < sortedLarges.size(); ++i)
-	{
-		for (std::size_t j = 0; j < pairs.size(); ++j)
-		{
-			if (pairs[j].large == sortedLarges[i])
-			{
-				sortedPairs.push_back(pairs[j]);
-				break;
-			}
-		}
-	}
+    // 3. Reorder pairs in O(n) using the large element ID as the lookup key.
+    std::vector<Pair> pairByLarge(_vector.size()); // lookup table with O(1)
 
-	// 5. Build the main chain ( b1, a1, a2, a3, ... ), a is larger, b is smaller
-	mainChain.push_back(sortedPairs[0].small);
-	for (std::size_t i = 0; i < sortedPairs.size(); ++i)
-		mainChain.push_back(sortedPairs[i].large);
+    for (std::size_t i = 0; i < pairs.size(); ++i)
+        pairByLarge[pairs[i].large] = pairs[i];
 
-	// 6. Insert the remaining small elements in Jacobsthal order (b3, b2, b5, b4, b11, b10, b9, ...)
-	std::size_t previous = 1;
-	std::size_t current = 3;
+    for (std::size_t i = 0; i < sortedLarges.size(); ++i)
+        sortedPairs.push_back(pairByLarge[sortedLarges[i]]);
+
+    // 4. Build main chain: b1, a1, a2, a3, ... - a is larger, b is smaller
+    mainChain.push_back(sortedPairs[0].small); // b1
+    for (std::size_t i = 0; i < sortedPairs.size(); ++i)
+        mainChain.push_back(sortedPairs[i].large);
+
+    // NEW: positionOf[largeId] = that large element's current index inside
+    // mainChain. Indexed directly by the original array index (same trick as
+    // pairByLarge above), so it's an O(1) read instead of a scan. levelLarges
+    // is just the list of ids we're allowed to touch when we maintain it.
+    std::vector<std::size_t> levelLarges(sortedPairs.size());
+    std::vector<std::size_t> positionOf(_vector.size());
+    for (std::size_t i = 0; i < sortedPairs.size(); ++i)
+    {
+        levelLarges[i] = sortedPairs[i].large;
+        positionOf[sortedPairs[i].large] = i + 1; // +1: b1 occupies index 0
+    }
+
+    // 5. Insert remaining small elements in Jacobsthal order
+    std::size_t previous = 1;
+    std::size_t current = 3;
     while (previous < sortedPairs.size())
     {
         std::size_t upper = current;
-
-        if (upper > sortedPairs.size())
-            upper = sortedPairs.size();
+        if (upper > sortedPairs.size()) upper = sortedPairs.size();
 
         for (std::size_t i = upper; i > previous; --i)
-            _insertSmall(mainChain, sortedPairs[i - 1]);
+            _insertSmall(mainChain, sortedPairs[i - 1], positionOf, levelLarges);
 
         std::size_t next = current + 2 * previous; // find next Jacobsthal number
         previous = current;
         current = next;
     }
 
-	// 7. Insert the leftover with binary sort - leftover (b) has no corresponding a, so it can be inserted anywhere in the full chain.
-	if (hasLeftover)
-	{
-		std::size_t left = 0;
-		std::size_t right = mainChain.size();
+    // 6. Insert leftover
+    if (hasLeftover)
+    {
+        std::size_t left = 0;
+        std::size_t right = mainChain.size();
 
-		while (left < right)
-		{
-			std::size_t mid = left + (right - left) / 2;
+        while (left < right)
+        {
+            std::size_t mid = left + (right - left) / 2;
 
-			if (_vector[mainChain[mid]] < _vector[leftover])
-				left = mid + 1;
-			else
-				right = mid;
-		}
+            if (_vector[mainChain[mid]] < _vector[leftover])
+                left = mid + 1;
+            else
+                right = mid;
+        }
 
-		mainChain.insert(mainChain.begin() + left, leftover);
-	}
+        mainChain.insert(mainChain.begin() + left, leftover);
+    }
 
-	// 9. Return the completely sorted IDs to the caller
-	sortedIds = mainChain;
+    sortedIds = mainChain;
 }
 
-// ---------------------------------------------------------- helpers ----------------------------------------------------------
-
-void PmergeMe::_insertSmall(std::vector<std::size_t>& mainChain, const Pair& pair)
+// smaller element is inserted by binary sort between the beginning and its large
+void PmergeMe::_insertSmall(std::vector<std::size_t>& mainChain, const Pair& pair, std::vector<std::size_t>& positionOf, const std::vector<std::size_t>& levelLarges)
 {
     std::size_t smallId = pair.small;
     std::size_t largeId = pair.large;
 
-    // Find the position of the corresponding large element
-    std::size_t largePosition = 0;
+    // O(1) lookup - no more scanning mainChain for largeId.
+    std::size_t largePosition = positionOf[largeId];
 
-    while (largePosition < mainChain.size() && mainChain[largePosition] != largeId)
-    {
-        ++largePosition;
-    }
-
-    // Binary search only before the large element
     std::size_t left = 0;
     std::size_t right = largePosition;
 
@@ -239,25 +252,182 @@ void PmergeMe::_insertSmall(std::vector<std::size_t>& mainChain, const Pair& pai
     }
 
     mainChain.insert(mainChain.begin() + left, smallId);
+
+    // Everything that was at or after the insertion point just shifted right by one.
+    for (std::size_t i = 0; i < levelLarges.size(); ++i)
+        if (positionOf[levelLarges[i]] >= left)
+            positionOf[levelLarges[i]] += 1;
 }
 
-void PmergeMe::_printPairsVector(const std::vector<Pair>& pairs, bool& hasLeftover, std::size_t& leftover)
+// ----------------------------------------------- private functions - deque ---------------------------------------------------
+
+void PmergeMe::_sortDeque()
 {
-	std::cout << "Vector: ";
+    std::deque<Pair>           pairs;
+    std::deque<std::size_t>    sortedIds;
+    std::deque<int>            result;
+    std::deque<std::size_t>    indices;
+    bool                       hasLeftover = false;
+    std::size_t                leftover = 0;
 
-	for (std::size_t i = 0; i < pairs.size(); ++i)
-	{
-		std::cout << "("
-				  << _vector[pairs[i].small]
-				  << ", "
-				  << _vector[pairs[i].large]
-				  << ")";
+    for (std::size_t i = 0; i < _deque.size(); ++i)
+        indices.push_back(i);
 
-		if (i + 1 < pairs.size())
-			std::cout << " ";
-	}
+    _makeIndexPairs(indices, pairs, hasLeftover, leftover);
+    _sortRecursion(pairs, hasLeftover, leftover, sortedIds);
 
+    for (std::size_t i = 0; i < sortedIds.size(); ++i)
+        result.push_back(_deque[sortedIds[i]]);
+
+    _deque = result;
+}
+
+
+// prepare the numbers into pairs and sort them in-pair
+void PmergeMe::_makeIndexPairs(const std::deque<std::size_t>& indices, std::deque<Pair>& pairs, bool& hasLeftover, std::size_t& leftover)
+{
+    hasLeftover = false;
+
+    for (std::size_t i = 0; i + 1 < indices.size(); i += 2)
+    {
+        Pair pair;
+
+        if (_deque[indices[i]] < _deque[indices[i + 1]])
+        {
+            pair.small = indices[i];
+            pair.large = indices[i + 1];
+        }
+        else
+        {
+            pair.small = indices[i + 1];
+            pair.large = indices[i];
+        }
+
+        pairs.push_back(pair);
+    }
+
+    if (indices.size() % 2 != 0)
+    {
+        hasLeftover = true;
+        leftover = indices.back();
+    }
+}
+
+
+// the recursive function - takes in deque of pairs and populates the deque with indexes of sorted numbers
+void PmergeMe::_sortRecursion(const std::deque<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::deque<std::size_t>& sortedIds)
+{
+    std::deque<std::size_t> larges;
+    std::deque<Pair>        nextPairs;
+    std::deque<std::size_t> sortedLarges;
+    std::deque<Pair>        sortedPairs;
+    std::deque<std::size_t> mainChain;
+
+    bool nextHasLeftover = false;
+    std::size_t nextLeftover = 0;
+
+    if (pairs.empty())
+    {
+        if (hasLeftover)
+            sortedIds.push_back(leftover);
+        return;
+    }
+
+    // 1. Extract the large elements.
+    for (std::size_t i = 0; i < pairs.size(); ++i)
+        larges.push_back(pairs[i].large);
+
+    // 2. Pair the large elements and recurse.
+    _makeIndexPairs(larges, nextPairs, nextHasLeftover, nextLeftover);
+    _sortRecursion(nextPairs, nextHasLeftover, nextLeftover, sortedLarges);
+
+    // 3. Reorder pairs using the large element ID as the lookup key.
+    std::deque<Pair> pairByLarge(_deque.size()); // lookup table with O(1)
+
+    for (std::size_t i = 0; i < pairs.size(); ++i)
+        pairByLarge[pairs[i].large] = pairs[i];
+
+    for (std::size_t i = 0; i < sortedLarges.size(); ++i)
+        sortedPairs.push_back(pairByLarge[sortedLarges[i]]);
+
+    // 4. Build main chain: b1, a1, a2, a3, ...
+    mainChain.push_back(sortedPairs[0].small);
+
+    for (std::size_t i = 0; i < sortedPairs.size(); ++i)
+        mainChain.push_back(sortedPairs[i].large);
+
+    // NEW: same O(1) position tracking as the vector version.
+    std::vector<std::size_t> levelLarges(sortedPairs.size());
+    std::vector<std::size_t> positionOf(_deque.size());
+    for (std::size_t i = 0; i < sortedPairs.size(); ++i)
+    {
+        levelLarges[i] = sortedPairs[i].large;
+        positionOf[sortedPairs[i].large] = i + 1;
+    }
+
+    // 5. Insert remaining small elements in Jacobsthal order.
+    std::size_t previous = 1;
+    std::size_t current = 3;
+
+    while (previous < sortedPairs.size())
+    {
+        std::size_t upper = current;
+
+        if (upper > sortedPairs.size())
+            upper = sortedPairs.size();
+
+        for (std::size_t i = upper; i > previous; --i)
+            _insertSmall(mainChain, sortedPairs[i - 1], positionOf, levelLarges);
+
+        std::size_t next = current + 2 * previous;
+        previous = current;
+        current = next;
+    }
+
+    // 6. Insert odd leftover.
     if (hasLeftover)
-        std::cout << " (" << _vector[leftover] << ")";
-	std::cout << std::endl;
+    {
+        std::size_t left = 0;
+        std::size_t right = mainChain.size();
+
+        while (left < right)
+        {
+            std::size_t mid = left + (right - left) / 2;
+
+            if (_deque[mainChain[mid]] < _deque[leftover])
+                left = mid + 1;
+            else
+                right = mid;
+        }
+
+        mainChain.insert(mainChain.begin() + left, leftover);
+    }
+
+    sortedIds = mainChain;
+}
+void PmergeMe::_insertSmall(std::deque<std::size_t>& mainChain, const Pair& pair, std::vector<std::size_t>& positionOf, const std::vector<std::size_t>& levelLarges)
+{
+    std::size_t smallId = pair.small;
+    std::size_t largeId = pair.large;
+
+    std::size_t largePosition = positionOf[largeId];
+
+    std::size_t left = 0;
+    std::size_t right = largePosition;
+
+    while (left < right)
+    {
+        std::size_t mid = left + (right - left) / 2;
+
+        if (_deque[mainChain[mid]] < _deque[smallId])
+            left = mid + 1;
+        else
+            right = mid;
+    }
+
+    mainChain.insert(mainChain.begin() + left, smallId);
+
+    for (std::size_t i = 0; i < levelLarges.size(); ++i)
+        if (positionOf[levelLarges[i]] >= left)
+            positionOf[levelLarges[i]] += 1;
 }
