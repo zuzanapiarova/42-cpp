@@ -1803,6 +1803,8 @@ Its goal is to perform. the least number of comparisons - check where the compar
 problem:
 How to preserve the association between levels?
 
+Leftover belongs to the recursion level where it was created - so the leftover stays there where it was .
+
 The common logic is (recursively):
 1. Create leftover
 2. Create pairs

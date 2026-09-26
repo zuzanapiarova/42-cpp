@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 		dequeContainer.push_back(value);
 	}
 
-	// create class and sort and print results
+	// create class, sort, and print results
 	PmergeMe pmergeMe(vectorContainer, dequeContainer);
 	pmergeMe.sort();
 
