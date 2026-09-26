@@ -135,11 +135,11 @@ void PmergeMe::_makeIndexPairs(const std::vector<std::size_t>& indices, std::vec
 // the recursive function - takes in vector of pairs and populates the vector with indexes of sorted numbers
 void PmergeMe::_sortRecursion(const std::vector<Pair>& pairs, bool hasLeftover, std::size_t leftover, std::vector<std::size_t>& sortedIds)
 {
-    std::vector<std::size_t> larges;
+    std::vector<std::size_t>  larges;
     std::vector<Pair>         nextPairs;
-    std::vector<std::size_t> sortedLarges;
+    std::vector<std::size_t>  sortedLarges;
     std::vector<Pair>         sortedPairs;
-    std::vector<std::size_t> mainChain;
+    std::vector<std::size_t>  mainChain;
 
     bool nextHasLeftover = false;
     std::size_t nextLeftover = 0;
@@ -151,6 +151,7 @@ void PmergeMe::_sortRecursion(const std::vector<Pair>& pairs, bool hasLeftover, 
         return;
     }
 
+    // optimization
     larges.reserve(pairs.size());
     nextPairs.reserve(pairs.size() / 2);
     sortedLarges.reserve(pairs.size());
@@ -165,9 +166,8 @@ void PmergeMe::_sortRecursion(const std::vector<Pair>& pairs, bool hasLeftover, 
     _makeIndexPairs(larges, nextPairs, nextHasLeftover, nextLeftover);
     _sortRecursion(nextPairs, nextHasLeftover, nextLeftover, sortedLarges);
 
-    // 3. Reorder pairs in O(n) using the large element ID as the lookup key.
+    // 3. Reorder the pairs to match sorted order - now pairs are sorted based on their large
     std::vector<Pair> pairByLarge(_vector.size()); // lookup table with O(1)
-
     for (std::size_t i = 0; i < pairs.size(); ++i)
         pairByLarge[pairs[i].large] = pairs[i];
 
